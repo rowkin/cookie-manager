@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      width: 400px;
+      height: 600px;
+      position: relative;
+      color: #fff;
+      overflow: hidden;
+      background: linear-gradient(to right, #4285F4, #DB4437);
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+    #getCookies, #addCookie, #deleteAllCookies, #importCookies, #exportCookies {
+      background-color: #007BFF;
+    }
+    #searchCookie {
+      margin-bottom: 10px;
+      padding: 8px;
+      width: calc(100% - 20px);
+      border: none;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      color: #fff;
+      word-break: break-word;
+    }
+    th {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    td button:nth-child(1){
+      background-color: #007BFF;
+    }
+    td button:nth-child(2){
+      background-color: #DB4437;
+    }
+    .quote-section {
+      margin: 20px auto;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="auroraCanvas"></canvas>
+  <h2>Cookie Manager</h2>
+  <input type="text" id="searchCookie" placeholder="Search Cookies...">
+  <button id="getCookies">Get Cookies</button>
+  <button id="addCookie">Add Cookie</button>
+  <button id="deleteAllCookies">Delete All Cookies</button>
+  <button id="importCookies">Import Cookies</button>
+  <button id="exportCookies">Export Cookies</button>
+  <table id="cookieTable">
+    <thead>
+      <tr>
+        <th width="50">Name</th>
+        <th>Value</th>
+        <th width="122">Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="quote-section" id="dailyQuote">
+    Loading quote...
+  </div>
+  <script src="popup.js"></script>
+  <script src="aurora.js"></script>
+</body>
+</html>

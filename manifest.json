@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Cookie Manager with Daily Quote",
+  "version": "1.0",
+  "description": "Manage cookies and show a daily quote.",
+  "permissions": ["cookies", "activeTab", "scripting", "storage", "tabs", "https://translate.googleapis.com/"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  }
+}
