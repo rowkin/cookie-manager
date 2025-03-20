@@ -10,10 +10,10 @@
       margin: 0;
       padding: 20px;
       width: 400px;
-      height: 600px;
+      height: auto;
       position: relative;
       color: #fff;
-      overflow: hidden;
+      /* overflow: hidden; */
       background: linear-gradient(to right, #4285F4, #DB4437);
     }
     canvas {
@@ -36,6 +36,10 @@
       cursor: pointer;
       color: white;
     }
+    #cookieTable button {
+      /* margin: 0 4px;
+      padding: 10px 4px; */
+    }
     #getCookies, #addCookie, #deleteAllCookies, #importCookies, #exportCookies {
       background-color: #007BFF;
     }
@@ -49,7 +53,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0;
+      margin: 10px 0 0;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       overflow: hidden;
@@ -73,35 +77,161 @@
       background-color: #DB4437;
     }
     .quote-section {
-      margin: 20px auto;
       padding: 10px;
       background-color: rgba(0, 0, 0, 0.5);
       border-radius: 10px;
     }
+
+    /* 在已有样式后添加 */
+    .cookie-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .cookie-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    
+    .pin-group {
+      margin-left: auto;
+    }
+    
+    .cookie-section, .pinned-section {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+    
+    .cookie-section h3, .pinned-section h3 {
+      margin: 0 0 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cookie-section button, .pinned-section button {
+      padding: 5px 10px;
+    }
+    
+    .badge {
+      background: #007BFF;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    
+    #pinAllCookies {
+      background-color: #28a745;
+    }
+    
+    #unpinAllCookies {
+      background-color: #dc3545;
+    }
+    
+    .pin-button {
+      background-color: #28a745 !important;
+    }
+    
+    .unpin-button {
+      background-color: #dc3545 !important;
+    }
+
+    #refreshPage {
+      color: #666;
+    }
+
+    #cookieCount {
+    background: #007BFF;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .cookie-count-update {
+    animation: pulse 0.3s ease-in-out;
+  }
   </style>
 </head>
 <body>
-  <canvas id="auroraCanvas"></canvas>
-  <h2>Cookie Manager</h2>
-  <input type="text" id="searchCookie" placeholder="Search Cookies...">
-  <button id="getCookies">Get Cookies</button>
-  <button id="addCookie">Add Cookie</button>
-  <button id="deleteAllCookies">Delete All Cookies</button>
-  <button id="importCookies">Import Cookies</button>
-  <button id="exportCookies">Export Cookies</button>
-  <table id="cookieTable">
-    <thead>
-      <tr>
-        <th width="50">Name</th>
-        <th>Value</th>
-        <th width="122">Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
   <div class="quote-section" id="dailyQuote">
     Loading quote...
   </div>
+  <canvas id="auroraCanvas"></canvas>
+  <h2>Cookie Manager</h2>
+  <input type="text" id="searchCookie" placeholder="Search Cookies...">
+  <div class="cookie-actions"></div>
+    <div class="cookie-group">
+      <button id="getCookies">Get Cookies</button>
+      <button id="addCookie">Add Cookie</button>
+      <button id="deleteAllCookies">Delete All Cookies</button>
+    </div>
+    <hr />
+    <div class="cookie-group">
+      <button id="importCookies">Import Cookies</button>
+      <button id="exportCookies">Export Cookies</button>
+    </div>
+    <hr />
+    <div class="cookie-group pin-group">
+      <button id="pinAllCookies">Pin All</button>
+      <button id="unpinAllCookies">Unpin All</button>
+    </div>
+  </div>
+  <div class="cookie-section">
+    <h3>
+      All Cookies
+      <span class="badge" id="cookieCount">0</span>
+      <button id="refreshPage">Refresh Page</button>
+    </h3>
+    <table id="cookieTable">
+      <thead>
+        <tr>
+          <th width="60">Name</th>
+          <th>Value</th>
+          <th width="120">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="pinned-section">
+    <h3>
+      Pinned Cookies
+      <span class="badge" id="pinnedCount">0</span>
+      <button id="applyToCurrent" class="apply-button">Apply to Current Page</button>
+    </h3>
+    <table id="pinnedTable">
+      <thead>
+        <tr>
+          <th width="60">Name</th>
+          <th>Value</th>
+          <th width="120">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
   <script src="popup.js"></script>
   <script src="aurora.js"></script>
 </body>
