@@ -5,6 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+scripts
 
 # TypeScript 编译输出
 *.tsbuildinfo

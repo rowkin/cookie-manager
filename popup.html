@@ -3,236 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookie Manager</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      width: 400px;
-      height: auto;
-      position: relative;
-      color: #fff;
-      /* overflow: hidden; */
-      background: linear-gradient(to right, #4285F4, #DB4437);
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    button {
-      margin: 5px;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
-    }
-    #cookieTable button {
-      /* margin: 0 4px;
-      padding: 10px 4px; */
-    }
-    #getCookies, #addCookie, #deleteAllCookies, #importCookies, #exportCookies {
-      background-color: #007BFF;
-    }
-    #searchCookie {
-      margin-bottom: 10px;
-      padding: 8px;
-      width: calc(100% - 20px);
-      border: none;
-      border-radius: 5px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px 0 0;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      color: #fff;
-      word-break: break-word;
-    }
-    th {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-    tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-    td button:nth-child(1){
-      background-color: #007BFF;
-    }
-    td button:nth-child(2){
-      background-color: #DB4437;
-    }
-    .quote-section {
-      padding: 10px;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-    }
-
-    /* 在已有样式后添加 */
-    .cookie-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 10px;
-    }
-    
-    .cookie-group {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-    
-    .pin-group {
-      margin-left: auto;
-    }
-    
-    .cookie-section, .pinned-section {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-    }
-    
-    .cookie-section h3, .pinned-section h3 {
-      margin: 0 0 10px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .cookie-section button, .pinned-section button {
-      padding: 5px 10px;
-    }
-    
-    .badge {
-      background: #007BFF;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 12px;
-    }
-    
-    #pinAllCookies {
-      background-color: #28a745;
-    }
-    
-    #unpinAllCookies {
-      background-color: #dc3545;
-    }
-    
-    .pin-button {
-      background-color: #28a745 !important;
-    }
-    
-    .unpin-button {
-      background-color: #dc3545 !important;
-    }
-
-    #refreshPage {
-      color: #666;
-    }
-
-    #cookieCount {
-    background: #007BFF;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 14px;
-    margin-left: 10px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  .cookie-count-update {
-    animation: pulse 0.3s ease-in-out;
-  }
-  </style>
+  <title>Cookie Manager with Daily Quote</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="quote-section" id="dailyQuote">
-    Loading quote...
-  </div>
-  <canvas id="auroraCanvas"></canvas>
-  <h2>Cookie Manager</h2>
-  <input type="text" id="searchCookie" placeholder="Search Cookies...">
-  <div class="cookie-actions"></div>
-    <div class="cookie-group">
-      <button id="getCookies">Get Cookies</button>
-      <button id="addCookie">Add Cookie</button>
-      <button id="deleteAllCookies">Delete All Cookies</button>
+  <div class="cookie-manager-wrapper">
+    <!-- Add Daily Quote Component -->
+    <div class="quote-section" id="dailyQuote">
+      Loading quote...
     </div>
-    <hr />
-    <div class="cookie-group">
-      <button id="importCookies">Import Cookies</button>
-      <button id="exportCookies">Export Cookies</button>
+    <!-- Canvas element for rendering aurora effect -->
+    <canvas id="auroraCanvas"></canvas>
+    <div class="cookie-manager-header">
+      <h2>Cookie Manager</h2>
+      <!-- Add weather widget -->
+      <div class="weather-widget weather-loading">
+        <i class="weather-icon wi wi-day-sunny"></i>
+        <div class="weather-info">
+          <div class="weather-temp">Loading...</div>
+          <div class="weather-location">Locating...</div>
+        </div>
+      </div>
     </div>
-    <hr />
-    <div class="cookie-group pin-group">
-      <button id="pinAllCookies">Pin All</button>
-      <button id="unpinAllCookies">Unpin All</button>
+    <input type="text" id="searchCookie" placeholder="Search Cookies...">
+    
+    <div class="cookie-actions">
+      <div class="cookie-group">
+        <button id="getCookies" class="btn-primary">Get Cookies</button>
+        <button id="addCookie" class="btn-primary">Add Cookie</button>
+        <button id="importCookies" class="btn-primary">Import Cookies</button>
+      </div>
+      <hr />
+      <div class="cookie-group">
+        <button id="exportCookies" class="btn-primary">Export Cookies</button>
+        <button id="deleteAllCookies" class="btn-danger">Delete All Cookies</button>
+      </div>
+      <hr />
+      <div class="cookie-group pin-group">
+        <button id="pinAllCookies" class="btn-success">Pin All</button>
+        <button id="unpinAllCookies" class="btn-danger">Unpin All</button>
+        <button id="refreshPage" class="btn-secondary">Refresh Page</button>
+      </div>
     </div>
-  </div>
-  <div class="cookie-section">
-    <h3>
-      All Cookies
-      <span class="badge" id="cookieCount">0</span>
-      <button id="refreshPage">Refresh Page</button>
-    </h3>
-    <table id="cookieTable">
-      <thead>
-        <tr>
-          <th width="60">Name</th>
-          <th>Value</th>
-          <th width="120">Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
 
-  <div class="pinned-section">
-    <h3>
-      Pinned Cookies
-      <span class="badge" id="pinnedCount">0</span>
-      <button id="applyToCurrent" class="apply-button">Apply to Current Page</button>
-    </h3>
-    <table id="pinnedTable">
-      <thead>
-        <tr>
-          <th width="60">Name</th>
-          <th>Value</th>
-          <th width="120">Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <div class="cookie-section">
+      <h3>
+        Current Cookies
+        <span class="badge" id="cookieCount">0</span>
+        <button id="deleteCurrentCookies" class="btn-danger">Delete Current Cookies</button>
+      </h3>
+      <table id="cookieTable">
+        <thead>
+          <tr>
+            <th width="60">Name</th>
+            <th>Value</th>
+            <th width="118">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-  <script src="popup.js"></script>
-  <script src="aurora.js"></script>
+    <div class="pinned-section">
+      <h3>
+        Pinned Cookies
+        <span class="badge" id="pinnedCount">0</span>
+        <button id="applyToCurrent" class="btn-success">Apply to Current Page</button>
+      </h3>
+      <table id="pinnedTable">
+        <thead>
+          <tr>
+            <th width="60">Name</th>
+            <th>Value</th>
+            <th width="118">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  <!-- If `md5.min.js` is not used in the other scripts, remove this line -->
+  <!-- <script src="md5.min.js"></script> -->
+  <script src="popup.js" defer></script>
+  <script src="aurora.js" defer></script>
+  <script src="weather.js" defer></script>
 </body>
 </html>

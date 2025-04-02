@@ -1,0 +1,16 @@
+{
+  "name": "cookie-manager-with-daily-quote",
+  "version": "1.0.0",
+  "description": "Cookie Manager with Daily Quote is a powerful browser extension designed to help users effortlessly manage and manipulate website cookies.",
+  "main": "popup.js",
+  "scripts": {
+    "build": "./scripts/bump_version.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/mdsfe/cookie-manager.git"
+  },
+  "keywords": ["cookie", "manager", "browser", "extension"],
+  "author": "mdsfe",
+  "license": "ISC"
+}

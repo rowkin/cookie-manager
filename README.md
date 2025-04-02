@@ -1,7 +1,12 @@
-# Cookie Manager Chrome Extension
+# Cookie Manager with Daily Quote
 
-Cookie Manager 是企平FE内部封装的 Chrome 浏览器扩展，用于管理和操作网站 Cookie。它提供了直观的用户界面和全面的 Cookie 管理功能。
+Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助用户轻松管理和操作网站 Cookie。它不仅提供了直观的用户界面，还集成了每日一句励志名言，为用户提供激励和动力。无论你是需要管理 Cookie 还是寻找每日的灵感，这个扩展都能满足你的需求。
 
+## 安装说明 
+1.  在 Chrome 浏览器中，访问 `chrome://extensions/`。
+2. 应用商店搜索“Cookie Manager with Daily Quote”
+3. 点击“添加至 Chrome”
+4. 等待安装完成，安装完成后，点击右上角的扩展图标即可使用。
 
 ## 发布信息
 
@@ -111,4 +116,4 @@ Cookie Manager 重视用户隐私，我们：
 
 ## 版权信息
 
-© 2025 EPFE All Rights Reserved.
+© 2025 MDSFE All Rights Reserved.
