@@ -41,7 +41,7 @@ body {
 
 .cookie-manager-wrapper button {
   margin: 5px;
-  padding: 10px;
+  padding: 8px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -141,7 +141,7 @@ body {
 
 .cookie-manager-wrapper .cookie-actions {
   display: flex;
-  gap: 20px;
+  gap: 18px;
 }
 
 .cookie-manager-wrapper .cookie-group {
@@ -186,7 +186,7 @@ body {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 8px 6px;
   color: white;
   font-size: 12px;
   z-index: 1000;

@@ -1,0 +1,83 @@
+{
+  "extName": {
+    "message": "Cookie 管理器与每日语录",
+    "description": "扩展名称"
+  },
+  "extDescription": {
+    "message": "一个强大的浏览器扩展，帮助用户轻松管理和操作网站 Cookie。",
+    "description": "扩展描述"
+  },
+  "loadingQuote": {
+    "message": "正在加载名言...",
+    "description": "每日名言加载提示"
+  },
+  "searchCookie": {
+    "message": "搜索 cookies...",
+    "description": "Cookie 搜索输入框占位文本"
+  },
+  "getCookies": {
+    "message": "获取 Cookies",
+    "description": "获取 cookies 按钮文本"
+  },
+  "addCookie": {
+    "message": "添加 Cookie",
+    "description": "添加 Cookie 按钮文本"
+  },
+  "editCookie": {
+    "message": "编辑 Cookie",
+    "description": "编辑 Cookie 按钮文本"
+  },
+  "deleteCookie": {
+    "message": "删除 Cookie",
+    "description": "删除 Cookie 按钮文本"
+  },
+  "importCookies": {
+    "message": "导入 Cookies",
+    "description": "导入 cookies 按钮文本"
+  },
+  "exportCookies": {
+    "message": "导出 Cookies",
+    "description": "导出 cookies 按钮文本"
+  },
+  "deleteAllCookies": {
+    "message": "删除所有 Cookies",
+    "description": "删除所有 cookies 按钮文本"
+  },
+  "pinAll": {
+    "message": "固定全部",
+    "description": "固定所有 cookies 按钮文本"
+  },
+  "unpinAll": {
+    "message": "取消全部固定",
+    "description": "取消固定所有 cookies 按钮文本"
+  },
+  "refreshPage": {
+    "message": "刷新页面",
+    "description": "刷新页面按钮文本"
+  },
+  "currentCookies": {
+    "message": "当前页 Cookies",
+    "description": "当前 cookies 区域标题"
+  },
+  "deleteCurrentCookies": {
+    "message": "删除当前 Cookies",
+    "description": "删除当前 cookies 按钮文本"
+  },
+  "pinnedCookies": {
+    "message": "已固定 Cookies",
+    "description": "已固定 cookies 区域标题"
+  },
+  "applyToCurrent": {
+    "message": "应用到当前页面",
+    "description": "将已固定的 cookies 应用到当前页面按钮文本"
+  },
+  "dailyQuote": {
+    "message": "每日语录",
+    "description": "每日语录标题"
+  },
+  "settings": {
+    "message": "设置",
+    "description": "设置菜单项"
+  }
+}
+ 

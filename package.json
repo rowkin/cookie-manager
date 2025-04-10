@@ -1,6 +1,6 @@
 {
   "name": "cookie-manager-with-daily-quote",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Cookie Manager with Daily Quote is a powerful browser extension designed to help users effortlessly manage and manipulate website cookies.",
   "main": "popup.js",
   "scripts": {

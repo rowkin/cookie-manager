@@ -1,0 +1,82 @@
+{
+  "extName": {
+    "message": "Cookie Manager with Daily Quotes",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "A powerful browser extension that helps users easily manage and manipulate website cookies.",
+    "description": "Extension description"
+  },
+  "loadingQuote": {
+    "message": "Loading quote...",
+    "description": "Loading message for daily quote"
+  },
+  "searchCookie": {
+    "message": "Search cookies...",
+    "description": "Cookie search input placeholder"
+  },
+  "getCookies": {
+    "message": "Get Cookies",
+    "description": "Get cookies button text"
+  },
+  "addCookie": {
+    "message": "Add Cookie",
+    "description": "Add cookie button text"
+  },
+  "editCookie": {
+    "message": "Edit Cookie",
+    "description": "Edit cookie button text"
+  },
+  "deleteCookie": {
+    "message": "Delete Cookie",
+    "description": "Delete cookie button text"
+  },
+  "importCookies": {
+    "message": "Import Cookies",
+    "description": "Import cookies button text"
+  },
+  "exportCookies": {
+    "message": "Export Cookies",
+    "description": "Export cookies button text"
+  },
+  "deleteAllCookies": {
+    "message": "Delete All Cookies",
+    "description": "Delete all cookies button text"
+  },
+  "pinAll": {
+    "message": "Pin All",
+    "description": "Pin all cookies button text"
+  },
+  "unpinAll": {
+    "message": "Unpin All",
+    "description": "Unpin all cookies button text"
+  },
+  "refreshPage": {
+    "message": "Refresh Page",
+    "description": "Refresh page button text"
+  },
+  "currentCookies": {
+    "message": "Current Page Cookies",
+    "description": "Current cookies section title"
+  },
+  "deleteCurrentCookies": {
+    "message": "Delete Current Cookies",
+    "description": "Delete current cookies button text"
+  },
+  "pinnedCookies": {
+    "message": "Pinned Cookies",
+    "description": "Pinned cookies section title"
+  },
+  "applyToCurrent": {
+    "message": "Apply to Current Page",
+    "description": "Apply pinned cookies to current page button text"
+  },
+  "dailyQuote": {
+    "message": "Daily Quote",
+    "description": "Daily quote section title"
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Settings menu item"
+  }
+}

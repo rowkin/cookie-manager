@@ -1,0 +1,82 @@
+{
+  "extName": {
+    "message": "Cookie マネージャーと日めくり名言",
+    "description": "拡張機能名"
+  },
+  "extDescription": {
+    "message": "ウェブサイトのCookieを簡単に管理・操作できる強力なブラウザ拡張機能です。",
+    "description": "拡張機能の説明"
+  },
+  "loadingQuote": {
+    "message": "名言を読み込み中...",
+    "description": "名言読み込み中のメッセージ"
+  },
+  "searchCookie": {
+    "message": "Cookieを検索...",
+    "description": "Cookie検索入力欄のプレースホルダー"
+  },
+  "getCookies": {
+    "message": "Cookie を取得",
+    "description": "Cookie取得ボタンのテキスト"
+  },
+  "addCookie": {
+    "message": "Cookie を追加",
+    "description": "Cookie追加ボタンのテキスト"
+  },
+  "editCookie": {
+    "message": "Cookie を編集",
+    "description": "Cookie編集ボタンのテキスト"
+  },
+  "deleteCookie": {
+    "message": "Cookie を削除",
+    "description": "Cookie削除ボタンのテキスト"
+  },
+  "importCookies": {
+    "message": "Cookie をインポート",
+    "description": "Cookieインポートボタンのテキスト"
+  },
+  "exportCookies": {
+    "message": "Cookie をエクスポート",
+    "description": "Cookieエクスポートボタンのテキスト"
+  },
+  "deleteAllCookies": {
+    "message": "すべての Cookie を削除",
+    "description": "すべてのCookie削除ボタンのテキスト"
+  },
+  "pinAll": {
+    "message": "すべて固定",
+    "description": "すべてのCookieを固定するボタンのテキスト"
+  },
+  "unpinAll": {
+    "message": "すべての固定を解除",
+    "description": "すべてのCookie固定を解除するボタンのテキスト"
+  },
+  "refreshPage": {
+    "message": "ページを更新",
+    "description": "ページ更新ボタンのテキスト"
+  },
+  "currentCookies": {
+    "message": "現在のページの Cookie",
+    "description": "現在のCookieセクションのタイトル"
+  },
+  "deleteCurrentCookies": {
+    "message": "現在の Cookie を削除",
+    "description": "現在のCookie削除ボタンのテキスト"
+  },
+  "pinnedCookies": {
+    "message": "固定された Cookie",
+    "description": "固定されたCookieセクションのタイトル"
+  },
+  "applyToCurrent": {
+    "message": "現在のページに適用",
+    "description": "固定されたCookieを現在のページに適用するボタンのテキスト"
+  },
+  "dailyQuote": {
+    "message": "今日の名言",
+    "description": "今日の名言セクションのタイトル"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "設定メニュー項目"
+  }
+}

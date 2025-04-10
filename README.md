@@ -1,119 +1,128 @@
 # Cookie Manager with Daily Quote
 
-Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助用户轻松管理和操作网站 Cookie。它不仅提供了直观的用户界面，还集成了每日一句励志名言，为用户提供激励和动力。无论你是需要管理 Cookie 还是寻找每日的灵感，这个扩展都能满足你的需求。
+Cookie Manager with Daily Quote is a powerful browser extension designed to help users easily manage and manipulate website cookies. It features an intuitive user interface and integrates daily inspirational quotes to provide motivation and encouragement. Whether you need to manage cookies or seek daily inspiration, this extension meets your needs.
 
-## 安装说明 
-1.  在 Chrome 浏览器中，访问 `chrome://extensions/`。
-2. 应用商店搜索“Cookie Manager with Daily Quote”
-3. 点击“添加至 Chrome”
-4. 等待安装完成，安装完成后，点击右上角的扩展图标即可使用。
+## Installation Guide
+1. Visit `chrome://extensions/` in Chrome browser
+2. Search for "Cookie Manager with Daily Quote" in the Web Store
+3. Click "Add to Chrome"
+4. Wait for installation to complete, then click the extension icon in the top right corner to start using
 
-## 发布信息
+## Release Information
 
-- 版本: 1.0.0
-- 最低支持的 Chrome 版本: 88+
-- 权限要求: 
+- Version: 1.1.0
+- Minimum Chrome Version Required: 88+
+- Required Permissions:
   - cookies
   - tabs
   - storage
   - activeTab
-- 发布状态: 仅供企平FE内部使用
+- Release Status: Private Use Only
+- Distribution: Restricted Distribution
+- Usage Rights: All Rights Reserved
 
-## 功能特点
+## Features
 
-### 基础功能
-- 🔍 实时搜索和过滤 Cookie
-- ➕ 添加新的 Cookie
-- 🗑️ 删除单个或所有 Cookie
-- 📝 编辑现有 Cookie 值
-- 📊 显示当前页面 Cookie 总数
+### Basic Functions
+- 🔍 Real-time cookie search and filtering
+- ➕ Add new cookies
+- 🗑️ Delete individual or all cookies
+- 📝 Edit existing cookie values
+- 📊 Display total cookies count for current page
+- 🔄 One-click page refresh
 
-### 高级功能
-- 📌 固定(Pin)重要 Cookie
-  - 自动应用到匹配的域名
-  - 支持批量固定/取消固定
-  - 显示固定 Cookie 数量
-- 💾 导入/导出 Cookie
-  - 支持 JSON 格式导出
-  - 批量导入 Cookie
-- 📋 复制 Cookie
-  - 简单格式：name=value 形式
-  - 详细 JSON 格式
-- 🔄 自动同步
-  - 标签页切换时自动应用固定的 Cookie
-  - 页面刷新时保持 Cookie 状态
+### Advanced Features
+- 📌 Pin Important Cookies
+  - Auto-apply to matching domains
+  - Support batch pinning/unpinning
+  - Display pinned cookies count
+  - One-click apply pinned cookies to current page
+- 💾 Import/Export Cookies
+  - Support JSON format export
+  - Batch cookie import
+  - Automatic format validation on import
+- 📋 Cookie Operations
+  - Batch delete current page cookies
+  - Quick delete all cookies
+  - Pinned cookies group management
+- 🔄 Smart Synchronization
+  - Auto-apply pinned cookies on tab switch
+  - Maintain cookie state on page refresh
+  - Support manual sync trigger
 
-### 界面特性
-- 🎨 优雅的渐变背景设计
-- 💡 每日双语激励语录
-  - 支持多个备选 API 源
-  - 自动英文翻译
-- 📱 响应式设计
-- ✨ 美观的动画效果
-  - 操作反馈动画
-  - 平滑过渡效果
-- 🔔 操作状态通知
+### Interface Features
+- 🎨 Elegant gradient background design
+- 💡 Daily Bilingual Quotes
+  - Multi-language support (Chinese, English, Japanese)
+  - Real-time quote loading
+  - Elegant loading state display
+- 📱 Responsive Design
+  - Adaptive popup size
+  - Optimized mobile experience
+- ✨ Interactive Experience
+  - Operation feedback animations
+  - Smooth transition effects
+  - Intuitive operation hints
+- 🔔 Status Management
+  - Real-time cookie operation status
+  - Grouped display of current page and pinned cookies
 
-## 使用说明
+## User Guide
+### Basic Operations
 
-### 基本操作
+1. **View and Search Cookies**
+   - Click "Get Cookies" to retrieve all cookies from current site
+   - Use top search bar to filter cookies in real-time
+   - View total cookie count and detailed information
 
-1. **查看和搜索 Cookie**
-   - 点击 "Get Cookies" 获取当前网站的所有 Cookie
-   - 使用顶部搜索框实时过滤 Cookie
-   - 可查看 Cookie 总数和详细信息
+2. **Cookie Management**
+   - Add: Click "Add Cookie" button
+   - Edit: Click "Edit" button on each row
+   - Delete: Use "Delete" button (single) or "Delete All" (bulk)
+   - Refresh: Use "Refresh Page" button to update current page
 
-2. **Cookie 管理**
-   - 添加：点击 "Add Cookie" 按钮
-   - 编辑：点击每行的 "Edit" 按钮
-   - 删除：使用 "Delete" 按钮（单个）或 "Delete All" （全部）
+3. **Pin Cookies**
+   - Use "Pin All" to batch pin all cookies from current page
+   - "Unpin All" to quickly remove all pins
+   - "Apply to Current Page" to apply pinned cookies to current page
 
-3. **固定 Cookie**
-   - 点击 "Pin" 按钮固定重要的 Cookie
-   - 使用 "Pin All" 批量固定当前页面所有 Cookie
-   - 固定的 Cookie 会自动应用到匹配的域名
+### Advanced Features
+1. **Import/Export**
+   - Export: Save current cookies as JSON file
+   - Import: Batch import cookies from JSON file
+   - Support format validation and error notifications
 
-4. **复制 Cookie**
-   - 简单格式：name=value 形式
-   - 详细格式：完整的 JSON 格式（包含所有属性）
+2. **Group Management**
+   - Current page cookies in separate group
+   - Pinned cookies shown separately
+   - Support batch operations within groups
 
-### 高级功能
+3. **Multi-language Support**
+   - Support for Chinese, English, and Japanese
+   - Interface language follows system settings
+   - Multi-language daily quotes display
 
-1. **导入/导出**
-   - 导出：将当前 Cookie 导出为 JSON 文件
-   - 导入：从 JSON 文件批量导入 Cookie
+## Important Notes
 
-2. **自动同步**
-   - 切换标签页时自动应用固定的 Cookie
-   - 页面刷新后自动保持 Cookie 状态
-   - 支持失败重试机制
+1. Exercise caution when modifying cookies to avoid affecting website functionality
+2. Verify important data before exporting cookies
+3. Pinned cookies feature affects all pages under related domains
+4. Some websites may restrict cookie operations, making certain features unavailable
 
-3. **调试功能**
-   - 详细的操作状态反馈
-   - 操作结果实时通知
-   - 错误信息展示
+## Technical Support
 
-## 注意事项
+If you encounter any issues or have suggestions, please contact us through:
 
-1. 修改 Cookie 时请谨慎操作，以免影响网站功能
-2. 建议在导出 Cookie 前先确认重要数据
-3. 固定 Cookie 功能会影响相关域名下的所有页面
-4. 某些网站可能限制 Cookie 操作，此时部分功能可能不可用
+- Email: [jinxianshen58@gmail.com]
 
-## 技术支持
+## Privacy Statement
 
-如果您在使用过程中遇到任何问题，或有任何建议，请通过以下方式联系我们：
+Cookie Manager values user privacy. We:
+- Do not collect any personal information
+- Do not upload or store your cookie data
+- Process all operations locally
+- Store pinned cookies only in browser local storage
 
-- 发送邮件到：[jinxianshen58@gmail.com]
-
-## 隐私声明
-
-Cookie Manager 重视用户隐私，我们：
-- 不会收集任何个人信息
-- 不会上传或存储您的 Cookie 数据
-- 所有操作均在本地完成
-- 固定的 Cookie 仅保存在浏览器本地存储中
-
-## 版权信息
+## Copyright
 
 © 2025 MDSFE All Rights Reserved.

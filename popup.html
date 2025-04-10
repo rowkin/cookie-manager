@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookie Manager with Daily Quote</title>
+  <title>__MSG_extName__</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="cookie-manager-wrapper">
     <!-- Add Daily Quote Component -->
     <div class="quote-section" id="dailyQuote">
-      Loading quote...
+      __MSG_loadingQuote__
     </div>
     <!-- Canvas element for rendering aurora effect -->
     <canvas id="auroraCanvas"></canvas>
     <div class="cookie-manager-header">
-      <h2>Cookie Manager</h2>
+      <h2>__MSG_extName__</h2>
       <!-- Add weather widget -->
       <div class="weather-widget weather-loading">
         <i class="weather-icon wi wi-day-sunny"></i>
@@ -25,32 +25,32 @@
         </div>
       </div>
     </div>
-    <input type="text" id="searchCookie" placeholder="Search Cookies...">
+    <input type="text" id="searchCookie" placeholder="__MSG_searchCookie__">
     
     <div class="cookie-actions">
       <div class="cookie-group">
-        <button id="getCookies" class="btn-primary">Get Cookies</button>
-        <button id="addCookie" class="btn-primary">Add Cookie</button>
-        <button id="importCookies" class="btn-primary">Import Cookies</button>
+        <button id="getCookies" class="btn-primary">__MSG_getCookies__</button>
+        <button id="addCookie" class="btn-primary">__MSG_addCookie__</button>
+        <button id="importCookies" class="btn-primary">__MSG_importCookies__</button>
       </div>
       <hr />
       <div class="cookie-group">
-        <button id="exportCookies" class="btn-primary">Export Cookies</button>
-        <button id="deleteAllCookies" class="btn-danger">Delete All Cookies</button>
+        <button id="exportCookies" class="btn-primary">__MSG_exportCookies__</button>
+        <button id="deleteAllCookies" class="btn-danger">__MSG_deleteAllCookies__</button>
       </div>
       <hr />
       <div class="cookie-group pin-group">
-        <button id="pinAllCookies" class="btn-success">Pin All</button>
-        <button id="unpinAllCookies" class="btn-danger">Unpin All</button>
-        <button id="refreshPage" class="btn-secondary">Refresh Page</button>
+        <button id="pinAllCookies" class="btn-success">__MSG_pinAll__</button>
+        <button id="unpinAllCookies" class="btn-danger">__MSG_unpinAll__</button>
+        <button id="refreshPage" class="btn-secondary">__MSG_refreshPage__</button>
       </div>
     </div>
 
     <div class="cookie-section">
       <h3>
-        Current Cookies
+        __MSG_currentCookies__
         <span class="badge" id="cookieCount">0</span>
-        <button id="deleteCurrentCookies" class="btn-danger">Delete Current Cookies</button>
+        <button id="deleteCurrentCookies" class="btn-danger">__MSG_deleteCurrentCookies__</button>
       </h3>
       <table id="cookieTable">
         <thead>
@@ -66,9 +66,9 @@
 
     <div class="pinned-section">
       <h3>
-        Pinned Cookies
+        __MSG_pinnedCookies__
         <span class="badge" id="pinnedCount">0</span>
-        <button id="applyToCurrent" class="btn-success">Apply to Current Page</button>
+        <button id="applyToCurrent" class="btn-success">__MSG_applyToCurrent__</button>
       </h3>
       <table id="pinnedTable">
         <thead>

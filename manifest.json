@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Cookie Manager with Daily Quote",
-  "version": "1.0.0",
-  "description": "Cookie Manager with Daily Quote is a powerful browser extension designed to help users effortlessly manage and manipulate website cookies.",
+  "name": "__MSG_extName__",
+  "version": "1.1.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "permissions": [
     "cookies",
     "tabs",

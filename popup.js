@@ -1,3 +1,12 @@
+// 定义一个日志函数，用于调试信息输出
+const DEBUG = true;
+
+function log(...args) {
+  if (DEBUG) {
+    console.log(...args);
+  }
+}
+
 // 定义多个翻译API源
 const translationAPIs = [
   {
@@ -3791,13 +3800,115 @@ function initializeEventListeners() {
   }
 }
 
-// 在页面加载时初始化计数
-document.addEventListener('DOMContentLoaded', async() => {
-  // 立即显示基础UI
-  // renderBasicUI();
+// 将 replaceTextNodes 函数移到全局作用域
+function replaceTextNodes(node) {
+  if (node.nodeType === Node.TEXT_NODE) {
+    // 检查文本节点是否包含需要替换的内容
+    if (node.textContent.includes('__MSG_')) {
+      const matches = node.textContent.match(/__MSG_(\w+)__/);
+      if (matches && matches[1]) {
+        const messageName = matches[1];
+        const translation = chrome.i18n.getMessage(messageName);
+        if (translation) {
+          node.textContent = node.textContent.replace(
+            /__MSG_\w+__/,
+            translation
+          );
+        }
+      }
+    }
+  } else if (node.nodeType === Node.ELEMENT_NODE) {
+    // 处理属性
+    for (let attr of node.attributes) {
+      if (attr.value && attr.value.includes('__MSG_')) {
+        const matches = attr.value.match(/__MSG_(\w+)__/);
+        if (matches && matches[1]) {
+          const messageName = matches[1];
+          const translation = chrome.i18n.getMessage(messageName);
+          if (translation) {
+            attr.value = attr.value.replace(/__MSG_\w+__/, translation);
+          }
+        }
+      }
+    }
+
+    // 特殊处理 placeholder 属性
+    if (node.hasAttribute('placeholder')) {
+      const placeholderValue = node.getAttribute('placeholder');
+      if (placeholderValue.includes('__MSG_')) {
+        const matches = placeholderValue.match(/__MSG_(\w+)__/);
+        if (matches && matches[1]) {
+          const translation = chrome.i18n.getMessage(matches[1]);
+          if (translation) {
+            node.setAttribute('placeholder', translation);
+          }
+        }
+      }
+    }
+
+    // 递归处理子节点
+    for (let child of node.childNodes) {
+      replaceTextNodes(child);
+    }
+  }
+}
+
+function replaceI18nMessages() {
+  // 添加调试日志
+  console.log('Starting i18n replacement');
+  
+  // 替换标题
+  document.title = chrome.i18n.getMessage('extName');
+  console.log('Title replaced:', document.title);
+
+  // 从文档根节点开始替换
+  replaceTextNodes(document.body);
+
+  // 单独处理搜索输入框
+  const searchInput = document.getElementById('searchCookie');
+  if (searchInput) {
+    const placeholder = chrome.i18n.getMessage('searchPlaceholder');
+    if (placeholder) {
+      searchInput.placeholder = placeholder;
+    }
+  }
+}
+
+// 添加 MutationObserver 来处理动态添加的内容
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    mutation.addedNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        replaceTextNodes(node);
+      }
+    });
+  });
+});
+
+// 在页面加载时初始化
+document.addEventListener('DOMContentLoaded', async () => {
+  // 启动观察器
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  console.log('Current locale:', chrome.i18n.getUILanguage());
+  console.log('Test getMessage:', chrome.i18n.getMessage('extName'));
+
+  // 检查 messages.json 是否正确加载
+  const testMessages = ['extName', 'searchPlaceholder'];
+  testMessages.forEach(msgKey => {
+    const translation = chrome.i18n.getMessage(msgKey);
+    console.log(`Message ${msgKey}:`, translation);
+    if (!translation) {
+      console.warn(`Missing translation for: ${msgKey}`);
+    }
+  });
   
   setTimeout(async () => {
     try {
+      replaceI18nMessages();
       await initializeEventListeners();
       await fetchDailyQuote();
       await loadPinnedCookies();

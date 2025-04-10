@@ -96,6 +96,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   
   // 记录访问
   await updateStats('totalVisits');
+
+  // 设置默认语言
+  chrome.storage.local.set({ language: navigator.language.split('-')[0] || 'en' });
 });
 
 // 监听popup打开事件
@@ -125,6 +128,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ cookies: cookies });
     });
     return true;
+  }
+
+  if (message.action === 'changeLanguage') {
+    chrome.storage.local.set({ language: message.language }, () => {
+      // 重新加载扩展
+      chrome.runtime.reload();
+});
   }
 });
 
