@@ -33,17 +33,71 @@ update_manifest_version() {
     echo "Updated manifest.json version to $version"
 }
 
+# 函数：创建发布包
+create_release_package() {
+    local version="$1"
+    local dist_dir="$ROOT_DIR/dist"
+    local release_dir="$dist_dir/cookie-manager-v$version"
+    local zip_file="$dist_dir/cookie-manager-v$version.zip"
+    
+    echo "Creating release package..."
+    
+    # 创建发布目录
+    rm -rf "$dist_dir"
+    mkdir -p "$release_dir"
+    
+    # 复制必需文件
+    echo "Copying files..."
+    cp "$ROOT_DIR/manifest.json" "$release_dir/"
+    cp "$ROOT_DIR/popup.html" "$release_dir/"
+    cp "$ROOT_DIR/popup.js" "$release_dir/"
+    cp "$ROOT_DIR/style.css" "$release_dir/"
+    cp "$ROOT_DIR/aurora.js" "$release_dir/"
+    cp "$ROOT_DIR/weather.js" "$release_dir/"
+    cp "$ROOT_DIR/background.js" "$release_dir/"
+    
+    # 复制目录
+    if [ -d "$ROOT_DIR/_locales" ]; then
+        cp -r "$ROOT_DIR/_locales" "$release_dir/"
+    fi
+    if [ -d "$ROOT_DIR/images" ]; then
+        cp -r "$ROOT_DIR/images" "$release_dir/"
+    fi
+    if [ -d "$ROOT_DIR/icons" ]; then
+        cp -r "$ROOT_DIR/icons" "$release_dir/"
+    fi
+    
+    # 创建 zip 文件
+    echo "Creating zip archive..."
+    cd "$dist_dir"
+    zip -r "$zip_file" "cookie-manager-v$version"
+    
+    echo "Release package created: $zip_file"
+    
+    # 显示包大小
+    local size=$(du -h "$zip_file" | cut -f1)
+    echo "Package size: $size"
+    
+    # 计算 MD5
+    if command -v md5sum >/dev/null 2>&1; then
+        echo "MD5: $(md5sum "$zip_file" | cut -d' ' -f1)"
+    elif command -v md5 >/dev/null 2>&1; then
+        echo "MD5: $(md5 -q "$zip_file")"
+    fi
+}
+
 # 函数：检查命令是否存在
 check_command() {
     if ! command -v "$1" >/dev/null 2>&1; then
         echo "Error: $1 is required but not installed. Please install $1 first."
-    exit 1
-fi
+        exit 1
+    fi
 }
 
 # 检查必需的命令
 check_command jq
 check_command node
+check_command zip
 
 # 检查工作目录是否干净
 if [ -n "$(git status --porcelain)" ]; then
@@ -78,6 +132,9 @@ echo "New version: $new_version"
 # 更新manifest.json中的版本号
 update_manifest_version "$new_version"
 
+# 创建发布包
+create_release_package "$new_version"
+
 # Git 操作
 echo "Performing Git operations..."
 
@@ -104,5 +161,11 @@ main_branch="$(git branch --show-current)"
 echo "Syncing main branch ($main_branch)..."
 git push origin "$main_branch"
 
-echo "=== Version bump completed successfully ==="
+echo "=== Version bump and release package creation completed successfully ==="
 echo "Version updated to $new_version in both package.json and manifest.json"
+echo "Release package created in dist/cookie-manager-v$new_version.zip"
+echo "Tag v$new_version created and pushed to origin"
+echo "Main branch ($main_branch) synced with origin"
+
+# 结束脚本
+echo "=== Script completed ==="

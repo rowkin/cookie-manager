@@ -52,3 +52,7 @@ coverage/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# 其他
+manifest.json.backup
+*.bak

@@ -1660,13 +1660,14 @@ async function pinCookie(cookie, isAlloweShowNotification = true) {
     console.log('Cookie pinned:', cookie.name);
     
     // 显示成功提示
+    console.log('Cookie pinned isAlloweShowNotification:', isAlloweShowNotification);
     if (isAlloweShowNotification) {
       showNotification(`Cookie "${cookie.name}" has been pinned`, 'success'); 
     }
 
     // 立即应用这个cookie
     try {
-      await applyCookie(cookieToPin);
+      await applyCookie(cookieToPin, isAlloweShowNotification);
     } catch (error) {
       console.error('Failed to apply pinned cookie:', error);
     }
@@ -2164,7 +2165,7 @@ async function applyPinnedCookies() {
   
   for (const cookie of pinnedCookies.values()) {
     try {
-      await applyCookie(cookie);
+      await applyCookie(cookie, false);
     } catch (error) {
       console.error(`Failed to apply pinned cookie ${cookie.name}:`, error);
     }
@@ -2180,6 +2181,7 @@ document.getElementById("pinAllCookies").addEventListener("click", async () => {
   for (const cookie of cookies) {
     await pinCookie(cookie, false);
   }
+  console.log(cookies.length, '---cookies.length ')
   if (cookies.length > 0) {
     showNotification('All cookies pinned successfully!', 'success');  
   }
@@ -2632,89 +2634,123 @@ document.getElementById("applyToCurrent").addEventListener("click", forceApplyTo
     throw error;
   }
 } */
-  async function applyCookie(cookie, isAlloweShowNotification = true) {
+async function applyCookie(cookie, isAlloweShowNotification = true) {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) return;
+
+    const currentUrl = new URL(tab.url);
+    
+    // 检查是否在无痕模式下
+    if (tab.incognito) {
+      const hasPermission = await chrome.extension.isAllowedIncognitoAccess();
+      if (!hasPermission) {
+        throw new Error('Incognito mode access not allowed. Please enable it in extension settings.');
+      }
+    }
+
+    // 处理 domain
+    let cookieDomain = cookie.domain;
+    if (cookieDomain) {
+      // 如果 cookie.domain 以点开头，移除开头的点
+      cookieDomain = cookieDomain.startsWith('.') ? cookieDomain.slice(1) : cookieDomain;
+    } else {
+      // 如果没有指定 domain，使用当前页面的域名
+      cookieDomain = currentUrl.hostname;
+      }
+
+    // 验证域名兼容性
+    if (!currentUrl.hostname.endsWith(cookieDomain) && 
+        !cookieDomain.endsWith(currentUrl.hostname)) {
+      throw new Error(`Cannot set cookie for domain ${cookieDomain} on ${currentUrl.hostname}`);
+    }
+    
+    // 构建 cookie URL
+    const protocol = cookie.secure ? 'https:' : currentUrl.protocol;
+    const cookieUrl = `${protocol}//${cookieDomain}${cookie.path || '/'}`;
+
+    // 先尝试删除现有的 cookie
     try {
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab) return;
-  
-      const url = new URL(tab.url);
-      
-      // 检查是否在无痕模式下
-      if (tab.incognito) {
-        // 尝试获取无痕模式的权限状态
-        const hasPermission = await chrome.extension.isAllowedIncognitoAccess();
-        if (!hasPermission) {
-          throw new Error('Incognito mode access not allowed. Please enable it in extension settings.');
-        }
-      }
-  
-      let domain = cookie.domain;
-      if (!domain) {
-        domain = url.hostname;
-      } else if (domain.startsWith('.')) {
-        domain = domain.substring(1);
-      }
-  
-      const cookieUrl = `${url.protocol}//${domain}${cookie.path || '/'}`;
-  
-      // 删除现有 cookie 前先检查权限
-      try {
-        await chrome.cookies.remove({
-          url: cookieUrl,
-          name: cookie.name
-        });
-      } catch (error) {
-        console.log('No existing cookie to remove or permission denied');
-      }
-  
-      // 设置新的 cookie，添加无痕模式特殊处理
-      const cookieData = {
-        url: cookieUrl,
-        name: cookie.name,
-        value: cookie.value,
-        domain: domain,
-        path: cookie.path || "/",
-        secure: cookie.secure || url.protocol === 'https:',
-        httpOnly: cookie.httpOnly || false,
-        sameSite: cookie.sameSite || "Lax",
-        expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
-        storeId: tab.incognito ? "1" : "0" // 添加 storeId 区分无痕模式
-      };
-  
-      const result = await chrome.cookies.set(cookieData);
-      
-      if (!result) {
-        throw new Error('Failed to set cookie');
-      }
-  
-      // 验证 cookie 是否设置成功
-      const verification = await chrome.cookies.get({
+      await chrome.cookies.remove({
         url: cookieUrl,
         name: cookie.name,
         storeId: tab.incognito ? "1" : "0"
       });
-  
-      if (!verification || verification.value !== cookie.value) {
-        throw new Error('Cookie verification failed');
-      }
-  
-      return true;
-  
     } catch (error) {
-      console.error(`Failed to set cookie ${cookie.name}:`, error);
-      
-      // 提供更详细的错误信息
-      if (error.message.includes('incognito')) {
-        showNotification('Please enable incognito mode access in extension settings:\n1. Go to chrome://extensions\n2. Find this extension\n3. Enable "Allow in incognito"', 'warning');
-      } else {
-        if (isAlloweShowNotification) {
-          showNotification(`Failed to set cookie: ${error.message}`, 'error');          
-        }
-      }
-      
-      throw error;
-    }
+      console.log('No existing cookie to remove or removal failed:', error);
   }
+
+    // 准备 cookie 数据
+    const cookieData = {
+      url: cookieUrl,
+      name: cookie.name,
+      value: cookie.value,
+      path: cookie.path || "/",
+      secure: cookie.secure || protocol === 'https:',
+      httpOnly: cookie.httpOnly || false,
+      sameSite: cookie.sameSite || "Lax",
+      storeId: tab.incognito ? "1" : "0"
+    };
+
+    // 如果不是 session cookie，添加过期时间
+    if (cookie.expirationDate) {
+      cookieData.expirationDate = cookie.expirationDate;
+}
+
+    // 只有在非 hostOnly 的情况下才设置 domain
+    if (!cookie.hostOnly && cookieDomain !== currentUrl.hostname) {
+      cookieData.domain = cookieDomain;
+    }
+
+    console.log('Setting cookie with data:', cookieData);
+
+    // 设置 cookie
+    const result = await chrome.cookies.set(cookieData);
+    
+    if (!result) {
+      throw new Error('Failed to set cookie');
+    }
+
+    // 验证 cookie 是否设置成功
+    const verification = await chrome.cookies.get({
+      url: cookieUrl,
+      name: cookie.name,
+      storeId: tab.incognito ? "1" : "0"
+    });
+
+    if (!verification) {
+      throw new Error('Cookie verification failed - cookie not found after setting');
+    }
+
+    if (verification.value !== cookie.value) {
+      throw new Error('Cookie verification failed - value mismatch');
+    }
+
+    if (isAlloweShowNotification) {
+      showNotification(`Successfully applied cookie: ${cookie.name}`, 'success');
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error(`Failed to set cookie ${cookie.name}:`, error);
+    
+    // 提供更详细的错误信息
+    if (error.message.includes('incognito')) {
+      showNotification('Please enable incognito mode access in extension settings', 'warning', 5000);
+    } else if (isAlloweShowNotification) {
+      let errorMessage = error.message;
+      
+      // 添加更友好的错误提示
+      if (errorMessage.includes('Cannot set cookie')) {
+        errorMessage = 'Cannot set cookie for a different domain. The cookie domain must be a subdomain of the current page.';
+      }
+      showNotification(`Failed to set cookie: ${errorMessage}`, 'error');
+    }
+    
+    throw error;
+  }
+}
 
 // 添加CSS样式
 const style = document.createElement('style');
