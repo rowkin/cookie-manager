@@ -11,7 +11,7 @@
     "message": "名言を読み込み中...",
     "description": "名言読み込み中のメッセージ"
   },
-  "searchCookie": {
+  "searchPlaceholder": {
     "message": "Cookieを検索...",
     "description": "Cookie検索入力欄のプレースホルダー"
   },

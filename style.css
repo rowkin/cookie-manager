@@ -256,3 +256,73 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* 快速导航 */
+.cookie-manager-wrapper .quick-nav {
+  position: fixed;
+  left: 20px;
+  bottom: -20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.cookie-manager-wrapper .quick-nav button {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.cookie-manager-wrapper .quick-nav button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.cookie-manager-wrapper .quick-nav button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* 添加动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.cookie-manager-wrapper .quick-nav.show {
+  display: flex !important;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.cookie-manager-wrapper .quick-nav.hide {
+  animation: fadeOut 0.3s ease forwards;
+}

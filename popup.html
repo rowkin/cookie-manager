@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <input type="text" id="searchCookie" placeholder="__MSG_searchCookie__">
+    <input type="text" id="searchCookie" placeholder="__MSG_searchPlaceholder__">
     
     <div class="cookie-actions">
       <div class="cookie-group">
@@ -81,6 +81,21 @@
         <tbody></tbody>
       </table>
     </div>
+
+    <!-- Aggiungi pulsante di navigazione rapida -->
+    <div class="quick-nav" style="display: none;">
+      <button class="scroll-top" title="Scroll to top">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+        </svg>
+      </button>
+      <button class="scroll-bottom" title="Scroll to bottom">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+        </svg>
+      </button>
+    </div>
+  </div>  
   <!-- If `md5.min.js` is not used in the other scripts, remove this line -->
   <!-- <script src="md5.min.js"></script> -->
   <script src="popup.js" defer></script>

@@ -141,56 +141,15 @@ const Cache = {
   }
 };
 
-// 修改 fetchDailyQuote 函数，添加缓存功能
+/**
+ * 获取每日引用
+ */
 async function fetchDailyQuote() {
   try {
-    // 先检查缓存
-    const cacheKey = 'dailyQuote';
-    const cachedQuote = await Cache.get(cacheKey);
-    
-    if (cachedQuote) {
-      console.log('Using cached quote');
-      updateQuoteDisplay(cachedQuote);
-      return;
-    }
-
-    let quote = null;
-    let error = null;
-
-    // 依次尝试不同的API源
-    for (const source of apiSources) {
-      try {
-        const response = await fetch(source.url);
-        if (!response.ok) continue;
-        
-        const data = await response.json();
-        quote = source.transform(data);
-        break;
-      } catch (err) {
-        error = err;
-        continue;
-      }
-    }
-
-    if (!quote) {
-      throw new Error('All quote sources failed');
-    }
-
-    // 获取翻译
-    try {
-      const translation = await translateTextWithCache(quote.text);
-      quote.translation = translation;
-    } catch (translateError) {
-      console.error('Translation failed:', translateError);
-      quote.translation = '';
-    }
-
-    // 缓存结果
-    await Cache.set(cacheKey, quote);
-
-    // 显示结果
-    updateQuoteDisplay(quote);
-
+    const quote = await getQuoteFromCacheOrApi();
+    const translatedQuote = await translateQuote(quote);
+    await cacheQuote(translatedQuote);
+    updateQuoteDisplay(translatedQuote);
   } catch (error) {
     console.error('Quote fetch error:', error);
     // 显示默认引用
@@ -202,7 +161,87 @@ async function fetchDailyQuote() {
   }
 }
 
-// 添加带缓存的翻译函数
+/**
+ * 从缓存或API获取引用
+ * @returns 引用对象
+ */
+async function getQuoteFromCacheOrApi() {
+  const cacheKey = 'dailyQuote';
+  const cachedQuote = await Cache.get(cacheKey);
+
+  if (cachedQuote) {
+    console.log('Using cached quote');
+    return cachedQuote;
+  }
+
+  return await fetchQuoteFromApi();
+}
+
+/**
+ * 从API获取引用
+ * @returns 引用对象
+ * @throws 如果所有API源都失败，则抛出错误
+ */
+async function fetchQuoteFromApi() {
+  let quote = null;
+  let error = null;
+
+  for (const source of apiSources) {
+    try {
+      const response = await fetch(source.url);
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      quote = source.transform(data);
+      break;
+    } catch (err) {
+      error = err;
+      continue;
+    }
+  }
+
+  if (!quote) {
+    throw new Error('All quote sources failed');
+  }
+
+  return quote;
+}
+
+/**
+ * 翻译引用
+ * @param quote 引用对象
+ * @returns 翻译后的引用对象
+ */
+async function translateQuote(quote) {
+  try {
+    const translation = await translateTextWithCache(quote.text);
+    quote.translation = translation;
+  } catch (translateError) {
+    console.error('Translation failed:', translateError);
+    quote.translation = '';
+  }
+
+  return quote;
+}
+
+/**
+ * 缓存引用
+ * @param quote 引用对象
+ */
+async function cacheQuote(quote) {
+  const cacheKey = 'dailyQuote';
+  await Cache.set(cacheKey, quote);
+}
+
+/**
+ * 使用缓存翻译文本
+ *
+ * @param text 需要翻译的文本
+ * @param fromLang 源语言，默认为 'auto'
+ * @param targetLang 目标语言，默认为 'en'
+ * @returns Promise<string> 翻译后的文本
+ * @throws Error 如果翻译过程中发生错误，将抛出异常
+ */
 async function translateTextWithCache(text, fromLang = 'auto', targetLang = 'en') {
   try {
     // 生成缓存键
@@ -228,7 +267,10 @@ async function translateTextWithCache(text, fromLang = 'auto', targetLang = 'en'
   }
 }
 
-// 更新显示函数
+/**
+ * 更新引用显示
+ * @param quote 引用对象
+ */
 function updateQuoteDisplay(quote) {
   const quoteElement = document.getElementById("dailyQuote");
   
@@ -481,17 +523,6 @@ function addCookieToTable(cookie) {
 }
 
 // Add a new cookie [暂时不开放此功能，因为需要用户手动输入域名和路径等详细信息，容易出错]
-/* document.getElementById("addCookie").addEventListener("click", () => {
-  const name = prompt("Enter cookie name:");
-  const value = prompt("Enter cookie value:");
-  if (name && value) {
-    chrome.cookies.set({
-      url: location.origin,
-      name: name,
-      value: value
-    }, fetchCookies);
-  }
-}); */
 
 // Delete all cookies
 /* document.getElementById("deleteAllCookies").addEventListener("click", () => {
@@ -1605,7 +1636,7 @@ function updatePinnedCount() {
 }
 
 // 将cookie添加到固定列表
-async function pinCookie(cookie) {
+async function pinCookie(cookie, isAlloweShowNotification = true) {
   try {
     const cookieToPin = {
       name: cookie.name,
@@ -1625,9 +1656,13 @@ async function pinCookie(cookie) {
     // 更新UI
     await updatePinnedTable();
     await updateCurrentTable(); // 更新当前cookie表格中的pin状态
+
+    console.log('Cookie pinned:', cookie.name);
     
     // 显示成功提示
-    showNotification(`Cookie "${cookie.name}" has been pinned`, 'success');
+    if (isAlloweShowNotification) {
+      showNotification(`Cookie "${cookie.name}" has been pinned`, 'success'); 
+    }
 
     // 立即应用这个cookie
     try {
@@ -2143,7 +2178,10 @@ document.getElementById("pinAllCookies").addEventListener("click", async () => {
   
   const cookies = await chrome.cookies.getAll({ url: tab.url });
   for (const cookie of cookies) {
-    await pinCookie(cookie);
+    await pinCookie(cookie, false);
+  }
+  if (cookies.length > 0) {
+    showNotification('All cookies pinned successfully!', 'success');  
   }
   fetchCookies();
 });
@@ -2209,10 +2247,19 @@ function showDebugInfo(message) {
 
 // 添加新的函数：强制应用cookie到当前页面
 async function forceApplyToCurrent() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab) return;
-
   try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab) return;
+
+    // 检查无痕模式权限
+    if (tab.incognito) {
+      const hasPermission = await chrome.extension.isAllowedIncognitoAccess();
+      if (!hasPermission) {
+        throw new Error('Incognito mode access not allowed');
+      }
+    }
+
+    // 获取当前页面的cookie
     const url = new URL(tab.url);
     console.log('当前URL:', url.href);
     const isLocalhost = url.hostname === 'localhost';
@@ -2231,14 +2278,20 @@ async function forceApplyToCurrent() {
           value: cookie.value,
           path: "/",
           domain: isLocalhost ? undefined : url.hostname,
-          expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60
+          expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+          storeId: tab.incognito ? "1" : "0" // 添加 storeId
         };
 
-        // 先删除已存在的cookie
-        await chrome.cookies.remove({
-          url: url.href,
-          name: cookie.name
-        });
+        // 删除现有 cookie
+        try {
+          await chrome.cookies.remove({
+            url: url.href,
+            name: cookie.name,
+            storeId: tab.incognito ? "1" : "0"
+          });
+        } catch (error) {
+          console.log('No existing cookie to remove');
+        }
 
         // 设置新cookie
         const result = await chrome.cookies.set(cookieData);
@@ -2579,74 +2632,89 @@ document.getElementById("applyToCurrent").addEventListener("click", forceApplyTo
     throw error;
   }
 } */
-async function applyCookie(cookie) {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab) return;
-  
-  try {
-    const url = new URL(tab.url);
-    
-    // 处理 domain
-    let domain = cookie.domain;
-    if (!domain) {
-      domain = url.hostname;
-    } else if (domain.startsWith('.')) {
-      domain = domain.substring(1);
-    }
-
-    // 确保 cookie 路径有效
-    const path = cookie.path || '/';
-
-    // 构建 cookie URL
-    const cookieUrl = `${url.protocol}//${domain}${path}`;
-
-    // 先删除已存在的同名 cookie
+  async function applyCookie(cookie, isAlloweShowNotification = true) {
     try {
-      await chrome.cookies.remove({
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab) return;
+  
+      const url = new URL(tab.url);
+      
+      // 检查是否在无痕模式下
+      if (tab.incognito) {
+        // 尝试获取无痕模式的权限状态
+        const hasPermission = await chrome.extension.isAllowedIncognitoAccess();
+        if (!hasPermission) {
+          throw new Error('Incognito mode access not allowed. Please enable it in extension settings.');
+        }
+      }
+  
+      let domain = cookie.domain;
+      if (!domain) {
+        domain = url.hostname;
+      } else if (domain.startsWith('.')) {
+        domain = domain.substring(1);
+      }
+  
+      const cookieUrl = `${url.protocol}//${domain}${cookie.path || '/'}`;
+  
+      // 删除现有 cookie 前先检查权限
+      try {
+        await chrome.cookies.remove({
+          url: cookieUrl,
+          name: cookie.name
+        });
+      } catch (error) {
+        console.log('No existing cookie to remove or permission denied');
+      }
+  
+      // 设置新的 cookie，添加无痕模式特殊处理
+      const cookieData = {
         url: cookieUrl,
-        name: cookie.name
+        name: cookie.name,
+        value: cookie.value,
+        domain: domain,
+        path: cookie.path || "/",
+        secure: cookie.secure || url.protocol === 'https:',
+        httpOnly: cookie.httpOnly || false,
+        sameSite: cookie.sameSite || "Lax",
+        expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+        storeId: tab.incognito ? "1" : "0" // 添加 storeId 区分无痕模式
+      };
+  
+      const result = await chrome.cookies.set(cookieData);
+      
+      if (!result) {
+        throw new Error('Failed to set cookie');
+      }
+  
+      // 验证 cookie 是否设置成功
+      const verification = await chrome.cookies.get({
+        url: cookieUrl,
+        name: cookie.name,
+        storeId: tab.incognito ? "1" : "0"
       });
+  
+      if (!verification || verification.value !== cookie.value) {
+        throw new Error('Cookie verification failed');
+      }
+  
+      return true;
+  
     } catch (error) {
-      console.log('No existing cookie to remove');
+      console.error(`Failed to set cookie ${cookie.name}:`, error);
+      
+      // 提供更详细的错误信息
+      if (error.message.includes('incognito')) {
+        showNotification('Please enable incognito mode access in extension settings:\n1. Go to chrome://extensions\n2. Find this extension\n3. Enable "Allow in incognito"', 'warning');
+      } else {
+        if (isAlloweShowNotification) {
+          showNotification(`Failed to set cookie: ${error.message}`, 'error');          
+        }
+      }
+      
+      throw error;
     }
-
-    // 设置新的 cookie
-    const cookieData = {
-      url: cookieUrl,
-      name: cookie.name,
-      value: cookie.value,
-      domain: domain,
-      path: path,
-      secure: cookie.secure || url.protocol === 'https:',
-      httpOnly: cookie.httpOnly || false,
-      sameSite: cookie.sameSite || "Lax",
-      expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60
-    };
-
-    const result = await chrome.cookies.set(cookieData);
-    
-    if (!result) {
-      throw new Error('Failed to set cookie');
-    }
-
-    // 验证 cookie 是否设置成功
-    const verification = await chrome.cookies.get({
-      url: cookieUrl,
-      name: cookie.name
-    });
-
-    if (!verification || verification.value !== cookie.value) {
-      throw new Error('Cookie verification failed');
-    }
-
-    console.log(`Cookie ${cookie.name} set successfully`);
-    return true;
-
-  } catch (error) {
-    console.error(`Failed to set cookie ${cookie.name}:`, error);
-    throw error;
   }
-}
 
 // 添加CSS样式
 const style = document.createElement('style');
@@ -3344,61 +3412,173 @@ async function deleteAllCookies() {
   }
 }
 
-function showNotification(message, type = 'info') {
+// 添加删除所有cookies按钮的事件监听器
+document.getElementById("deleteAllCookies").addEventListener("click", deleteAllCookies);
+
+/* function showNotification(message, type = 'info', duration = 3000) {
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border-radius: 4px;
     color: white;
     z-index: 1000;
     animation: slideIn 0.3s ease-out;
+    max-width: 400px;
+    word-wrap: break-word;
   `;
 
-  // 根据类型设置背景色
   const colors = {
     success: '#28a745',
     error: '#dc3545',
     warning: '#ffc107',
     info: '#17a2b8'
   };
+  
   notification.style.background = colors[type] || colors.info;
+
+  // 添加图标
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ'
+  };
 
   notification.innerHTML = `
     <div style="display: flex; align-items: center; gap: 10px;">
-      <span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+      <span>${icons[type] || icons.info}</span>
       <span>${message}</span>
     </div>
   `;
 
   document.body.appendChild(notification);
 
-  // 2秒后自动移除
   setTimeout(() => {
     notification.style.animation = 'slideOut 0.3s ease-out';
     setTimeout(() => notification.remove(), 300);
-  }, 2000);
+  }, duration);
+} */
+// 通知管理器
+const NotificationManager = {
+  queue: [],
+  isProcessing: false,
+  offset: 20, // 初始顶部偏移
+  activeNotifications: new Set(),
+  
+  // 添加通知到队列
+  add(message, type = 'info', duration = 3000) {
+    this.queue.push({ message, type, duration });
+    if (!this.isProcessing) {
+      this.processQueue();
+    }
+  },
+
+  // 处理队列
+  async processQueue() {
+    if (this.queue.length === 0) {
+      this.isProcessing = false;
+      return;
+    }
+
+    this.isProcessing = true;
+    const { message, type, duration } = this.queue.shift();
+    await this.showNotification(message, type, duration);
+    this.processQueue();
+  },
+
+  // 显示单个通知
+  async showNotification(message, type, duration) {
+    return new Promise(resolve => {
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      
+      // 计算通知位置
+      const currentOffset = this.calculateOffset();
+      
+      notification.style.cssText = `
+        position: fixed;
+        top: ${currentOffset}px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 4px;
+        color: white;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+        max-width: 400px;
+        word-wrap: break-word;
+        transition: all 0.3s ease;
+      `;
+
+      const colors = {
+        success: '#28a745',
+        error: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8'
+      };
+      
+      notification.style.background = colors[type] || colors.info;
+
+      const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+      };
+
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span>${icons[type] || icons.info}</span>
+          <span>${message}</span>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+      this.activeNotifications.add(notification);
+
+      // 自动关闭
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+          notification.remove();
+          this.activeNotifications.delete(notification);
+          this.updatePositions();
+          resolve();
+        }, 300);
+      }, duration);
+    });
+  },
+
+  // 计算新通知的位置
+  calculateOffset() {
+    let offset = this.offset;
+    this.activeNotifications.forEach(notification => {
+      offset += notification.offsetHeight + 10; // 10px 间距
+    });
+    return offset;
+  },
+
+  // 更新所有通知的位置
+  updatePositions() {
+    let currentOffset = this.offset;
+    this.activeNotifications.forEach(notification => {
+      notification.style.top = `${currentOffset}px`;
+      currentOffset += notification.offsetHeight + 10;
+    });
+  }
+};
+
+// 替换原有的 showNotification 函数
+function showNotification(message, type = 'info', duration = 3000) {
+  NotificationManager.add(message, type, duration);
 }
 
-// 添加到现有的style元素中
-const additionalStyle = `
-  .cookie-actions {
-    display: flex;
-    gap: 5px;
-  }
-
-  .cookie-actions button {
-    flex: 1;
-    min-width: 50px;
-  }
-
-  .notification {
-    transition: all 0.3s ease;
-  }
-
+// 添加必要的 CSS
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
   @keyframes slideIn {
     from {
       transform: translateX(100%);
@@ -3420,12 +3600,12 @@ const additionalStyle = `
       opacity: 0;
     }
   }
+
+  .notification {
+    transition: all 0.3s ease;
+  }
 `;
-
-document.head.appendChild(document.createElement('style')).textContent += additionalStyle;
-
-// 添加删除所有cookies按钮的事件监听器
-document.getElementById("deleteAllCookies").addEventListener("click", deleteAllCookies);
+document.head.appendChild(notificationStyles);
 
 function initializeEventListeners() {
   const elements = {
@@ -3885,40 +4065,7 @@ const observer = new MutationObserver((mutations) => {
   });
 });
 
-// 在页面加载时初始化
-document.addEventListener('DOMContentLoaded', async () => {
-  // 启动观察器
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-  
-  console.log('Current locale:', chrome.i18n.getUILanguage());
-  console.log('Test getMessage:', chrome.i18n.getMessage('extName'));
-
-  // 检查 messages.json 是否正确加载
-  const testMessages = ['extName', 'searchPlaceholder'];
-  testMessages.forEach(msgKey => {
-    const translation = chrome.i18n.getMessage(msgKey);
-    console.log(`Message ${msgKey}:`, translation);
-    if (!translation) {
-      console.warn(`Missing translation for: ${msgKey}`);
-    }
-  });
-  
-  setTimeout(async () => {
-    try {
-      replaceI18nMessages();
-      await initializeEventListeners();
-      await fetchDailyQuote();
-      await loadPinnedCookies();
-      await fetchCookies();
-    } catch (error) {
-      console.error('Initialization error:', error);
-    }
-  }, 0);
-});
-
+// 开始观察 DOM 变化
 function renderBasicUI() {
   // 显示基础界面框架
   document.getElementById('mainContent').style.display = 'block';
@@ -3932,3 +4079,214 @@ function renderBasicUI() {
   `;
   document.body.appendChild(loadingIndicator);
 }
+
+// 页面初始化管理器
+const InitializationManager = {
+  // 核心功能初始化
+  async initializeCore() {
+    try {
+      // 1. 替换国际化文本(立即执行，不等待)
+      replaceI18nMessages();
+      
+      // 2. 初始化事件监听(立即执行，不等待)
+      initializeEventListeners();
+      
+      // 3. 加载并显示cookies(核心功能)
+      await Promise.all([
+        this.loadCookies(),
+        this.loadPinnedCookies()
+      ]);
+      
+      return true;
+    } catch (error) {
+      console.error('Core initialization failed:', error);
+      return false;
+    }
+  },
+
+  // 非核心功能初始化
+  async initializeNonCore() {
+    // 并行加载非核心功能
+    Promise.allSettled([
+      this.initializeQuote(),
+      this.initializeWeather(),
+      this.checkIncognitoPermission()
+    ]).then(results => {
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn(`Non-core feature ${index} failed:`, result.reason);
+        }
+      });
+    });
+  },
+
+  // 加载Cookies(核心功能)
+  async loadCookies() {
+    try {
+      await fetchCookies();
+    } catch (error) {
+      console.error('Failed to load cookies:', error);
+      showNotification('Failed to load cookies', 'error');
+      throw error;
+    }
+  },
+
+  // 加载已固定的Cookies(核心功能)
+  async loadPinnedCookies() {
+    try {
+      await loadPinnedCookies();
+    } catch (error) {
+      console.error('Failed to load pinned cookies:', error);
+      showNotification('Failed to load pinned cookies', 'error');
+      throw error;
+    }
+  },
+
+  // 初始化每日一言(非核心功能)
+  async initializeQuote() {
+    try {
+      await fetchDailyQuote();
+    } catch (error) {
+      console.warn('Quote initialization failed:', error);
+      // 失败时显示默认内容
+      const quoteContainer = document.getElementById('dailyQuote');
+      if (quoteContainer) {
+        quoteContainer.innerHTML = `
+          <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
+            <p style="margin: 0; color: #6c757d;">Welcome to Cookie Manager</p>
+          </div>
+        `;
+      }
+    }
+  },
+
+  // 初始化天气(非核心功能)
+  async initializeWeather() {
+    try {
+      // 假设weather.js中定义了initializeWeather函数
+      await window.WeatherWidget?.initialize();
+    } catch (error) {
+      console.warn('Weather initialization failed:', error);
+      // 隐藏天气组件
+      const weatherWidget = document.querySelector('.weather-widget');
+      if (weatherWidget) {
+        weatherWidget.style.display = 'none';
+      }
+    }
+  },
+
+  // 检查无痕模式权限(非核心功能)
+  async checkIncognitoPermission() {
+    try {
+      const hasIncognitoPermission = await chrome.extension.isAllowedIncognitoAccess();
+      if (!hasIncognitoPermission) {
+        showNotification(
+          'To use this extension in incognito mode, please enable it in extension settings',
+          'warning',
+          10000
+        );
+      }
+    } catch (error) {
+      console.warn('Incognito permission check failed:', error);
+    }
+  }
+};
+
+// 优化后的页面加载初始化
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1. 启动DOM观察器(立即执行)
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  // 2. 显示加载状态
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.id = 'loadingIndicator';
+  loadingIndicator.innerHTML = `
+    <div class="loading-spinner"></div>
+    <p>Loading...</p>
+  `;
+  document.body.appendChild(loadingIndicator);
+
+  try {
+    // 3. 初始化核心功能
+    await InitializationManager.initializeCore();
+    
+    // 4. 移除加载指示器
+    loadingIndicator.remove();
+    
+    // 5. 异步初始化非核心功能
+    InitializationManager.initializeNonCore();
+    
+  } catch (error) {
+    console.error('Initialization failed:', error);
+    
+    // 显示错误状态
+    loadingIndicator.innerHTML = `
+      <div style="color: #dc3545; text-align: center;">
+        <p>Failed to initialize. Please try again.</p>
+        <button onclick="window.location.reload()" style="
+          padding: 8px 16px;
+          background: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        ">Reload</button>
+      </div>
+    `;
+  }
+});
+
+// 在 popup.js 中添加滚动控制逻辑
+document.addEventListener('DOMContentLoaded', () => {
+  const quickNav = document.querySelector('.quick-nav');
+  const scrollTopBtn = document.querySelector('.scroll-top');
+  const scrollBottomBtn = document.querySelector('.scroll-bottom');
+  
+  // 滚动处理函数
+  function handleScroll() {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    
+    // 当内容高度大于视口高度时显示快速导航
+    if (scrollHeight > clientHeight + 100) { // 添加一些缓冲值
+      quickNav.classList.add('show');
+      quickNav.classList.remove('hide');
+    } else {
+      quickNav.classList.remove('show');
+      quickNav.classList.add('hide');
+    }
+  }
+
+  // 滚动到顶部
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  // 滚动到底部
+  scrollBottomBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth'
+    });
+  });
+
+  // 添加滚动监听
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  
+  // 初始检查是否需要显示快速导航
+  handleScroll();
+  
+  // 监听内容变化
+  const observer = new MutationObserver(handleScroll);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+});

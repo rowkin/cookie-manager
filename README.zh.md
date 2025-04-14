@@ -10,7 +10,7 @@ Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助
 
 ## 发布信息
 
-- 版本: 1.1.0
+- 版本: 1.2.0
 - 最低支持的 Chrome 版本: 88+
 - 权限要求: 
   - cookies

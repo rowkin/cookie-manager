@@ -11,7 +11,7 @@
     "message": "正在加载名言...",
     "description": "每日名言加载提示"
   },
-  "searchCookie": {
+  "searchPlaceholder": {
     "message": "搜索 cookies...",
     "description": "Cookie 搜索输入框占位文本"
   },

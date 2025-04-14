@@ -11,7 +11,7 @@
     "message": "Loading quote...",
     "description": "Loading message for daily quote"
   },
-  "searchCookie": {
+  "searchPlaceholder": {
     "message": "Search cookies...",
     "description": "Cookie search input placeholder"
   },
