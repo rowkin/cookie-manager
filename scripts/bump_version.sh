@@ -50,6 +50,7 @@ create_release_package() {
     echo "Copying files..."
     cp "$ROOT_DIR/manifest.json" "$release_dir/"
     cp "$ROOT_DIR/popup.html" "$release_dir/"
+    cp "$ROOT_DIR/md5.min.js" "$release_dir/"
     cp "$ROOT_DIR/popup.js" "$release_dir/"
     cp "$ROOT_DIR/style.css" "$release_dir/"
     cp "$ROOT_DIR/aurora.js" "$release_dir/"
