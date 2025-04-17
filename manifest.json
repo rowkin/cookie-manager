@@ -19,7 +19,13 @@
     "https://v1.hitokoto.cn/*",
     "https://api.quotable.io/*",
     "https://api.apiopen.top/*",
-    "https://yijuzhan.com/*"
+    "https://yijuzhan.com/*",
+    "https://wttr.in/*",
+    "https://devapi.qweather.com/*",
+    "https://api.caiyunapp.com/*",
+    "https://ip-api.com/*",
+    "https://ipapi.co/*",
+    "https://freegeoip.app/*"
   ],
   "background": {
     "service_worker": "background.js"

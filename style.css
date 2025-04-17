@@ -181,7 +181,7 @@ body {
 /* 天气组件样式 */
 .weather-widget {
   position: absolute;
-  top: -13px;
+  top: -12px;
   right: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
@@ -195,17 +195,18 @@ body {
   max-width: 200px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .weather-widget:hover {
   background: rgba(0, 0, 0, 0.8);
   transform: translateY(-2px);
+  cursor: pointer;
 }
 
 .weather-icon {
   font-size: 20px;
-  margin-right: 5px;
+  margin-right: 0;
 }
 
 .weather-info {
