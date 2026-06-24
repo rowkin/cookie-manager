@@ -125,4 +125,4 @@ Cookie Manager values user privacy. We:
 
 ## Copyright
 
-© 2025 MDSFE All Rights Reserved.
+© 2025-2026 七九在线科技 All Rights Reserved.
