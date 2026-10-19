@@ -571,7 +571,48 @@ async function getWeather(lat, lon, fallbackLocationName) {
   }
 }
 
-// 更新天气 UI 组件
+// 根据天气描述与图标类名获取生动的天气 Emoji (如 ⛅ / ☀️ / 🌧️)
+function getWeatherEmoji(desc, iconClass) {
+  const d = (desc || '').toLowerCase();
+  const ic = (iconClass || '').toLowerCase();
+  if (d.includes('多云') || d.includes('少云') || d.includes('cloud') || ic.includes('cloudy') || ic.includes('overcast')) {
+    return '⛅';
+  }
+  if (d.includes('晴') || d.includes('clear') || d.includes('sunny') || ic.includes('sunny')) {
+    return '☀️';
+  }
+  if (d.includes('阴') || ic.includes('cloudy')) {
+    return '☁️';
+  }
+  if (d.includes('雷') || ic.includes('thunder')) {
+    return '⛈️';
+  }
+  if (d.includes('雪') || ic.includes('snow')) {
+    return '❄️';
+  }
+  if (d.includes('雨') || ic.includes('rain') || ic.includes('shower') || ic.includes('sprinkle')) {
+    return '🌧️';
+  }
+  if (d.includes('雾') || d.includes('霾') || ic.includes('fog')) {
+    return '🌫️';
+  }
+  return '⛅';
+}
+
+// 提取简短城市名 (如 "北京"、"上海"、"杭州"，去除后缀与区县)
+function extractShortCity(weatherData) {
+  let city = weatherData.city || weatherData.district || '';
+  if (!city && weatherData.locationName) {
+    city = weatherData.locationName.split(/\s+/)[0];
+  }
+  if (!city && weatherData.location) {
+    city = weatherData.location.split(/\s+/)[0];
+  }
+  if (!city) city = '北京';
+  return city.replace(/(市|省|特别行政区)$/, '');
+}
+
+// 更新天气 UI 组件 (单行胶囊式排版，完全对齐截图)
 function updateWeatherWidget(weatherData) {
   const widget = document.querySelector('.weather-widget');
   if (!widget) return;
@@ -583,12 +624,15 @@ function updateWeatherWidget(weatherData) {
   const displayIcon = weatherData.icon || 'wi-day-sunny';
   const displayDesc = weatherData.description || '晴';
 
+  const emoji = getWeatherEmoji(displayDesc, displayIcon);
+  const shortCity = extractShortCity(weatherData);
+  const displayText = weatherData.temp === '--'
+    ? `${shortCity} · ${displayDesc}`
+    : `${displayTemp} ${shortCity} · ${displayDesc}`;
+
   widget.innerHTML = `
-    <i class="weather-icon wi ${displayIcon}"></i>
-    <div class="weather-info">
-      <div class="weather-temp">${displayTemp}</div>
-      <div class="weather-location" title="${displayLocation}">${displayLocation}</div>
-    </div>
+    <span class="weather-emoji">${emoji}</span>
+    <span class="weather-text">${displayText}</span>
   `;
 
   // 鼠标悬停详细 Tooltip 提示

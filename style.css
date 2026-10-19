@@ -408,70 +408,54 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* 极简精致天气组件（参考图二：左侧半透明圆角胶囊） */
+/* 极简精致天气胶囊（完全对齐用户截图：单行横排、圆角胶囊、防溢出） */
 .weather-widget {
   position: static;
-  background: rgba(0, 0, 0, 0.42);
+  background: rgba(0, 0, 0, 0.38);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  padding: 2px 12px;
-  height: 26px;
-  color: white;
-  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 4px 12px;
+  height: 28px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  min-width: 60px;
-  max-width: 160px;
   width: auto;
+  max-width: 220px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   box-sizing: border-box;
+  white-space: nowrap;
   overflow: hidden;
-}
-
-.weather-widget:hover {
-  background: rgba(0, 0, 0, 0.6);
-  transform: translateY(-1px);
   cursor: pointer;
 }
 
-.weather-icon {
+.weather-widget:hover {
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.weather-emoji {
   font-size: 14px;
   line-height: 1;
-  margin-right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.weather-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-  text-align: left;
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-}
-
-.weather-temp {
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.15;
+.weather-text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: #ffffff;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.weather-location {
-  font-size: 9px;
-  opacity: 0.85;
-  line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: 0.2px;
 }
 
 /* loading 加载状态优化：更紧凑协调的字号，确保容器自适应完美收容 */
