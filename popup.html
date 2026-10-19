@@ -11,93 +11,99 @@
     <!-- Canvas element for rendering aurora effect -->
     <canvas id="auroraCanvas"></canvas>
 
-    <!-- 顶部状态栏：左侧天气胶囊，右侧语言切换胶囊 (参考图二布局) -->
-    <div class="cookie-manager-header">
-      <!-- Add weather widget -->
-      <div class="weather-widget weather-loading" title="点击刷新天气 / Click to refresh weather">
-        <span class="weather-emoji">⛅</span>
-        <span class="weather-text">加载天气中...</span>
+    <!-- 顶部固定控制面板 (搜索框及以上部分固定在顶端) -->
+    <div class="top-controls-wrapper">
+      <!-- 顶部状态栏：左侧天气胶囊，右侧语言切换胶囊 -->
+      <div class="cookie-manager-header">
+        <div class="weather-widget weather-loading" title="点击刷新天气 / Click to refresh weather">
+          <span class="weather-emoji">⛅</span>
+          <span class="weather-text">加载天气中...</span>
+        </div>
+        <button id="langSwitch" class="lang-switch-btn" title="切换语言 / Switch Language">
+          <span id="langSwitchText" data-i18n="switchLang">__MSG_switchLang__</span>
+        </button>
       </div>
-      <!-- 标题右侧一键语言切换按钮 -->
-      <button id="langSwitch" class="lang-switch-btn" title="切换语言 / Switch Language">
-        <span id="langSwitchText" data-i18n="switchLang">__MSG_switchLang__</span>
-      </button>
+
+      <!-- 每日励志语录组件 -->
+      <div class="quote-section" id="dailyQuote">
+        __MSG_loadingQuote__
+      </div>
+
+      <!-- 搜索框：始终固定在上方，键入即时过滤 -->
+      <input type="text" id="searchCookie" data-i18n-placeholder="searchPlaceholder" placeholder="__MSG_searchPlaceholder__">
+      
+      <!-- 核心操作按钮面板：固定常驻，随时可用 -->
+      <div class="cookie-actions">
+        <div class="cookie-group">
+          <button id="getCookies" class="btn-primary" data-i18n="getCookies">__MSG_getCookies__</button>
+          <button id="addCookie" class="btn-primary" data-i18n="addCookie">__MSG_addCookie__</button>
+          <button id="importCookies" class="btn-primary" data-i18n="importCookies">__MSG_importCookies__</button>
+        </div>
+        <hr />
+        <div class="cookie-group">
+          <button id="exportCookies" class="btn-primary" data-i18n="exportCookies">__MSG_exportCookies__</button>
+          <button id="deleteAllCookies" class="btn-danger" data-i18n="deleteAllCookies">__MSG_deleteAllCookies__</button>
+        </div>
+        <hr />
+        <div class="cookie-group pin-group">
+          <button id="pinAllCookies" class="btn-success" data-i18n="pinAll">__MSG_pinAll__</button>
+          <button id="unpinAllCookies" class="btn-danger" data-i18n="unpinAll">__MSG_unpinAll__</button>
+          <button id="refreshPage" class="btn-secondary" data-i18n="refreshPage">__MSG_refreshPage__</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Add Daily Quote Component (置于天气与语言状态栏正下方) -->
-    <div class="quote-section" id="dailyQuote">
-      __MSG_loadingQuote__
-    </div>
-
-    <input type="text" id="searchCookie" data-i18n-placeholder="searchPlaceholder" placeholder="__MSG_searchPlaceholder__">
-    
-    <div class="cookie-actions">
-      <div class="cookie-group">
-        <button id="getCookies" class="btn-primary" data-i18n="getCookies">__MSG_getCookies__</button>
-        <button id="addCookie" class="btn-primary" data-i18n="addCookie">__MSG_addCookie__</button>
-        <button id="importCookies" class="btn-primary" data-i18n="importCookies">__MSG_importCookies__</button>
+    <!-- 下方独立局部滚动列表区 (Scrollable Content Area) -->
+    <div class="scrollable-content-area">
+      <div class="cookie-section">
+        <h3>
+          <span class="section-title">
+            <span data-i18n="currentCookies">__MSG_currentCookies__</span>
+            <span class="badge" id="cookieCount">0</span>
+          </span>
+          <button id="deleteCurrentCookies" class="btn-danger" data-i18n="deleteCurrentCookies">__MSG_deleteCurrentCookies__</button>
+        </h3>
+        <table id="cookieTable">
+          <colgroup>
+            <col class="col-name" style="width: 25%;">
+            <col class="col-value" style="width: 43%;">
+            <col class="col-actions" style="width: 32%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="col-name" data-i18n="colName">__MSG_colName__</th>
+              <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
+              <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <hr />
-      <div class="cookie-group">
-        <button id="exportCookies" class="btn-primary" data-i18n="exportCookies">__MSG_exportCookies__</button>
-        <button id="deleteAllCookies" class="btn-danger" data-i18n="deleteAllCookies">__MSG_deleteAllCookies__</button>
-      </div>
-      <hr />
-      <div class="cookie-group pin-group">
-        <button id="pinAllCookies" class="btn-success" data-i18n="pinAll">__MSG_pinAll__</button>
-        <button id="unpinAllCookies" class="btn-danger" data-i18n="unpinAll">__MSG_unpinAll__</button>
-        <button id="refreshPage" class="btn-secondary" data-i18n="refreshPage">__MSG_refreshPage__</button>
-      </div>
-    </div>
 
-    <div class="cookie-section">
-      <h3>
-        <span class="section-title">
-          <span data-i18n="currentCookies">__MSG_currentCookies__</span>
-          <span class="badge" id="cookieCount">0</span>
-        </span>
-        <button id="deleteCurrentCookies" class="btn-danger" data-i18n="deleteCurrentCookies">__MSG_deleteCurrentCookies__</button>
-      </h3>
-      <table id="cookieTable">
-        <colgroup>
-          <col class="col-name" style="width: 25%;">
-          <col class="col-value" style="width: 43%;">
-          <col class="col-actions" style="width: 32%;">
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-name" data-i18n="colName">__MSG_colName__</th>
-            <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
-            <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="pinned-section">
-      <h3>
-        <span class="section-title">
-          <span data-i18n="pinnedCookies">__MSG_pinnedCookies__</span>
-          <span class="badge" id="pinnedCount">0</span>
-        </span>
-        <button id="applyToCurrent" class="btn-success" data-i18n="applyToCurrent">__MSG_applyToCurrent__</button>
-      </h3>
-      <table id="pinnedTable">
-        <colgroup>
-          <col class="col-name" style="width: 25%;">
-          <col class="col-value" style="width: 43%;">
-          <col class="col-actions" style="width: 32%;">
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-name" data-i18n="colName">__MSG_colName__</th>
-            <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
-            <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="pinned-section">
+        <h3>
+          <span class="section-title">
+            <span data-i18n="pinnedCookies">__MSG_pinnedCookies__</span>
+            <span class="badge" id="pinnedCount">0</span>
+          </span>
+          <button id="applyToCurrent" class="btn-success" data-i18n="applyToCurrent">__MSG_applyToCurrent__</button>
+        </h3>
+        <table id="pinnedTable">
+          <colgroup>
+            <col class="col-name" style="width: 25%;">
+            <col class="col-value" style="width: 43%;">
+            <col class="col-actions" style="width: 32%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="col-name" data-i18n="colName">__MSG_colName__</th>
+              <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
+              <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- 快捷导航按钮 -->

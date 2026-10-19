@@ -4684,50 +4684,84 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// 在 popup.js 中添加滚动控制逻辑
+// 在 popup.js 中添加滚动控制逻辑（适配局部独立滚动容器）
 document.addEventListener('DOMContentLoaded', () => {
   const quickNav = document.querySelector('.quick-nav');
   const scrollTopBtn = document.querySelector('.scroll-top');
   const scrollBottomBtn = document.querySelector('.scroll-bottom');
+  const scrollContainer = document.querySelector('.scrollable-content-area');
   
   // 滚动处理函数
   function handleScroll() {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-    
-    // 当内容高度大于视口高度时显示快速导航
-    if (scrollHeight > clientHeight + 100) { // 添加一些缓冲值
-      quickNav.classList.add('show');
-      quickNav.classList.remove('hide');
+    if (!quickNav) return;
+    if (scrollContainer) {
+      const scrollHeight = scrollContainer.scrollHeight;
+      const clientHeight = scrollContainer.clientHeight;
+      // 当局部滚动内容高度大于容器可视高度时显示快速导航
+      if (scrollHeight > clientHeight + 40) {
+        quickNav.classList.add('show');
+        quickNav.classList.remove('hide');
+      } else {
+        quickNav.classList.remove('show');
+        quickNav.classList.add('hide');
+      }
     } else {
-      quickNav.classList.remove('show');
-      quickNav.classList.add('hide');
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      if (scrollHeight > clientHeight + 60) {
+        quickNav.classList.add('show');
+        quickNav.classList.remove('hide');
+      } else {
+        quickNav.classList.remove('show');
+        quickNav.classList.add('hide');
+      }
     }
   }
 
   // 滚动到顶部
-  scrollTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTopBtn) {
+    scrollTopBtn.addEventListener('click', () => {
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
     });
-  });
+  }
 
   // 滚动到底部
-  scrollBottomBtn.addEventListener('click', () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
+  if (scrollBottomBtn) {
+    scrollBottomBtn.addEventListener('click', () => {
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
     });
-  });
+  }
 
-  // 添加滚动监听
+  // 添加滚动监听（同时监听局部滚动容器与全局窗口）
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+  }
   window.addEventListener('scroll', handleScroll, { passive: true });
   
-  // 监听内容变化
+  // 监听内容变化，动态刷新导航显隐
   const observer = new MutationObserver(handleScroll);
-  observer.observe(document.body, {
+  const targetToObserve = scrollContainer || document.body;
+  observer.observe(targetToObserve, {
     childList: true,
     subtree: true
   });
