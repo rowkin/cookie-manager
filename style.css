@@ -642,3 +642,390 @@ html, body {
 .cookie-manager-wrapper .quick-nav.hide {
   animation: fadeOut 0.3s ease forwards;
 }
+
+/* ==========================================================================
+   统一模态框设计规范系统 (Unified Modal Design System)
+   - 必须全屏半透暗黑背景遮罩 (Backdrop Overlay)
+   - 现代深邃暗黑磨砂玻璃质感 (Dark Glassmorphism)
+   - 物理阻断穿模，丝滑居中缩放与淡入淡出动画
+   ========================================================================== */
+
+/* 全屏模态背景遮罩 */
+.cm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 1000;
+  opacity: 0;
+  animation: cmOverlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cm-modal-overlay.closing {
+  animation: cmOverlayFadeOut 0.15s ease forwards;
+}
+
+/* 统一模态框主体卡片 */
+.cm-modal-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(18, 24, 38, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  padding: 18px 20px;
+  z-index: 1001;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  width: calc(100% - 48px);
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  opacity: 0;
+  animation: cmModalScaleIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cm-modal-dialog.closing {
+  animation: cmModalScaleOut 0.15s ease forwards;
+}
+
+/* 尺寸细分 */
+.cm-modal-dialog.cm-modal-sm {
+  max-width: 330px;
+  text-align: center;
+}
+
+.cm-modal-dialog.cm-modal-md {
+  max-width: 390px;
+}
+
+.cm-modal-dialog.cm-modal-lg {
+  max-width: 440px;
+}
+
+/* 模态框头部 */
+.cm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.cm-modal-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+/* 模态框关闭按钮 */
+.cm-modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.cm-modal-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* 模态框文本与说明 */
+.cm-modal-desc {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11.5px;
+  line-height: 1.5;
+  margin: 0 0 14px 0;
+}
+
+/* 模态框单选与选项组 */
+.cm-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.cm-modal-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.cm-modal-option input[type="radio"],
+.cm-modal-option input[type="checkbox"] {
+  accent-color: #2563EB;
+  cursor: pointer;
+}
+
+/* 模态框表单元素：输入框、文本域、下拉选择 */
+.cm-modal-input,
+.cm-modal-textarea,
+.cm-modal-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 11.5px;
+  padding: 7px 10px;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.cm-modal-input:focus,
+.cm-modal-textarea:focus,
+.cm-modal-select:focus {
+  border-color: #3B82F6;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.cm-modal-input::placeholder,
+.cm-modal-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cm-modal-textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.cm-modal-select {
+  background: #182235;
+  cursor: pointer;
+}
+
+/* 模态框标签页/格式胶囊按钮组 */
+.cm-modal-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cm-modal-pill {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cm-modal-pill:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.cm-modal-pill.active {
+  background: #2563EB;
+  border-color: #3B82F6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* 模态框底部按钮组 */
+.cm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cm-modal-actions.center {
+  justify-content: center;
+}
+
+.cm-modal-btn {
+  height: 28px;
+  line-height: 28px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cm-modal-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cm-modal-btn:active {
+  transform: translateY(0);
+}
+
+.cm-modal-btn.cm-btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+.cm-modal-btn.cm-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.cm-modal-btn.cm-btn-primary {
+  background: #2563EB;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.cm-modal-btn.cm-btn-primary:hover {
+  background: #1D4ED8;
+}
+
+.cm-modal-btn.cm-btn-success {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.cm-modal-btn.cm-btn-success:hover {
+  background: #047857;
+}
+
+.cm-modal-btn.cm-btn-danger {
+  background: #E11D48;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.3);
+}
+
+.cm-modal-btn.cm-btn-danger:hover {
+  background: #BE123C;
+}
+
+/* 动效关键帧 */
+@keyframes cmOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cmOverlayFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes cmModalScaleIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes cmModalScaleOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+/* 模态框内部表单专属样式 (Cookie Form) */
+.cookie-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.cookie-form label {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11.5px;
+  font-weight: 500;
+  display: block;
+  margin: 6px 0 3px;
+}
+
+.cookie-form input[type="text"],
+.cookie-form input[type="number"],
+.cookie-form input[type="datetime-local"],
+.cookie-form select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 11.5px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-bottom: 6px;
+}
+
+.cookie-form select {
+  background: #182235;
+  color: #ffffff;
+}
+
+.cookie-form input:focus,
+.cookie-form select:focus {
+  border-color: #3B82F6;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.cookie-form .advanced-toggle {
+  color: #60A5FA;
+  cursor: pointer;
+  margin: 8px 0;
+  font-size: 11.5px;
+  user-select: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cookie-form .advanced-toggle:hover {
+  color: #93C5FD;
+}
+
+.cookie-form .advanced-section {
+  display: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 8px;
+  margin-top: 6px;
+}
+
+.cookie-form .advanced-section.show {
+  display: block;
+}
+
+.cookie-form input[type="checkbox"] {
+  accent-color: #2563EB;
+  cursor: pointer;
+}

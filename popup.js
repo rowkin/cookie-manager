@@ -264,6 +264,18 @@ function t(key, defaultVal = '') {
   return defaultVal || key;
 }
 
+// 全局统一模态框安全退场与平滑销毁工具 (带动效闭环)
+function closeUnifiedModal(dialog, overlay, callback) {
+  if (!dialog && !overlay) return;
+  if (dialog) dialog.classList.add('closing');
+  if (overlay) overlay.classList.add('closing');
+  setTimeout(() => {
+    if (dialog && dialog.parentNode) dialog.remove();
+    if (overlay && overlay.parentNode) overlay.remove();
+    if (typeof callback === 'function') callback();
+  }, 160);
+}
+
 function applyLanguage(lang, refreshTables = true) {
   currentLang = (lang === 'zh' || lang === 'en') ? lang : 'zh';
   document.documentElement.lang = currentLang;
@@ -934,109 +946,69 @@ async function showExportPanel() {
   const currentCookies = await chrome.cookies.getAll({ url: tab.url });
   const allCookies = await chrome.cookies.getAll({});
 
-  // 创建面板元素
+  // 创建遮罩层与面板元素
+  const overlay = document.createElement('div');
+  overlay.className = 'cm-modal-overlay';
+
   const panel = document.createElement('div');
-  panel.className = 'export-panel';
-  panel.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1001;
-    min-width: 300px;
-    color: #333;
-  `;
+  panel.className = 'cm-modal-dialog cm-modal-md';
 
   // 创建面板内容
   panel.innerHTML = `
-    <div style="text-align: center;">
-      <h3 style="margin-bottom: 15px; color: #333;">${t('modalExportTitle')}</h3>
-      
-      <div style="margin-bottom: 20px;">
-        <p style="margin: 5px 0; color: #666;">${t('modalCurrentPageCookiesCount')}${currentCookies.length}</p>
-        <p style="margin: 5px 0; color: #666;">${t('modalAllDomainsCookiesCount')}${allCookies.length}</p>
-      </div>
+    <div class="cm-modal-header">
+      <h3>${t('modalExportTitle')}</h3>
+      <button class="cm-modal-close" title="${t('modalBtnClose') || 'Close'}">×</button>
+    </div>
+    
+    <div class="cm-modal-desc" style="text-align: center; margin-bottom: 12px;">
+      <span style="display: inline-block; margin-right: 12px; color: rgba(255, 255, 255, 0.85);">${t('modalCurrentPageCookiesCount')}<strong style="color: #60A5FA;">${currentCookies.length}</strong></span>
+      <span style="display: inline-block; color: rgba(255, 255, 255, 0.85);">${t('modalAllDomainsCookiesCount')}<strong style="color: #34D399;">${allCookies.length}</strong></span>
+    </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-        <label style="display: flex; align-items: center; gap: 10px;">
-          <input type="radio" name="cookieScope" value="current" checked>
-          <span>${t('modalScopeCurrent')}</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 10px;">
-          <input type="radio" name="cookieScope" value="all">
-          <span>${t('modalScopeAll')}</span>
-        </label>
-      </div>
+    <div class="cm-modal-options" style="background: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+      <label class="cm-modal-option">
+        <input type="radio" name="cookieScope" value="current" checked>
+        <span>${t('modalScopeCurrent')}</span>
+      </label>
+      <label class="cm-modal-option">
+        <input type="radio" name="cookieScope" value="all">
+        <span>${t('modalScopeAll')}</span>
+      </label>
+    </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-        <label style="display: flex; align-items: center; gap: 10px;">
-          <input type="radio" name="exportFormat" value="json" checked>
-          <span>${t('modalFormatJson')}</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 10px;">
-          <input type="radio" name="exportFormat" value="text">
-          <span>${t('modalFormatText')}</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 10px;">
-          <input type="radio" name="exportFormat" value="curl">
-          <span>${t('modalFormatCurl')}</span>
-        </label>
-      </div>
+    <div class="cm-modal-options" style="background: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+      <label class="cm-modal-option">
+        <input type="radio" name="exportFormat" value="json" checked>
+        <span>${t('modalFormatJson')}</span>
+      </label>
+      <label class="cm-modal-option">
+        <input type="radio" name="exportFormat" value="text">
+        <span>${t('modalFormatText')}</span>
+      </label>
+      <label class="cm-modal-option">
+        <input type="radio" name="exportFormat" value="curl">
+        <span>${t('modalFormatCurl')}</span>
+      </label>
+    </div>
 
-      <div style="margin-bottom: 20px;">
-        <input type="text" placeholder="${t('modalDescriptionPlaceholder')}" 
-               style="width: calc(100% - 18px); padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-      </div>
+    <div style="margin-bottom: 12px;">
+      <input type="text" class="cm-modal-input" placeholder="${t('modalDescriptionPlaceholder')}">
+    </div>
 
-      <div style="display: flex; justify-content: center; gap: 10px;">
-        <button class="cancel-button" style="
-          padding: 8px 20px;
-          border: none;
-          border-radius: 4px;
-          background: #f5f5f5;
-          color: #666;
-          font-size: 13px;
-          font-weight: 500;
-          white-space: nowrap;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        ">${t('modalBtnCancel')}</button>
-        <button class="export-button" style="
-          padding: 8px 20px;
-          border: none;
-          border-radius: 4px;
-          background: #007BFF;
-          color: white;
-          font-size: 13px;
-          font-weight: 500;
-          white-space: nowrap;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        ">${t('modalBtnExport')}</button>
-      </div>
+    <div class="cm-modal-actions center">
+      <button class="cm-modal-btn cm-btn-secondary cancel-button">${t('modalBtnCancel')}</button>
+      <button class="cm-modal-btn cm-btn-primary export-button">${t('modalBtnExport')}</button>
     </div>
   `;
 
-  // 创建遮罩层
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(2px);
-    z-index: 1000;
-  `;
-
-  // 添加到文档
   document.body.appendChild(overlay);
   document.body.appendChild(panel);
+
+  const closeFn = () => closeUnifiedModal(panel, overlay);
+
+  panel.querySelector('.cm-modal-close').addEventListener('click', closeFn);
+  panel.querySelector('.cancel-button').addEventListener('click', closeFn);
+  overlay.addEventListener('click', closeFn);
 
   // 处理导出按钮点击
   panel.querySelector('.export-button').addEventListener('click', async () => {
@@ -1054,25 +1026,17 @@ async function showExportPanel() {
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 2000);
 
-    // 关闭面板
-    panel.remove();
-    overlay.remove();
-  });
-
-  // 处理取消按钮点击
-  panel.querySelector('.cancel-button').addEventListener('click', () => {
-    panel.remove();
-    overlay.remove();
+    closeFn();
   });
 
   // 添加键盘事件监听
-  document.addEventListener('keydown', function closeOnEscape(e) {
+  const escHandler = (e) => {
     if (e.key === 'Escape') {
-      panel.remove();
-      overlay.remove();
-      document.removeEventListener('keydown', closeOnEscape);
+      closeFn();
+      document.removeEventListener('keydown', escHandler);
     }
-  });
+  };
+  document.addEventListener('keydown', escHandler);
 }
 
 // 添加导出按钮的事件监听器
@@ -1450,100 +1414,42 @@ function validateCookieObject(cookie) {
 
 // 导入 Cookies 事件监听器
 document.getElementById("importCookies").addEventListener("click", () => {
-  // 创建导入对话框
+  // 创建遮罩层与模态框主体
+  const overlay = document.createElement('div');
+  overlay.className = 'cm-modal-overlay';
+
   const dialog = document.createElement('div');
-  dialog.className = 'import-dialog';
-  dialog.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,.8);
-    color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
-    width: calc(100% - 80px);
-    max-width: 500px;
-  `;
+  dialog.className = 'cm-modal-dialog cm-modal-md';
+
+  const closeFn = () => closeUnifiedModal(dialog, overlay);
 
   // 对话框内容
   dialog.innerHTML = `
-    <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="margin: 0;">${t('modalImportTitle')}</h3>
-      <button class="close-button" style="
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-        padding: 0;
-        display: none;
-      ">×</button>
+    <div class="cm-modal-header">
+      <h3>${t('modalImportTitle')}</h3>
+      <button class="cm-modal-close" title="${t('modalBtnClose') || 'Close'}">×</button>
     </div>
 
-    <div style="overflow: hidden;">
-      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <button class="format-array" style="
-          padding: 5px 10px;
-          border: none;
-          border-radius: 4px;
-          background: #007BFF;
-          color: #fff;
-          cursor: pointer;
-        ">${t('modalFormatArray')}</button>
-        <button class="format-object" style="
-          padding: 5px 10px;
-          border: none;
-          border-radius: 4px;
-          background: #007BFF;
-          color: #fff;
-          cursor: pointer;
-        ">${t('modalFormatObject')}</button>
+    <div>
+      <div class="cm-modal-pills">
+        <button class="cm-modal-pill active format-array">${t('modalFormatArray')}</button>
+        <button class="cm-modal-pill format-object">${t('modalFormatObject')}</button>
       </div>
       
-      <textarea id="cookieInput" style="
-        width: calc(100% - 22px);
-        height: 200px;
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        resize: none;
-        font-family: monospace;
-      " placeholder="${t('modalImportPlaceholder')}"></textarea>
+      <textarea id="cookieInput" class="cm-modal-textarea" style="height: 160px;" placeholder="${t('modalImportPlaceholder')}"></textarea>
     </div>
 
-    <div style="text-align: right;">
-      <button class="cancel-button" style="
-        padding: 8px 18px;
-        border: none;
-        border-radius: 4px;
-        background: #f5f5f5;
-        color: #666;
-        font-size: 13px;
-        font-weight: 500;
-        white-space: nowrap;
-        cursor: pointer;
-        margin-right: 10px;
-        transition: all 0.2s ease;
-      ">${t('modalBtnCancel')}</button>
-      <button class="import-button" style="
-        padding: 8px 18px;
-        border: none;
-        border-radius: 4px;
-        background: #007BFF;
-        color: white;
-        font-size: 13px;
-        font-weight: 500;
-        white-space: nowrap;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      ">${t('modalBtnImport')}</button>
+    <div class="cm-modal-actions">
+      <button class="cm-modal-btn cm-btn-secondary cancel-button">${t('modalBtnCancel')}</button>
+      <button class="cm-modal-btn cm-btn-primary import-button">${t('modalBtnImport')}</button>
     </div>
   `;
 
+  document.body.appendChild(overlay);
   document.body.appendChild(dialog);
+
+  dialog.querySelector('.cm-modal-close').addEventListener('click', closeFn);
+  overlay.addEventListener('click', closeFn);
 
   // 示例格式
   const arrayFormat = [
@@ -1558,6 +1464,8 @@ document.getElementById("importCookies").addEventListener("click", () => {
 
   // 格式化按钮事件
   dialog.querySelector('.format-array').addEventListener('click', () => {
+    dialog.querySelector('.format-array').classList.add('active');
+    dialog.querySelector('.format-object').classList.remove('active');
     const input = document.getElementById('cookieInput').value;
     if (!input.trim()) {
       // 如果没有输入，显示示例
@@ -1577,6 +1485,8 @@ document.getElementById("importCookies").addEventListener("click", () => {
   });
 
   dialog.querySelector('.format-object').addEventListener('click', () => {
+    dialog.querySelector('.format-object').classList.add('active');
+    dialog.querySelector('.format-array').classList.remove('active');
     const input = document.getElementById('cookieInput').value;
     if (!input.trim()) {
       // 如果没有输入，显示示例
@@ -1750,9 +1660,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
   });
 
   // 取消按钮事件
-  dialog.querySelector('.cancel-button').addEventListener('click', () => {
-    dialog.remove();
-  });
+  dialog.querySelector('.cancel-button').addEventListener('click', closeFn);
 
   // 导入按钮事件
   dialog.querySelector('.import-button').addEventListener('click', async () => {
@@ -1812,49 +1720,36 @@ document.getElementById("importCookies").addEventListener("click", () => {
       const failCount = results.length - successCount;
 
       dialog.innerHTML = `
-        <div style="text-align: center; padding: 20px;">
-          <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
+        <div style="text-align: center; padding: 10px;">
+          <h3 style="margin-bottom: 12px; font-size: 15px; color: ${failCount === 0 ? '#34D399' : '#F87171'}">
             ${failCount === 0 ? t('modalImportSuccess') : t('modalImportCompletedErrors')}
           </h3>
-          <p style="color: #28a745; margin: 5px 0;">${t('modalImportSuccessCount')}${successCount}</p>
-          ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #28a745;
-            color: white;
-            cursor: pointer;
-            margin-top: 15px;
-          ">${t('modalBtnClose')}</button>
+          <p style="color: #34D399; margin: 4px 0; font-size: 12px;">${t('modalImportSuccessCount')}${successCount}</p>
+          ${failCount > 0 ? `<p style="color: #F87171; margin: 4px 0; font-size: 12px;">${t('modalImportFailCount')}${failCount}</p>` : ''}
+          <div class="cm-modal-actions center" style="margin-top: 14px;">
+            <button class="cm-modal-btn cm-btn-primary close-result-btn">${t('modalBtnClose')}</button>
+          </div>
         </div>
       `;
+      dialog.querySelector('.close-result-btn').addEventListener('click', closeFn);
 
       // 如果全部成功，2秒后自动关闭
       if (failCount === 0) {
-        setTimeout(() => {
-          if (dialog && dialog.parentNode) {
-            dialog.remove();
-          }
-        }, 2000);
+        setTimeout(closeFn, 2000);
       }
 
     } catch (error) {
       // 显示错误消息
       dialog.innerHTML = `
-        <div style="text-align: center; padding: 20px;">
-          <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalImportFailedTitle')}</h3>
-          <p style="margin-bottom: 15px;">${error.message}</p>
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #6c757d;
-            color: white;
-            cursor: pointer;
-          ">${t('modalBtnClose')}</button>
+        <div style="text-align: center; padding: 10px;">
+          <h3 style="margin-bottom: 12px; font-size: 15px; color: #F87171;">${t('modalImportFailedTitle')}</h3>
+          <p style="margin-bottom: 14px; font-size: 12px; color: rgba(255, 255, 255, 0.8);">${error.message}</p>
+          <div class="cm-modal-actions center">
+            <button class="cm-modal-btn cm-btn-secondary close-result-btn">${t('modalBtnClose')}</button>
+          </div>
         </div>
       `;
+      dialog.querySelector('.close-result-btn').addEventListener('click', closeFn);
     }
   });
 });
@@ -2120,164 +2015,51 @@ async function editCookie(cookie, isPinned = false) {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab) throw new Error('No active tab found');
 
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-modal-overlay';
+
     const dialog = document.createElement('div');
-    dialog.className = 'edit-dialog';
-    dialog.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      z-index: 1001;
-      min-width: 320px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    `;
+    dialog.className = 'cm-modal-dialog cm-modal-md';
+
+    const closeFn = () => closeUnifiedModal(dialog, overlay);
 
     dialog.innerHTML = `
-      <h3 style="
-        margin: 0 0 20px 0;
-        color: #333;
-        font-size: 18px;
-        font-weight: 600;
-      ">${t('dialogEditCookieTitle')}</h3>
+      <div class="cm-modal-header">
+        <h3>${t('dialogEditCookieTitle')}</h3>
+        <button class="cm-modal-close" title="${t('modalBtnClose') || 'Close'}">×</button>
+      </div>
       
-      <div style="margin-bottom: 16px;">
-        <label style="
-          display: block;
-          margin-bottom: 8px;
-          color: #666;
-          font-size: 14px;
-          font-weight: 500;
-        ">${t('dialogCookieName')}</label>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 4px; color: rgba(255, 255, 255, 0.7); font-size: 11.5px; font-weight: 500;">${t('dialogCookieName')}</label>
         <div style="
-          padding: 8px 12px;
-          background: #f5f5f5;
-          border-radius: 8px;
-          color: #666;
-          font-size: 14px;
+          padding: 7px 10px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
+          color: #60A5FA;
+          font-size: 11.5px;
+          font-weight: 600;
+          word-break: break-all;
         ">${cookie.name}</div>
       </div>
 
-      <div style="margin-bottom: 24px;">
-        <label style="
-          display: block;
-          margin-bottom: 8px;
-          color: #666;
-          font-size: 14px;
-          font-weight: 500;
-        ">${t('dialogCookieValue')}</label>
-        <input type="text" 
-          id="editValue" 
-          value="${cookie.value}" 
-          style="
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            outline: none;
-          "
-        >
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; margin-bottom: 4px; color: rgba(255, 255, 255, 0.7); font-size: 11.5px; font-weight: 500;">${t('dialogCookieValue')}</label>
+        <textarea id="editValue" class="cm-modal-textarea" style="height: 100px; font-size: 11px;">${cookie.value}</textarea>
       </div>
 
-      <div style="
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-      ">
-        <button class="cancel-edit" style="
-          padding: 8px 20px;
-          border: none;
-          border-radius: 4px;
-          background: #f5f5f5;
-          color: #666;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        ">${t('dialogCancel')}</button>
-        
-        <button class="save-edit" style="
-          padding: 8px 20px;
-          border: none;
-          border-radius: 4px;
-          background: #007BFF;
-          color: white;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        ">${t('dialogSave')}</button>
+      <div class="cm-modal-actions">
+        <button class="cm-modal-btn cm-btn-secondary cancel-edit">${t('dialogCancel')}</button>
+        <button class="cm-modal-btn cm-btn-primary save-edit">${t('dialogSave')}</button>
       </div>
-    `;
-
-    // 添加按钮悬停效果
-    const buttons = dialog.querySelectorAll('button');
-    buttons.forEach(button => {
-      button.addEventListener('mouseover', function() {
-        if (this.classList.contains('cancel-edit')) {
-          this.style.background = '#e0e0e0';
-        } else if (this.classList.contains('save-edit')) {
-          this.style.background = '#1976D2';
-        }
-      });
-
-      button.addEventListener('mouseout', function() {
-        if (this.classList.contains('cancel-edit')) {
-          this.style.background = '#f5f5f5';
-        } else if (this.classList.contains('save-edit')) {
-          this.style.background = '#2196F3';
-        }
-      });
-    });
-
-    // 添加输入框焦点效果
-    const input = dialog.querySelector('#editValue');
-    input.addEventListener('focus', function() {
-      this.style.borderColor = '#2196F3';
-    });
-    input.addEventListener('blur', function() {
-      this.style.borderColor = '#e0e0e0';
-    });
-
-    // 添加遮罩层
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.2s ease;
     `;
 
     document.body.appendChild(overlay);
     document.body.appendChild(dialog);
 
-    // 淡入效果
-    requestAnimationFrame(() => {
-      overlay.style.opacity = '1';
-    });
-
-    // 处理取消按钮
-    dialog.querySelector('.cancel-edit').addEventListener('click', () => {
-      overlay.style.opacity = '0';
-      dialog.style.opacity = '0';
-      dialog.style.transform = 'translate(-50%, -60%)';
-      setTimeout(() => {
-        dialog.remove();
-        overlay.remove();
-      }, 200);
-    });
+    dialog.querySelector('.cm-modal-close').addEventListener('click', closeFn);
+    overlay.addEventListener('click', closeFn);
+    dialog.querySelector('.cancel-edit').addEventListener('click', closeFn);
 
     // 处理保存按钮
     dialog.querySelector('.save-edit').addEventListener('click', async () => {
@@ -2338,15 +2120,7 @@ async function editCookie(cookie, isPinned = false) {
         await fetchCookies();
 
         showNotification('Cookie updated successfully', 'success');
-        
-        // 淡出效果
-        overlay.style.opacity = '0';
-        dialog.style.opacity = '0';
-        dialog.style.transform = 'translate(-50%, -60%)';
-        setTimeout(() => {
-          dialog.remove();
-          overlay.remove();
-        }, 200);
+        closeFn();
 
       } catch (error) {
         // console.error('Failed to update cookie:', error);
@@ -2660,74 +2434,46 @@ async function forceApplyToCurrent() {
       }
     }
 
-    // 显示结果通知
+    // 创建遮罩层与结果通知
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-modal-overlay';
+
     const notification = document.createElement('div');
-    notification.className = 'cookie-notification';
-    notification.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-      min-width: 300px;
-    `;
+    notification.className = 'cm-modal-dialog cm-modal-sm';
+
+    const closeFn = () => closeUnifiedModal(notification, overlay);
 
     // 构建通知内容
     let notificationContent = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #333;">${t('modalApplyTitle')}</h3>
-        <p style="color: #28a745;">${t('modalApplySuccess').replace('{n}', successCount)}</p>
-        ${failCount > 0 ? `<p style="color: #dc3545;">${t('modalApplyFail').replace('{n}', failCount)}</p>` : ''}
-        <p style="color: #666;">${t('modalApplyDomain')}${url.hostname}</p>
+        <h3 style="margin: 0 0 10px 0; font-size: 14.5px; font-weight: 600; color: #ffffff;">${t('modalApplyTitle')}</h3>
+        <p style="color: #34D399; margin: 4px 0; font-size: 12px;">${t('modalApplySuccess').replace('{n}', successCount)}</p>
+        ${failCount > 0 ? `<p style="color: #F87171; margin: 4px 0; font-size: 12px;">${t('modalApplyFail').replace('{n}', failCount)}</p>` : ''}
+        <p class="cm-modal-desc" style="margin-top: 4px;">${t('modalApplyDomain')}<span style="color: #60A5FA;">${url.hostname}</span></p>
     `;
 
     // 如果有失败的cookie，显示详细信息
     if (failCount > 0) {
       notificationContent += `
-        <div style="text-align: left; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-          <p style="margin: 0; font-weight: bold; color: #333;">${t('modalApplyFailDetails')}</p>
+        <div style="text-align: left; margin: 10px 0; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; max-height: 120px; overflow-y: auto; font-size: 11px;">
+          <p style="margin: 0 0 6px 0; font-weight: 600; color: #ffffff;">${t('modalApplyFailDetails')}</p>
           ${results.filter(r => !r.success)
-            .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error}</p>`)
+            .map(r => `<p style="margin: 3px 0; color: #F87171;">· ${r.name}: ${r.error}</p>`)
             .join('')}
         </div>
       `;
     }
 
     notificationContent += `
-        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-          <button class="notification-close" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #007bff;
-            color: white;
-          ">${t('modalBtnConfirm')}</button>
+        <div class="cm-modal-actions center" style="margin-top: 14px; flex-wrap: wrap;">
+          <button class="cm-modal-btn cm-btn-primary notification-close">${t('modalBtnConfirm')}</button>
           ${failCount > 0 ? `
-            <button class="notification-retry" style="
-              padding: 8px 20px;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              background: #dc3545;
-              color: white;
-            ">${t('modalBtnRetry')}</button>
+            <button class="cm-modal-btn cm-btn-danger notification-retry">${t('modalBtnRetry')}</button>
           ` : ''}
-          <button class="notification-debug" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #f5f5f5;
-            color: #666;
-          ">${t('modalBtnDebug')}</button>
+          <button class="cm-modal-btn cm-btn-secondary notification-debug">${t('modalBtnDebug')}</button>
         </div>
         ${successCount > 0 ? `
-          <p style="margin-top: 15px; color: #666;">
+          <p style="margin-top: 12px; margin-bottom: 0; color: rgba(255, 255, 255, 0.65); font-size: 11px;">
             ${t('modalApplyAutoRefresh', '3秒后将自动刷新页面...')}
           </p>
         ` : ''}
@@ -2735,18 +2481,18 @@ async function forceApplyToCurrent() {
     `;
 
     notification.innerHTML = notificationContent;
+    document.body.appendChild(overlay);
     document.body.appendChild(notification);
+
+    overlay.addEventListener('click', closeFn);
 
     // 添加按钮事件
     const closeButton = notification.querySelector('.notification-close');
     closeButton.addEventListener('click', async () => {
-      notification.remove();
+      closeFn();
       if (successCount > 0) {
-        // 刷新页面并等待完成
         await chrome.tabs.reload(tab.id);
-        // 等待一小段时间确保页面加载完成
         await new Promise(resolve => setTimeout(resolve, 500));
-        // 更新cookie表格
         await fetchCookies();
       }
     });
@@ -2754,7 +2500,7 @@ async function forceApplyToCurrent() {
     const retryButton = notification.querySelector('.notification-retry');
     if (retryButton) {
       retryButton.addEventListener('click', async () => {
-        notification.remove();
+        closeFn();
         await forceApplyToCurrent();
       });
     }
@@ -2770,21 +2516,13 @@ async function forceApplyToCurrent() {
     // 如果有成功设置的cookie，3秒后自动刷新页面
     if (successCount > 0) {
       setTimeout(async () => {
-        notification.remove();
-        // 刷新页面并等待完成
+        closeFn();
         await chrome.tabs.reload(tab.id);
-        // 等待一小段时间确保页面加载完成
         await new Promise(resolve => setTimeout(resolve, 500));
-        // 更新cookie表格
         await fetchCookies();
       }, 3000);
     } else {
-      // 如果全部失败，5秒后自动关闭通知
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
-        }
-      }, 5000);
+      setTimeout(closeFn, 5000);
     }
 
   } catch (error) {
@@ -3153,89 +2891,31 @@ document.getElementById("getCookies").addEventListener("click", async () => {
     // 创建详细的格式化版本
     const detailedVersion = JSON.stringify(cookieData, null, 2);
 
-    // 创建遮罩层
+    // 创建遮罩层与弹窗主体
     const overlay = document.createElement('div');
-    overlay.className = 'cookie-modal-overlay';
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      z-index: 1000;
-    `;
+    overlay.className = 'cm-modal-overlay';
 
-    // 创建通知/对话框元素
     const notification = document.createElement('div');
-    notification.className = 'cookie-notification cookie-modal-dialog';
-    notification.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 24px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-      z-index: 1001;
-      min-width: 380px;
-      max-width: 90%;
-      box-sizing: border-box;
-      color: #333;
-    `;
+    notification.className = 'cm-modal-dialog cm-modal-sm';
+
+    const closeFn = () => closeUnifiedModal(notification, overlay);
 
     notification.innerHTML = `
       <div style="position: relative; text-align: center;">
-        <button class="close-notify" style="
-          position: absolute;
-          top: -12px;
-          right: -8px;
-          background: none;
-          border: none;
-          font-size: 20px;
-          line-height: 1;
-          color: #999;
-          cursor: pointer;
-          padding: 4px 8px;
-          border-radius: 4px;
-          transition: all 0.2s ease;
-        " title="${t('modalBtnClose') || 'Close'}">×</button>
-        <h3 style="margin: 0 0 10px 0; font-size: 17px; font-weight: 600; color: #333;">${t('modalGetCookiesTitle')}</h3>
-        <p style="margin: 0 0 18px 0; color: #666; font-size: 14px;">${t('modalFoundCookies').replace('{n}', cookies.length)}</p>
-        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: nowrap;">
-          <button class="copy-simple" style="
-            padding: 9px 18px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #007BFF;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-          ">${t('modalBtnCopySimple')}</button>
-          <button class="copy-detailed" style="
-            padding: 9px 18px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #28a745;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-          ">${t('modalBtnCopyDetailed')}</button>
+        <button class="close-notify cm-modal-close" style="position: absolute; top: -6px; right: -4px;" title="${t('modalBtnClose') || 'Close'}">×</button>
+        <h3 style="margin: 0 0 8px 0; font-size: 15px; font-weight: 600; color: #ffffff;">${t('modalGetCookiesTitle')}</h3>
+        <p class="cm-modal-desc" style="margin: 0 0 16px 0;">${t('modalFoundCookies').replace('{n}', cookies.length)}</p>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: nowrap;">
+          <button class="copy-simple cm-modal-btn cm-btn-primary">${t('modalBtnCopySimple')}</button>
+          <button class="copy-detailed cm-modal-btn cm-btn-success">${t('modalBtnCopyDetailed')}</button>
         </div>
         <div class="copy-status" style="
-          margin-top: 12px;
-          color: #28a745;
-          font-size: 13px;
+          margin-top: 10px;
+          color: #34D399;
+          font-size: 11.5px;
           height: 18px;
           line-height: 18px;
+          font-weight: 500;
         "></div>
       </div>
     `;
@@ -3264,36 +2944,22 @@ document.getElementById("getCookies").addEventListener("click", async () => {
     });
 
     // 关闭/取消函数与事件
-    const closeModal = () => {
-      notification.remove();
-      overlay.remove();
-      document.removeEventListener('keydown', handleEsc);
-    };
+    notification.querySelector('.close-notify').addEventListener('click', closeFn);
+    overlay.addEventListener('click', closeFn);
 
     const handleEsc = (e) => {
       if (e.key === 'Escape') {
-        closeModal();
+        closeFn();
+        document.removeEventListener('keydown', handleEsc);
       }
     };
-
-    const closeBtn = notification.querySelector('.close-notify');
-    closeBtn.addEventListener('mouseenter', () => {
-      closeBtn.style.color = '#333';
-      closeBtn.style.background = '#f0f0f0';
-    });
-    closeBtn.addEventListener('mouseleave', () => {
-      closeBtn.style.color = '#999';
-      closeBtn.style.background = 'none';
-    });
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
     document.addEventListener('keydown', handleEsc);
 
     // 显示复制状态的函数
     function showCopyStatus(message, isError = false) {
       const statusDiv = notification.querySelector('.copy-status');
       statusDiv.textContent = message;
-      statusDiv.style.color = isError ? '#dc3545' : '#28a745';
+      statusDiv.style.color = isError ? '#F87171' : '#34D399';
       
       // 2秒后清除消息
       setTimeout(() => {
@@ -3302,6 +2968,8 @@ document.getElementById("getCookies").addEventListener("click", async () => {
         }
       }, 2000);
     }
+
+
 
     // 显示成功提示
     const successNotification = document.createElement('div');
@@ -3443,95 +3111,49 @@ async function deleteCurrentCookies() {
       return;
     }
 
-    // 创建确认对话框
+    // 创建确认对话框与遮罩
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-modal-overlay';
+
     const dialog = document.createElement('div');
-    dialog.className = 'delete-confirmation-dialog';
-    dialog.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1001;
-      min-width: 300px;
-      color: #333;
-    `;
+    dialog.className = 'cm-modal-dialog cm-modal-sm';
+
+    const closeFn = () => closeUnifiedModal(dialog, overlay);
 
     dialog.innerHTML = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalConfirmDeleteCurrentTitle')}</h3>
-        <p style="margin-bottom: 20px;">
+        <h3 style="margin: 0 0 10px 0; font-size: 14.5px; font-weight: 600; color: #F87171;">${t('modalConfirmDeleteCurrentTitle')}</h3>
+        <p class="cm-modal-desc" style="margin-bottom: 16px;">
           ${t('modalConfirmDeleteCurrentMsg').replace('{n}', cookies.length)}
         </p>
-        <div style="display: flex; justify-content: center; gap: 10px;">
-          <button class="cancel-delete" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #f5f5f5;
-            color: #666;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          ">${t('modalBtnCancel')}</button>
-          <button class="confirm-delete" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #dc3545;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          ">${t('modalBtnDeleteAll')}</button>
+        <div class="cm-modal-actions center">
+          <button class="cm-modal-btn cm-btn-secondary cancel-delete">${t('modalBtnCancel')}</button>
+          <button class="cm-modal-btn cm-btn-danger confirm-delete">${t('modalBtnDeleteAll')}</button>
         </div>
       </div>
-    `;
-
-    // 添加遮罩层
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      z-index: 1000;
     `;
 
     document.body.appendChild(overlay);
     document.body.appendChild(dialog);
 
-    // 处理取消按钮
-    dialog.querySelector('.cancel-delete').addEventListener('click', () => {
-      dialog.remove();
-      overlay.remove();
-    });
+    dialog.querySelector('.cancel-delete').addEventListener('click', closeFn);
+    overlay.addEventListener('click', closeFn);
 
     // 处理确认删除按钮
     dialog.querySelector('.confirm-delete').addEventListener('click', async () => {
       // 显示加载状态
       dialog.innerHTML = `
-        <div style="text-align: center;">
+        <div style="text-align: center; padding: 12px 0;">
           <div class="loading-spinner" style="
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #dc3545;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top: 3px solid #E11D48;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 10px auto;
           "></div>
-          <p>${t('modalDeletingCookies')}</p>
+          <p class="cm-modal-desc" style="margin: 10px 0 0 0;">${t('modalDeletingCookies')}</p>
         </div>
       `;
 
@@ -3568,65 +3190,44 @@ async function deleteCurrentCookies() {
         // 显示结果
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
+            <h3 style="margin-bottom: 10px; font-size: 14px; font-weight: 600; color: ${failCount === 0 ? '#34D399' : '#F87171'}">
               ${failCount === 0 ? t('modalDeleteSuccess') : t('modalDeleteCompletedErrors')}
             </h3>
-            <p style="color: #28a745; margin: 5px 0;">${t('modalDeleteSuccessCount')}${successCount}</p>
-            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
+            <p style="color: #34D399; margin: 4px 0; font-size: 12px;">${t('modalDeleteSuccessCount')}${successCount}</p>
+            ${failCount > 0 ? `<p style="color: #F87171; margin: 4px 0; font-size: 12px;">${t('modalImportFailCount')}${failCount}</p>` : ''}
             ${failCount > 0 ? `
-              <div style="text-align: left; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-                <p style="margin: 0 0 10px 0; font-weight: bold;">${t('modalDeleteFailList')}</p>
+              <div style="text-align: left; margin: 12px 0; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; max-height: 120px; overflow-y: auto; font-size: 11px;">
+                <p style="margin: 0 0 6px 0; font-weight: 600; color: #fff;">${t('modalDeleteFailList')}</p>
                 ${results.filter(r => !r.success)
-                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error || t('modalUnknownError')}</p>`)
+                  .map(r => `<p style="margin: 3px 0; color: #F87171;">· ${r.name}: ${r.error || t('modalUnknownError')}</p>`)
                   .join('')}
               </div>
             ` : ''}
-            <button class="close-dialog" style="
-              padding: 8px 20px;
-              border: none;
-              border-radius: 4px;
-              background: #28a745;
-              color: white;
-              cursor: pointer;
-              margin-top: 15px;
-            ">${t('modalBtnClose')}</button>
+            <div class="cm-modal-actions center" style="margin-top: 14px;">
+              <button class="cm-modal-btn cm-btn-primary close-dialog">${t('modalBtnClose')}</button>
+            </div>
           </div>
         `;
 
-        // 添加关闭按钮事件
-        dialog.querySelector('.close-dialog').addEventListener('click', () => {
-          dialog.remove();
-          overlay.remove();
-        });
+        dialog.querySelector('.close-dialog').addEventListener('click', closeFn);
 
         // 如果全部成功，2秒后自动关闭
         if (failCount === 0) {
-          setTimeout(() => {
-            dialog.remove();
-            overlay.remove();
-          }, 2000);
+          setTimeout(closeFn, 2000);
         }
 
       } catch (error) {
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalErrorTitle')}</h3>
-            <p style="margin-bottom: 20px;">${error.message}</p>
-            <button class="close-dialog" style="
-              padding: 8px 20px;
-              border: none;
-              border-radius: 4px;
-              background: #6c757d;
-              color: white;
-              cursor: pointer;
-            ">${t('modalBtnClose')}</button>
+            <h3 style="margin-bottom: 10px; color: #F87171; font-size: 14px;">${t('modalErrorTitle')}</h3>
+            <p class="cm-modal-desc">${error.message}</p>
+            <div class="cm-modal-actions center">
+              <button class="cm-modal-btn cm-btn-secondary close-dialog">${t('modalBtnClose')}</button>
+            </div>
           </div>
         `;
 
-        dialog.querySelector('.close-dialog').addEventListener('click', () => {
-          dialog.remove();
-          overlay.remove();
-        });
+        dialog.querySelector('.close-dialog').addEventListener('click', closeFn);
       }
     });
 
@@ -3664,95 +3265,49 @@ async function deleteAllCookies() {
       return;
     }
 
-    // 创建确认对话框
+    // 创建确认对话框与遮罩
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-modal-overlay';
+
     const dialog = document.createElement('div');
-    dialog.className = 'delete-confirmation-dialog';
-    dialog.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1001;
-      min-width: 300px;
-      color: #333;
-    `;
+    dialog.className = 'cm-modal-dialog cm-modal-sm';
+
+    const closeFn = () => closeUnifiedModal(dialog, overlay);
 
     dialog.innerHTML = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalWarningTitle')}</h3>
-        <p style="margin-bottom: 20px;">
+        <h3 style="margin: 0 0 10px 0; font-size: 14.5px; font-weight: 600; color: #F87171;">${t('modalWarningTitle')}</h3>
+        <p class="cm-modal-desc" style="margin-bottom: 16px;">
           ${t('modalWarningAllMsg').replace('{n}', allCookies.length)}
         </p>
-        <div style="display: flex; justify-content: center; gap: 10px;">
-          <button class="cancel-delete" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #f5f5f5;
-            color: #666;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          ">${t('modalBtnCancel')}</button>
-          <button class="confirm-delete" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #dc3545;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          ">${t('modalBtnDeleteAll')}</button>
+        <div class="cm-modal-actions center">
+          <button class="cm-modal-btn cm-btn-secondary cancel-delete">${t('modalBtnCancel')}</button>
+          <button class="cm-modal-btn cm-btn-danger confirm-delete">${t('modalBtnDeleteAll')}</button>
         </div>
       </div>
-    `;
-
-    // 添加遮罩层
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      z-index: 1000;
     `;
 
     document.body.appendChild(overlay);
     document.body.appendChild(dialog);
 
-    // 处理取消按钮
-    dialog.querySelector('.cancel-delete').addEventListener('click', () => {
-      dialog.remove();
-      overlay.remove();
-    });
+    dialog.querySelector('.cancel-delete').addEventListener('click', closeFn);
+    overlay.addEventListener('click', closeFn);
 
     // 处理确认删除按钮
     dialog.querySelector('.confirm-delete').addEventListener('click', async () => {
       // 显示加载状态
       dialog.innerHTML = `
-        <div style="text-align: center;">
+        <div style="text-align: center; padding: 12px 0;">
           <div class="loading-spinner" style="
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #dc3545;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top: 3px solid #E11D48;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 10px auto;
           "></div>
-          <p>${t('modalDeletingAllCookies')}</p>
+          <p class="cm-modal-desc" style="margin: 10px 0 0 0;">${t('modalDeletingAllCookies')}</p>
         </div>
       `;
 
@@ -3792,65 +3347,44 @@ async function deleteAllCookies() {
         // 显示结果
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
+            <h3 style="margin-bottom: 10px; font-size: 14px; font-weight: 600; color: ${failCount === 0 ? '#34D399' : '#F87171'}">
               ${failCount === 0 ? t('modalDeleteSuccess') : t('modalDeleteCompletedErrors')}
             </h3>
-            <p style="color: #28a745; margin: 5px 0;">${t('modalDeleteSuccessCount')}${successCount}</p>
-            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
+            <p style="color: #34D399; margin: 4px 0; font-size: 12px;">${t('modalDeleteSuccessCount')}${successCount}</p>
+            ${failCount > 0 ? `<p style="color: #F87171; margin: 4px 0; font-size: 12px;">${t('modalImportFailCount')}${failCount}</p>` : ''}
             ${failCount > 0 ? `
-              <div style="text-align: left; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-                <p style="margin: 0 0 10px 0; font-weight: bold;">${t('modalDeleteFailList')}</p>
+              <div style="text-align: left; margin: 12px 0; padding: 8px 10px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; max-height: 120px; overflow-y: auto; font-size: 11px;">
+                <p style="margin: 0 0 6px 0; font-weight: 600; color: #fff;">${t('modalDeleteFailList')}</p>
                 ${results.filter(r => !r.success)
-                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name} (${r.domain}): ${r.error || t('modalUnknownError')}</p>`)
+                  .map(r => `<p style="margin: 3px 0; color: #F87171;">· ${r.name} (${r.domain}): ${r.error || t('modalUnknownError')}</p>`)
                   .join('')}
               </div>
             ` : ''}
-            <button class="close-dialog" style="
-              padding: 8px 20px;
-              border: none;
-              border-radius: 4px;
-              background: #28a745;
-              color: white;
-              cursor: pointer;
-              margin-top: 15px;
-            ">${t('modalBtnClose')}</button>
+            <div class="cm-modal-actions center" style="margin-top: 14px;">
+              <button class="cm-modal-btn cm-btn-primary close-dialog">${t('modalBtnClose')}</button>
+            </div>
           </div>
         `;
 
-        // 添加关闭按钮事件
-        dialog.querySelector('.close-dialog').addEventListener('click', () => {
-          dialog.remove();
-          overlay.remove();
-        });
+        dialog.querySelector('.close-dialog').addEventListener('click', closeFn);
 
         // 如果全部成功，2秒后自动关闭
         if (failCount === 0) {
-          setTimeout(() => {
-            dialog.remove();
-            overlay.remove();
-          }, 2000);
+          setTimeout(closeFn, 2000);
         }
 
       } catch (error) {
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalErrorTitle')}</h3>
-            <p style="margin-bottom: 20px;">${error.message}</p>
-            <button class="close-dialog" style="
-              padding: 8px 20px;
-              border: none;
-              border-radius: 4px;
-              background: #6c757d;
-              color: white;
-              cursor: pointer;
-            ">${t('modalBtnClose')}</button>
+            <h3 style="margin-bottom: 10px; color: #F87171; font-size: 14px;">${t('modalErrorTitle')}</h3>
+            <p class="cm-modal-desc">${error.message}</p>
+            <div class="cm-modal-actions center">
+              <button class="cm-modal-btn cm-btn-secondary close-dialog">${t('modalBtnClose')}</button>
+            </div>
           </div>
         `;
 
-        dialog.querySelector('.close-dialog').addEventListener('click', () => {
-          dialog.remove();
-          overlay.remove();
-        });
+        dialog.querySelector('.close-dialog').addEventListener('click', closeFn);
       }
     });
 
@@ -4078,171 +3612,102 @@ function initializeEventListeners() {
     
         const url = new URL(tab.url);
         
-        // 创建一个表单对话框
+        // 创建表单结构
         const formHtml = `
-          <div style="padding: 15px;">
-            <style>
-              .cookie-form input, .cookie-form select {
-                width: 100%;
-                padding: 8px;
-                margin: 5px 0 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-              }
-              .cookie-form label {
-                font-weight: bold;
-                color: #333;
-              }
-              .cookie-form .advanced-toggle {
-                color: #007bff;
-                cursor: pointer;
-                margin: 10px 0;
-                user-select: none;
-              }
-              .cookie-form .advanced-section {
-                display: none;
-                border-top: 1px solid #eee;
-                padding-top: 10px;
-                margin-top: 10px;
-              }
-              .cookie-form .advanced-section.show {
-                display: block;
-              }
-            </style>
-            <div class="cookie-form">
-              <label for="cookieName">${t('modalAddName')}</label>
-              <input type="text" id="cookieName" required>
+          <div class="cookie-form">
+            <label for="cookieName">${t('modalAddName')} *</label>
+            <input type="text" id="cookieName" class="cm-modal-input" required placeholder="name">
+            
+            <label for="cookieValue">${t('modalAddValue')} *</label>
+            <input type="text" id="cookieValue" class="cm-modal-input" required placeholder="value">
+            
+            <div class="advanced-toggle">
+              ▶ ${t('modalAdvancedSettings')}
+            </div>
+            
+            <div class="advanced-section">
+              <label for="cookieDomain">${t('modalDomain')}</label>
+              <input type="text" id="cookieDomain" class="cm-modal-input" placeholder="${t('modalDomainPlaceholder')}">
               
-              <label for="cookieValue">${t('modalAddValue')}</label>
-              <input type="text" id="cookieValue" required>
+              <label for="cookiePath">${t('modalPath')}</label>
+              <input type="text" id="cookiePath" class="cm-modal-input" value="/" placeholder="/">
               
-              <div class="advanced-toggle">
-                ▶ ${t('modalAdvancedSettings')}
+              <label for="cookieExpiration">${t('modalExpiration')}</label>
+              <select id="cookieExpirationType" class="cm-modal-select">
+                <option value="session">${t('modalExpSession')}</option>
+                <option value="date">${t('modalExpDate')}</option>
+                <option value="duration" selected>${t('modalExpDuration')}</option>
+              </select>
+              
+              <div id="expirationDateContainer" style="display: none;">
+                <input type="datetime-local" id="cookieExpirationDate" class="cm-modal-input">
               </div>
               
-              <div class="advanced-section">
-                <label for="cookieDomain">${t('modalDomain')}</label>
-                <input type="text" id="cookieDomain" placeholder="${t('modalDomainPlaceholder')}">
-                
-                <label for="cookiePath">${t('modalPath')}</label>
-                <input type="text" id="cookiePath" value="/" placeholder="/">
-                
-                <label for="cookieExpiration">${t('modalExpiration')}</label>
-                <select id="cookieExpirationType">
-                  <option value="session">${t('modalExpSession')}</option>
-                  <option value="date">${t('modalExpDate')}</option>
-                  <option value="duration" selected>${t('modalExpDuration')}</option>
+              <div id="expirationDurationContainer" style="display: flex; gap: 8px;">
+                <input type="number" id="cookieExpirationDuration" class="cm-modal-input" value="365" min="1" style="flex: 1;">
+                <select id="cookieExpirationUnit" class="cm-modal-select" style="flex: 1;">
+                  <option value="minutes">${t('modalUnitMinutes')}</option>
+                  <option value="hours">${t('modalUnitHours')}</option>
+                  <option value="days" selected>${t('modalUnitDays')}</option>
+                  <option value="months">${t('modalUnitMonths')}</option>
+                  <option value="years">${t('modalUnitYears')}</option>
                 </select>
+              </div>
+              
+              <label for="cookieSameSite">SameSite</label>
+              <select id="cookieSameSite" class="cm-modal-select">
+                <option value="Lax">Lax</option>
+                <option value="Strict">Strict</option>
+                <option value="None">None</option>
+              </select>
+              
+              <div style="margin-top: 8px; display: flex; gap: 14px; flex-wrap: wrap;">
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" id="cookieSecure" ${url.protocol === 'https:' ? 'checked' : ''}>
+                  <span style="margin-left: 5px;">Secure</span>
+                </label>
                 
-                <div id="expirationDateContainer" style="display: none;">
-                  <input type="datetime-local" id="cookieExpirationDate">
-                </div>
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" id="cookieHttpOnly">
+                  <span style="margin-left: 5px;">HttpOnly</span>
+                </label>
                 
-                <div id="expirationDurationContainer">
-                  <input type="number" id="cookieExpirationDuration" value="365" min="1">
-                  <select id="cookieExpirationUnit">
-                    <option value="minutes">${t('modalUnitMinutes')}</option>
-                    <option value="hours">${t('modalUnitHours')}</option>
-                    <option value="days" selected>${t('modalUnitDays')}</option>
-                    <option value="months">${t('modalUnitMonths')}</option>
-                    <option value="years">${t('modalUnitYears')}</option>
-                  </select>
-                </div>
-                
-                <label for="cookieSameSite">SameSite</label>
-                <select id="cookieSameSite">
-                  <option value="Lax">Lax</option>
-                  <option value="Strict">Strict</option>
-                  <option value="None">None</option>
-                </select>
-                
-                <div style="margin-top: 10px;">
-                  <label style="display: inline-flex; align-items: center;">
-                    <input type="checkbox" id="cookieSecure" ${url.protocol === 'https:' ? 'checked' : ''}>
-                    <span style="margin-left: 5px;">Secure</span>
-                  </label>
-                  
-                  <label style="display: inline-flex; align-items: center; margin-left: 15px;">
-                    <input type="checkbox" id="cookieHttpOnly">
-                    <span style="margin-left: 5px;">HttpOnly</span>
-                  </label>
-                  
-                  <label style="display: inline-flex; align-items: center; margin-left: 15px;">
-                    <input type="checkbox" id="cookieHostOnly">
-                    <span style="margin-left: 5px;">Host Only</span>
-                  </label>
-                </div>
+                <label style="display: inline-flex; align-items: center; cursor: pointer;">
+                  <input type="checkbox" id="cookieHostOnly">
+                  <span style="margin-left: 5px;">Host Only</span>
+                </label>
               </div>
             </div>
           </div>
         `;
     
-        // 显示对话框
+        // 显示对话框与遮罩
+        const overlay = document.createElement('div');
+        overlay.className = 'cm-modal-overlay';
+
         const dialog = document.createElement('div');
-        dialog.style.cssText = `
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          z-index: 1001;
-          min-width: 350px;
-          max-width: 90%;
-          max-height: 90vh;
-          overflow-y: auto;
-        `;
+        dialog.className = 'cm-modal-dialog cm-modal-md';
+
+        const closeFn = () => closeUnifiedModal(dialog, overlay);
         
         dialog.innerHTML = `
-          <h3 style="margin-top: 0; margin-bottom: 15px;">${t('modalAddTitle')}</h3>
+          <div class="cm-modal-header">
+            <h3>${t('modalAddTitle')}</h3>
+            <button class="cm-modal-close" title="${t('modalBtnClose') || 'Close'}">×</button>
+          </div>
           ${formHtml}
-          <div style="text-align: right; margin-top: 15px;">
-            <button id="cancelAdd" style="
-              padding: 8px 18px;
-              margin-right: 10px;
-              border: none;
-              border-radius: 4px;
-              background: #f5f5f5;
-              color: #666;
-              font-size: 13px;
-              font-weight: 500;
-              white-space: nowrap;
-              cursor: pointer;
-              transition: all 0.2s ease;
-            ">${t('modalBtnCancel')}</button>
-            <button id="confirmAdd" style="
-              padding: 8px 18px;
-              border: none;
-              border-radius: 4px;
-              background: #007BFF;
-              color: white;
-              font-size: 13px;
-              font-weight: 500;
-              white-space: nowrap;
-              cursor: pointer;
-              transition: all 0.2s ease;
-            ">${t('modalBtnAddCookie')}</button>
+          <div class="cm-modal-actions" style="margin-top: 14px;">
+            <button id="cancelAdd" class="cm-modal-btn cm-btn-secondary">${t('modalBtnCancel')}</button>
+            <button id="confirmAdd" class="cm-modal-btn cm-btn-primary">${t('modalBtnAddCookie')}</button>
           </div>
         `;
     
-        document.body.appendChild(dialog);
-    
-        // 添加遮罩层
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0,0,0,0.4);
-          backdrop-filter: blur(2px);
-          z-index: 1000;
-        `;
-    
         document.body.appendChild(overlay);
+        document.body.appendChild(dialog);
+
+        dialog.querySelector('.cm-modal-close').addEventListener('click', closeFn);
+        overlay.addEventListener('click', closeFn);
+        document.getElementById('cancelAdd').addEventListener('click', closeFn);
     
         // 高级设置切换
         const advancedToggle = dialog.querySelector('.advanced-toggle');
@@ -4260,7 +3725,7 @@ function initializeEventListeners() {
         
         expirationType.addEventListener('change', () => {
           expirationDateContainer.style.display = expirationType.value === 'date' ? 'block' : 'none';
-          expirationDurationContainer.style.display = expirationType.value === 'duration' ? 'block' : 'none';
+          expirationDurationContainer.style.display = expirationType.value === 'duration' ? 'flex' : 'none';
         });
     
         // Host Only 复选框事件
@@ -4275,12 +3740,6 @@ function initializeEventListeners() {
           } else {
             domainInput.placeholder = t('modalDomainPlaceholder');
           }
-        });
-    
-        // 处理取消按钮
-        document.getElementById('cancelAdd').addEventListener('click', () => {
-          dialog.remove();
-          overlay.remove();
         });
     
         // 处理确认按钮
@@ -4358,9 +3817,8 @@ function initializeEventListeners() {
               throw new Error('Failed to set cookie');
             }
     
-            // 移除对话框
-            dialog.remove();
-            overlay.remove();
+            // 优雅平滑退场
+            closeFn();
     
             // 显示成功通知
             const notification = document.createElement('div');
