@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="docTitle">隐私权政策 - Cookie Manager with Daily Quotes</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="icon48.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    .privacy-container {
+      max-width: 860px;
+      margin: 40px auto 80px;
+      padding: 48px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(16px);
+      line-height: 1.8;
+    }
+    .privacy-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    .privacy-title {
+      font-family: var(--font-heading);
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+    .privacy-meta {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .privacy-container h2 {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 36px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .privacy-container h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 20px 0 8px;
+    }
+    .privacy-container p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .privacy-container ul {
+      margin: 0 0 20px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .privacy-container li {
+      margin-bottom: 8px;
+    }
+    .badge-highlight {
+      background: var(--primary-gradient-subtle);
+      color: var(--accent-blue);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: var(--accent-blue);
+    }
+  </style>
+  <script>
+    (function() {
+      const manualTheme = localStorage.getItem('cm-site-theme-manual') === 'true';
+      let theme = 'light';
+      if (manualTheme) {
+        theme = localStorage.getItem('cm-site-theme') || 'light';
+      } else {
+        const hour = new Date().getHours();
+        theme = (hour >= 6 && hour < 19) ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+
+      let lang = localStorage.getItem('cm-site-lang');
+      if (!lang) {
+        lang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+        localStorage.setItem('cm-site-lang', lang);
+      }
+      document.documentElement.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+    })();
+  </script>
+</head>
+<body>
+  <!-- 顶部导航栏 (Navbar) -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <img src="icon48.png" alt="Cookie Manager Logo" class="brand-logo" width="32" height="32">
+        <div class="brand-text">
+          <span class="brand-name">Cookie Manager</span>
+          <span class="brand-tag">79team</span>
+        </div>
+      </a>
+      
+      <div class="nav-links">
+        <a href="index.html#features" data-i18n="navFeatures">核心特性</a>
+        <a href="index.html#why-remote" data-i18n="navWhyRemote">推荐安装</a>
+        <a href="privacy.html" class="active" style="color:var(--text-main);font-weight:700" data-i18n="navPrivacy">隐私权政策</a>
+        <a href="https://github.com/rowkin/browser-plugins/tree/main/cookie-manager" target="_blank" rel="noreferrer" class="github-link">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <div class="nav-controls">
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn-nav-install" data-i18n="navBtnInstall">🛍️ 立即安装</a>
+        <button id="langToggleBtn" class="ctrl-btn" title="Switch Language">
+          🌐 <span id="langLabel">English</span>
+        </button>
+        <button id="themeToggleBtn" class="ctrl-btn" title="切换深色/浅色主题">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="privacy-container">
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span data-i18n="backHome">返回官网首页</span>
+    </a>
+
+    <header class="privacy-header">
+      <h1 class="privacy-title" data-i18n="privacyHeading">Cookie Manager with Daily Quotes 隐私权政策</h1>
+      <div class="privacy-meta">
+        <span data-i18n="privacyEntity">发布主体：七九在线科技 (79team)</span> · 
+        <span data-i18n="privacyVersion">适用版本：v1.2.5+ · 扩展 ID: jbddngoogmpocbdmoengcehnobapodpf</span>
+      </div>
+    </header>
+
+    <div id="privacyContentZh" class="privacy-body">
+      <p>七九在线科技（以下简称“我们”或“79team”）非常重视用户隐私与数据安全，并始终致力于保护您的个人数据。本隐私权政策旨在向您说明 <strong>Cookie Manager with Daily Quotes</strong> 浏览器扩展程序如何处理、使用和保护您的数据，以确保本扩展 100% 符合 Chrome Web Store 开发者政策与全球隐私保护准则。</p>
+
+      <h2>一、我们收集与处理的数据</h2>
+      <p>根据本扩展的功能定位，我们严格遵循<span class="badge-highlight">最小化权限与数据本地化原则</span>，绝大多数功能完全在本地浏览器沙箱中闭环运行：</p>
+
+      <h3>1. Cookie 访问与管理 (cookies 权限)</h3>
+      <ul>
+        <li><strong>读取与修改</strong>：本扩展需要访问您当前访问站点的 Cookie 数据，用于为您提供 Cookie 检索、添加、编辑、删除、过期时间调整以及 SameSite/Secure/HttpOnly 属性配置功能。</li>
+        <li><strong>数据流向</strong>：<strong>所有 Cookie 读取与修改均直接在您的本地浏览器进程内完成</strong>。我们绝不会将您的任何 Cookie、Session ID、Token 或敏感登录凭证上传至任何远程服务器或第三方机构。</li>
+      </ul>
+
+      <h3>2. 本地偏好设置与固定列表 (chrome.storage.local)</h3>
+      <ul>
+        <li><strong>固定 Cookie (Pinned Cookies)</strong>：当您主动使用“固定 Cookie”功能时，该 Cookie 的键值和域名规则将被保存在浏览器的本地存储中，以便在新标签页或刷新时自动帮您应用。</li>
+        <li><strong>用户首选项</strong>：包括语言偏好（简体中文 / English）、日间/暗色主题状态、每日格言与天气缓存信息。</li>
+        <li><strong>本地存储目的</strong>：仅用于提升日常操作的便捷性，所有数据均保留在您的物理设备本地。</li>
+      </ul>
+
+      <h3>3. 当前活动标签页感知 (activeTab / tabs 权限)</h3>
+      <ul>
+        <li><strong>域名匹配与过滤</strong>：本扩展需要获取当前活动标签页的域名与 URL，以实现自动过滤并仅展示与当前网页相关的 Cookie 列表。</li>
+        <li><strong>数据处理</strong>：标签页信息仅在弹窗打开时临时在内存中读取，弹窗关闭即销毁，绝不持久化记录您的浏览历史。</li>
+      </ul>
+
+      <h3>4. 辅助服务请求 (天气与每日励志格言)</h3>
+      <ul>
+        <li><strong>天气与逆地理编码</strong>：为了在顶部信息面板展示您所在城市的实时天气与温度，本扩展会请求公开的气象服务 API。地理位置仅用于匹配就近城市天气，<strong>绝不记录、上传或追踪您的物理行踪轨迹</strong>。</li>
+        <li><strong>每日中英双语名言</strong>：为了给您的研发与调试工作提供正向情绪激励，本扩展会在本地或公开只读源获取每日精选格言，该请求为纯静态 GET 请求，不携带任何个人识别符。</li>
+      </ul>
+
+      <h2>二、数据用途与安全承诺</h2>
+      <ul>
+        <li><strong>完全本地沙箱运行</strong>：本扩展不具备任何收集用户数据的中央服务器。您导入、导出、编辑的任何 Cookie 明文数据，均存储于您自己的物理设备中。</li>
+        <li><strong>零广告与零行为追踪</strong>：本扩展不包含任何商业广告模块，不植入第三方行为分析探针，彻底尊重您的专注与隐私。</li>
+        <li><strong>无痕与隐私友好</strong>：支持在 Chrome 隐身模式（Incognito Mode）下受控运行，退出隐身模式后产生的临时会话数据将按浏览器原生机制自动销毁。</li>
+      </ul>
+
+      <h2>三、数据的共享与转让 (Data Sharing and Transfer)</h2>
+      <p>我们郑重做出如下合规声明：</p>
+      <ul>
+        <li><strong>绝不向任何第三方出售、转让、出租或共享您的任何 Cookie、个人数据或浏览信息</strong>。</li>
+        <li><strong>所有数据绝不用于个性化广告投放、用户画像挖掘或商业征信</strong>。</li>
+        <li>所有存储数据受 Chrome Extension 原生沙箱隔离保护，除您当前浏览器中的本扩展外，任何第三方网页脚本均无法越权访问。</li>
+      </ul>
+
+      <h2>四、联系我们与开源反馈</h2>
+      <p>如果您对本隐私权政策、数据安全或功能实现有任何疑问，请随时通过我们的公开分发中心进行反馈：</p>
+      <ul>
+        <li>官方代码与反馈渠道：<a href="https://github.com/rowkin/browser-plugins/issues" target="_blank">GitHub Issues</a></li>
+        <li>官方主仓：<a href="https://github.com/rowkin/browser-plugins/tree/main/cookie-manager" target="_blank">rowkin/browser-plugins/cookie-manager</a></li>
+        <li>打造团队：79team</li>
+      </ul>
+    </div>
+
+    <div id="privacyContentEn" class="privacy-body" style="display:none">
+      <p>79team ("we", "us", or "our") values user privacy and data security. This Privacy Policy describes how the <strong>Cookie Manager with Daily Quotes</strong> browser extension collects, uses, and safeguards your data, ensuring 100% compliance with Google Chrome Web Store Developer Policies and global privacy standards.</p>
+
+      <h2>1. Information We Collect and Process</h2>
+      <p>We strictly adhere to the <span class="badge-highlight">principle of data minimization and local sandboxing</span>:</p>
+
+      <h3>1.1 Cookie Manipulation (cookies permission)</h3>
+      <ul>
+        <li><strong>Read & Write</strong>: Used solely for inspecting, creating, editing, and deleting cookies on the current domain as explicitly directed by you.</li>
+        <li><strong>Data Flow</strong>: <strong>All cookie operations are executed strictly within your local browser process</strong>. We NEVER transmit session IDs, auth tokens, or cookie credentials to any remote server.</li>
+      </ul>
+
+      <h3>1.2 Local Preferences (chrome.storage.local)</h3>
+      <ul>
+        <li><strong>Pinned Cookies</strong>: Saved locally in your browser storage so they can be automatically applied across tabs or upon refreshes.</li>
+        <li><strong>User Preferences</strong>: Theme preference, language setting, and cached weather/quote metadata.</li>
+      </ul>
+
+      <h3>1.3 Active Tab Context (activeTab / tabs permissions)</h3>
+      <ul>
+        <li>Used only when the popup is open to match and filter cookies related to the current website domain. Never logs or tracks your browsing history.</li>
+      </ul>
+
+      <h3>1.4 Live Weather & Daily Quotes</h3>
+      <ul>
+        <li><strong>Weather</strong>: Queries public weather APIs with reverse-geocoded coordinates solely for displaying local temperature. Never records or uploads your location trajectory.</li>
+        <li><strong>Daily Quotes</strong>: Fetches inspirational quotes via read-only GET requests without any tracking identifiers.</li>
+      </ul>
+
+      <h2>2. Security & Zero-Tracking Guarantee</h2>
+      <ul>
+        <li><strong>100% Local Sandbox</strong>: No central server collects user telemetry or browsing behavior.</li>
+        <li><strong>Zero Commercial Tracking</strong>: No ads, no analytics trackers, no fingerprinting scripts.</li>
+        <li><strong>Incognito Respect</strong>: Seamlessly operates in private windows while isolating session traces.</li>
+      </ul>
+
+      <h2>3. Data Sharing and Transfer</h2>
+      <ul>
+        <li>We will <strong>NEVER sell, rent, or transfer your cookies or personal data</strong> to any third parties.</li>
+        <li>Data is never leveraged for targeted advertising, credit assessment, or profiling.</li>
+      </ul>
+
+      <h2>4. Contact & Community Support</h2>
+      <p>If you have any questions regarding this Privacy Policy, please reach out via:</p>
+      <ul>
+        <li>Feedback: <a href="https://github.com/rowkin/browser-plugins/issues" target="_blank">GitHub Issues</a></li>
+        <li>Open Repository: <a href="https://github.com/rowkin/browser-plugins/tree/main/cookie-manager" target="_blank">rowkin/browser-plugins/cookie-manager</a></li>
+        <li>Author: 79team</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- 页脚 (Footer) -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>Cookie Manager with Daily Quotes</strong> · 由 <strong>79team</strong> 倾情打造
+      </div>
+      <div class="footer-links">
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" data-i18n="ftStore">Chrome 商店</a>
+        <a href="privacy.html" data-i18n="ftPrivacy">隐私权政策</a>
+        <a href="https://github.com/rowkin/browser-plugins/tree/main/cookie-manager" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const I18N = {
+      zh: {
+        docTitle: "隐私权政策 - Cookie Manager with Daily Quotes",
+        navFeatures: "核心特性",
+        navWhyRemote: "推荐安装",
+        navPrivacy: "隐私权政策",
+        navBtnInstall: "🛍️ 立即安装",
+        backHome: "返回官网首页",
+        privacyHeading: "Cookie Manager with Daily Quotes 隐私权政策",
+        privacyEntity: "发布主体：七九在线科技 (79team)",
+        privacyVersion: "适用版本：v1.2.5+ · 扩展 ID: jbddngoogmpocbdmoengcehnobapodpf",
+        ftStore: "Chrome 商店",
+        ftPrivacy: "隐私权政策"
+      },
+      en: {
+        docTitle: "Privacy Policy - Cookie Manager with Daily Quotes",
+        navFeatures: "Features",
+        navWhyRemote: "Why Store",
+        navPrivacy: "Privacy Policy",
+        navBtnInstall: "🛍️ Install Now",
+        backHome: "Back to Home",
+        privacyHeading: "Cookie Manager with Daily Quotes Privacy Policy",
+        privacyEntity: "Published by: 79team",
+        privacyVersion: "Applicable Versions: v1.2.5+ · Extension ID: jbddngoogmpocbdmoengcehnobapodpf",
+        ftStore: "Chrome Web Store",
+        ftPrivacy: "Privacy Policy"
+      }
+    };
+
+    let currentLang = localStorage.getItem('cm-site-lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('cm-site-lang', lang);
+      document.documentElement.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+      
+      const dict = I18N[lang] || I18N.zh;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+
+      const label = document.getElementById('langLabel');
+      if (label) {
+        label.textContent = lang === 'zh' ? 'English' : '简体中文';
+      }
+
+      document.getElementById('privacyContentZh').style.display = lang === 'zh' ? 'block' : 'none';
+      document.getElementById('privacyContentEn').style.display = lang === 'en' ? 'block' : 'none';
+    }
+
+    document.getElementById('langToggleBtn').addEventListener('click', () => {
+      applyLanguage(currentLang === 'zh' ? 'en' : 'zh');
+    });
+
+    applyLanguage(currentLang);
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      themeBtn.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+      themeBtn.addEventListener('click', () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('cm-site-theme', next);
+        localStorage.setItem('cm-site-theme-manual', 'true');
+      });
+    }
+  </script>
+</body>
+</html>

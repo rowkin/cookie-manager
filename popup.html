@@ -8,32 +8,30 @@
 </head>
 <body>
   <div class="cookie-manager-wrapper">
-    <!-- Add Daily Quote Component -->
-    <div class="quote-section" id="dailyQuote">
-      __MSG_loadingQuote__
-    </div>
     <!-- Canvas element for rendering aurora effect -->
     <canvas id="auroraCanvas"></canvas>
+
+    <!-- 顶部状态栏：左侧天气胶囊，右侧语言切换胶囊 (参考图二布局) -->
     <div class="cookie-manager-header">
-      <!-- 标题左侧一键语言切换按钮 -->
-      <button id="langSwitch" class="lang-switch-btn" title="切换语言 / Switch Language">
-        <svg class="lang-icon" viewBox="0 0 24 24" width="13" height="13" stroke="#0ea5e9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-        </svg>
-        <span id="langSwitchText" data-i18n="switchLang">__MSG_switchLang__</span>
-      </button>
-      <h2 data-i18n="extName">__MSG_extName__</h2>
       <!-- Add weather widget -->
-      <div class="weather-widget weather-loading">
+      <div class="weather-widget weather-loading" title="点击刷新天气 / Click to refresh weather">
         <i class="weather-icon wi wi-day-sunny"></i>
         <div class="weather-info">
           <div class="weather-temp">Loading...</div>
           <div class="weather-location">Locating...</div>
         </div>
       </div>
+      <!-- 标题右侧一键语言切换按钮 -->
+      <button id="langSwitch" class="lang-switch-btn" title="切换语言 / Switch Language">
+        <span id="langSwitchText" data-i18n="switchLang">__MSG_switchLang__</span>
+      </button>
     </div>
+
+    <!-- Add Daily Quote Component (置于天气与语言状态栏正下方) -->
+    <div class="quote-section" id="dailyQuote">
+      __MSG_loadingQuote__
+    </div>
+
     <input type="text" id="searchCookie" data-i18n-placeholder="searchPlaceholder" placeholder="__MSG_searchPlaceholder__">
     
     <div class="cookie-actions">
@@ -105,7 +103,7 @@
       </table>
     </div>
 
-    <!-- Aggiungi pulsante di navigazione rapida -->
+    <!-- 快捷导航按钮 -->
     <div class="quick-nav" style="display: none;">
       <button class="scroll-top" title="Scroll to top">
         <svg viewBox="0 0 24 24" width="24" height="24">

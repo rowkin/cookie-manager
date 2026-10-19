@@ -280,7 +280,32 @@ body {
   background-color: rgba(255, 255, 255, 0.16);
 }
 
-.cookie-manager-wrapper .quote-section,
+.cookie-manager-wrapper .quote-section {
+  padding: 10px 14px;
+  background-color: var(--cm-dark-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  margin: 0 0 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cookie-manager-wrapper .quote-original {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 3px;
+  font-size: 12px;
+}
+
+.cookie-manager-wrapper .quote-translated {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
 .cookie-manager-wrapper .cookie-section,
 .cookie-manager-wrapper .pinned-section {
   padding: 12px;
@@ -334,87 +359,81 @@ body {
 
 .cookie-manager-header {
   position: relative;
-  margin-bottom: 12px;
+  margin: 12px 0 10px;
   min-height: 28px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-/* 极简精致一键语言切换胶囊（白底轻透质感） */
+/* 极简精致一键语言切换胶囊（参考图二：圆角半透明胶囊） */
 .lang-switch-btn {
-  position: absolute;
-  top: 3px;
-  left: 0;
-  background: rgba(255, 255, 255, 0.92);
+  position: static;
+  background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
-  padding: 0 7px;
-  height: 22px;
-  color: #1e293b !important;
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 20px;
+  padding: 0 14px;
+  height: 26px;
+  color: #ffffff !important;
   font-size: 11px;
   font-weight: 700;
-  z-index: 1000;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 }
 
 .lang-switch-btn:hover {
-  background: #ffffff;
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.35);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
 }
 
 .lang-switch-btn .lang-icon {
-  display: block;
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
+  display: none; /* 图二纯文本胶囊，更简洁高级 */
 }
 
 .lang-switch-btn #langSwitchText {
   font-size: 11px;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
   line-height: 1;
   letter-spacing: 0.5px;
 }
 
-/* 极简精致天气组件（自适应防溢出，优雅排版） */
+/* 极简精致天气组件（参考图二：左侧半透明圆角胶囊） */
 .weather-widget {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.55);
+  position: static;
+  background: rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 8px;
-  padding: 2px 8px;
-  height: 28px;
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  padding: 2px 12px;
+  height: 26px;
   color: white;
   font-size: 11px;
-  z-index: 1000;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   min-width: 60px;
-  max-width: 96px;
+  max-width: 160px;
   width: auto;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   box-sizing: border-box;
-  overflow: hidden; /* 核心防线：杜绝任何文字溢出圆角胶囊 */
+  overflow: hidden;
 }
 
 .weather-widget:hover {
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.6);
   transform: translateY(-1px);
   cursor: pointer;
 }

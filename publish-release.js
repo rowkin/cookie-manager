@@ -32,51 +32,47 @@ try {
   console.error('⚠️ 读取 manifest.json 失败，将使用默认版本 v1.2.5:', e.message);
 }
 
-// 3. 检查打包 Zip 是否存在，若不存在则现场快速打包生成
+// 3. 始终执行本地轻量打包生成最新 Zip 安装包，确保最新代码改动生效
 const distDir = path.join(rootDir, 'dist');
 const zipName = `cookie-manager-v${version}.zip`;
 const sourceZip = path.join(distDir, zipName);
 
-if (!fs.existsSync(sourceZip)) {
-  console.log(`📦 未找到已有安装包 ${zipName}，正在执行本地轻量打包...`);
-  const releaseDir = path.join(distDir, `cookie-manager-v${version}`);
-  if (fs.existsSync(distDir)) {
-    fs.rmSync(distDir, { recursive: true, force: true });
-  }
-  fs.mkdirSync(releaseDir, { recursive: true });
-
-  const filesToCopy = [
-    'manifest.json',
-    'popup.html',
-    'md5.min.js',
-    'popup.js',
-    'style.css',
-    'aurora.js',
-    'weather.js',
-    'background.js',
-  ];
-  for (const file of filesToCopy) {
-    const src = path.join(rootDir, file);
-    if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(releaseDir, file));
-    }
-  }
-
-  const dirsToCopy = ['_locales', 'images', 'icons'];
-  for (const dir of dirsToCopy) {
-    const srcDir = path.join(rootDir, dir);
-    if (fs.existsSync(srcDir)) {
-      copyFolderSync(srcDir, path.join(releaseDir, dir));
-    }
-  }
-
-  execSync(`zip -r -q "${sourceZip}" . -x "*.DS_Store" -x "__MACOSX*" -x "*/.DS_Store"`, {
-    cwd: releaseDir,
-  });
-  console.log(`   - 临时打包生成完毕: ${sourceZip}`);
-} else {
-  console.log(`✅ 已检测到现成编译包: ${sourceZip}`);
+console.log(`📦 正在执行本地轻量打包 (${zipName})...`);
+const releaseDir = path.join(distDir, `cookie-manager-v${version}`);
+if (fs.existsSync(distDir)) {
+  fs.rmSync(distDir, { recursive: true, force: true });
 }
+fs.mkdirSync(releaseDir, { recursive: true });
+
+const filesToCopy = [
+  'manifest.json',
+  'popup.html',
+  'md5.min.js',
+  'popup.js',
+  'style.css',
+  'aurora.js',
+  'weather.js',
+  'background.js',
+];
+for (const file of filesToCopy) {
+  const src = path.join(rootDir, file);
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, path.join(releaseDir, file));
+  }
+}
+
+const dirsToCopy = ['_locales', 'images', 'icons'];
+for (const dir of dirsToCopy) {
+  const srcDir = path.join(rootDir, dir);
+  if (fs.existsSync(srcDir)) {
+    copyFolderSync(srcDir, path.join(releaseDir, dir));
+  }
+}
+
+execSync(`zip -r -q "${sourceZip}" . -x "*.DS_Store" -x "__MACOSX*" -x "*/.DS_Store"`, {
+  cwd: releaseDir,
+});
+console.log(`   - 打包生成完毕: ${sourceZip}`);
 
 // 4. 定义公开仓库中的目标路径
 const targetPluginDir = path.join(publicRepoDir, 'cookie-manager');
