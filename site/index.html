@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script>
-    // 立即执行以避免主题与语言初始化闪烁
+    // 立即执行以避免主题与语言初始化闪烁 (Anti-FOUC)
     (function() {
+      // 1. 初始化主题：默认优先浅色模式 (Light)，如有手动设定则遵从
+      const manualTheme = localStorage.getItem('cm-site-theme-manual') === 'true';
+      let theme = 'light';
+      if (manualTheme) {
+        theme = localStorage.getItem('cm-site-theme') || 'light';
+      } else {
+        const hour = new Date().getHours();
+        theme = (hour >= 6 && hour < 19) ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+
+      // 2. 初始化语言
       let lang = localStorage.getItem('cm-site-lang');
       if (!lang) {
         lang = navigator.language.startsWith('zh') ? 'zh' : 'en';
@@ -25,38 +37,38 @@
   <!-- 极光背景微粒画布 -->
   <canvas id="auroraCanvas" class="aurora-bg"></canvas>
 
-  <!-- 顶部导航栏 -->
+  <!-- 顶部导航栏 (Navbar) -->
   <nav class="navbar">
     <div class="nav-container">
-      <div class="brand">
+      <a href="#" class="brand">
         <img src="icon48.png" alt="Cookie Manager Logo" class="brand-logo" width="32" height="32">
         <div class="brand-text">
           <span class="brand-name">Cookie Manager</span>
-          <span class="brand-tag">with Daily Quotes</span>
+          <span class="brand-tag">79team</span>
         </div>
-      </div>
+      </a>
       
       <div class="nav-links">
         <a href="#features" data-i18n="navFeatures">核心特性</a>
+        <a href="#why-remote" data-i18n="navWhyRemote">推荐安装</a>
         <a href="#mockup" data-i18n="navPreview">产品预览</a>
-        <a href="#offline" data-i18n="navInstall">安装指南</a>
+        <a href="#install" data-i18n="navInstall">安装指南</a>
         <a href="https://github.com/rowkin1991/cookie-manager" target="_blank" rel="noreferrer" class="github-link">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
           <span>GitHub</span>
         </a>
       </div>
 
-      <div class="nav-actions">
-        <button id="langToggleBtn" class="lang-btn" title="Switch Language">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
-          <span id="langLabel">English</span>
+      <div class="nav-controls">
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn-nav-install" data-i18n="navBtnInstall">🛍️ 立即安装</a>
+        <!-- 双语切换按钮 -->
+        <button id="langToggleBtn" class="ctrl-btn" title="Switch Language">
+          🌐 <span id="langLabel">English</span>
         </button>
+        <!-- 主题切换按钮 -->
+        <button id="themeToggleBtn" class="ctrl-btn" title="切换深色/浅色主题">🌙</button>
       </div>
     </div>
   </nav>
@@ -75,15 +87,17 @@
       </h1>
       
       <p class="hero-desc" data-i18n="heroDesc">
-        Cookie Manager with Daily Quotes 将专业的 Cookie 增删改查、跨域固定同步、精细属性配置与多格式 cURL 导出，巧妙融合于迷人的极光流光美学与每日哲思语录之中。无论是接口联调还是日常浏览，尽享从容。
+        Cookie Manager with Daily Quotes 将专业的 Cookie 增删改查、跨域固定同步、精细安全属性配置与一键 cURL 导出，巧妙融合于迷人的极光流光美学与每日双语哲思语录之中。无论是接口联调还是日常浏览，尽享从容。
       </p>
 
+      <!-- 双下载/安装操作通道 (主推官方应用店远程一键安装) -->
       <div class="hero-buttons">
-        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn btn-primary">
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn btn-primary-store">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0zm0 1.5c5.808 0 10.5 4.692 10.5 10.5 0 2.215-.688 4.272-1.865 5.972l-5.69-9.855c.34-.787.555-1.656.555-2.617 0-3.59-2.91-6.5-6.5-6.5-.477 0-.938.058-1.385.158l3.197 5.538c.517-.128 1.056-.201 1.613-.201 3.59 0 6.5 2.91 6.5 6.5 0 .557-.073 1.096-.201 1.613l-5.538-3.197c-.1-.447-.158-.908-.158-1.385 0-3.59 2.91-6.5 6.5-6.5.961 0 1.83.215 2.617.555L6.028 1.865C7.728.688 9.785 0 12 0z"/>
           </svg>
-          <span data-i18n="btnStore">前往 Chrome 商店安装</span>
+          <span data-i18n="btnStore">Chrome 网上应用店一键安装</span>
+          <span class="btn-tag-rec" data-i18n="tagRec">官方推荐</span>
         </a>
         <a href="cookie-manager-latest.zip" class="btn btn-secondary" download>
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
@@ -95,321 +109,371 @@
         </a>
       </div>
 
+      <!-- 推荐安装优势说明横幅 -->
+      <div class="recommend-banner" id="why-remote">
+        <div class="rec-header">
+          <div class="rec-title-group">
+            <span class="rec-icon">💡</span>
+            <h3 class="rec-title" data-i18n="recBannerTitle">为什么优先推荐从 Chrome 应用店远程安装？</h3>
+          </div>
+          <span class="rec-badge" data-i18n="recBadge">OFFICIAL VERIFIED</span>
+        </div>
+        <div class="rec-grid">
+          <div class="rec-item">
+            <div class="rec-item-title">
+              <span>🛡️</span>
+              <span data-i18n="rec1Title">官方安全合规审核</span>
+            </div>
+            <p class="rec-item-desc" data-i18n="rec1Desc">代码通过 Google 官方自动化与人工多重安全扫描，原生数字签名，无恶意篡改风险。</p>
+          </div>
+          <div class="rec-item">
+            <div class="rec-item-title">
+              <span>🔄</span>
+              <span data-i18n="rec2Title">静默自动热更新</span>
+            </div>
+            <p class="rec-item-desc" data-i18n="rec2Desc">新功能与漏洞补丁发布后，浏览器后台静默无感自动更新，无需手动重复下载解压。</p>
+          </div>
+          <div class="rec-item">
+            <div class="rec-item-title">
+              <span>⚡</span>
+              <span data-i18n="rec3Title">免开启开发者模式</span>
+            </div>
+            <p class="rec-item-desc" data-i18n="rec3Desc">一键添加到工具栏，不再受到 Chromium 浏览器定期“请停用开发者模式扩展”的干扰弹窗。</p>
+          </div>
+          <div class="rec-item">
+            <div class="rec-item-title">
+              <span>🌐</span>
+              <span data-i18n="rec4Title">全 Chromium 内核适配</span>
+            </div>
+            <p class="rec-item-desc" data-i18n="rec4Desc">完美支持 Google Chrome、Microsoft Edge、Brave、Arc、Vivaldi 等主流现代浏览器。</p>
+          </div>
+        </div>
+      </div>
+
       <!-- 高保真交互式产品面板 Mockup -->
       <div class="mockup-section" id="mockup">
         <div class="mockup-frame">
-          <div class="mockup-header">
+          <div class="mockup-chrome-bar">
             <div class="window-dots">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
             </div>
-            <div class="mockup-url">chrome-extension://cookie-manager/popup.html</div>
-            <div class="mockup-status">v1.2.5 Verified</div>
+            <div class="mockup-address">chrome-extension://jbddngoogmpocbdmoengcehnobapodpf/popup.html</div>
           </div>
           
-          <div class="mockup-body">
-            <!-- 语录展示卡片 -->
-            <div class="demo-quote-card">
-              <div class="quote-text" data-i18n="demoQuoteZh">天涯地角有穷时，只有相思无尽处。— 玉楼春·春恨</div>
-              <div class="quote-sub" data-i18n="demoQuoteEn">When the ends of the earth are endless, there is only endless love.</div>
-            </div>
-
-            <!-- 面板顶部控制条 -->
-            <div class="demo-control-bar">
-              <div class="demo-pill">
-                <span class="pill-icon">🌐</span>
-                <span class="pill-text" data-i18n="demoLang">中 / EN</span>
-              </div>
-              <div class="demo-title" data-i18n="demoHeaderTitle">Cookie 管理器与每日语录</div>
-              <div class="demo-pill weather-pill">
-                <span class="pill-icon">☀️</span>
-                <span class="pill-text">19°C · 北京</span>
-              </div>
-            </div>
-
-            <!-- 搜索框 -->
-            <div class="demo-search">
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="#999" stroke-width="2" fill="none">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <span class="search-placeholder" data-i18n="demoSearchPlaceholder">搜索 cookies (如 token, session, auth)...</span>
-            </div>
-
-            <!-- 核心功能按钮网格 -->
-            <div class="demo-actions-card">
-              <div class="demo-group">
-                <button class="demo-btn btn-blue" data-i18n="btnGetCookies">获取 Cookies</button>
-                <button class="demo-btn btn-blue" data-i18n="btnAddCookie">添加 Cookie</button>
-                <button class="demo-btn btn-blue" data-i18n="btnImportCookies">导入 Cookies</button>
-              </div>
-              <div class="demo-divider"></div>
-              <div class="demo-group">
-                <button class="demo-btn btn-blue" data-i18n="btnExportCookies">导出 Cookies</button>
-                <button class="demo-btn btn-red" data-i18n="btnDeleteAll">删除所有 Cookies</button>
-              </div>
-              <div class="demo-divider"></div>
-              <div class="demo-group">
-                <button class="demo-btn btn-green" data-i18n="btnPinAll">全部固定</button>
-                <button class="demo-btn btn-red" data-i18n="btnUnpinAll">取消固定</button>
-                <button class="demo-btn btn-gray" data-i18n="btnRefresh">刷新页面</button>
-              </div>
-            </div>
-
-            <!-- 表格模拟 -->
-            <div class="demo-table-card">
-              <div class="table-header-row">
-                <span class="th-title" data-i18n="demoCurrentPageCookies">当前页面 Cookies (12)</span>
-                <button class="table-del-btn" data-i18n="btnDeleteCurrent">删除当前页 Cookies</button>
-              </div>
-              <div class="demo-table">
-                <div class="tr tr-head">
-                  <div class="th col-name" data-i18n="colName">名称</div>
-                  <div class="th col-val" data-i18n="colValue">数值</div>
-                  <div class="th col-act" data-i18n="colActions">操作</div>
-                </div>
-                <div class="tr">
-                  <div class="td col-name">access_token</div>
-                  <div class="td col-val">eyJhbGciOiJIUzI1NiIsInR5cCI6...</div>
-                  <div class="td col-act">
-                    <span class="mini-btn b-blue" data-i18n="actEdit">编辑</span>
-                    <span class="mini-btn b-red" data-i18n="actDel">删除</span>
-                    <span class="mini-btn b-orange" data-i18n="actPin">固定</span>
+          <div class="mockup-inner">
+            <div class="plugin-preview-card">
+              <!-- 顶部极光水平流动渐变卡片 (与真实插件完全一致) -->
+              <div class="mock-header-card">
+                <div class="mock-top-bar">
+                  <div class="mock-weather-capsule">
+                    <span class="mock-weather-icon">⛅</span>
+                    <span id="mockTemp">21°C 北京 · 多云</span>
                   </div>
+                  <div class="mock-lang-capsule" data-i18n="demoLang">EN / 中</div>
                 </div>
-                <div class="tr">
-                  <div class="td col-name">user_session_id</div>
-                  <div class="td col-val">sess_9281bf038481ea918</div>
-                  <div class="td col-act">
-                    <span class="mini-btn b-blue" data-i18n="actEdit">编辑</span>
-                    <span class="mini-btn b-red" data-i18n="actDel">删除</span>
-                    <span class="mini-btn b-orange" data-i18n="actPin">固定</span>
-                  </div>
+                <div class="mock-quote-box">
+                  <div class="mock-quote-zh" data-i18n="demoQuoteZh">天涯地角有穷时，只有相思无尽处。— 玉楼春·春恨</div>
+                  <div class="mock-quote-en" data-i18n="demoQuoteEn">When the ends of the earth are endless, there is only endless love.</div>
                 </div>
               </div>
-            </div>
 
+              <!-- 插件主体操作区 -->
+              <div class="mock-plugin-content">
+                <div class="mock-search-bar">
+                  <span class="mock-search-icon">🔍</span>
+                  <input type="text" class="mock-search-input" value="token" placeholder="搜索 Cookie 名称/值..." readonly data-i18n="demoSearchPlaceholder">
+                </div>
+
+                <div class="mock-btn-row">
+                  <span class="mock-btn mock-btn-primary" data-i18n="btnGetCookies">获取当前 Cookies</span>
+                  <span class="mock-btn" data-i18n="btnAddCookie">+ 添加 Cookie</span>
+                  <span class="mock-btn" data-i18n="btnExportCookies">导出 cURL / JSON</span>
+                  <span class="mock-btn" data-i18n="btnRefresh">刷新页面</span>
+                </div>
+
+                <table class="mock-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="colName">Cookie 名称</th>
+                      <th data-i18n="colValue">值</th>
+                      <th data-i18n="colActions">快捷操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span class="cookie-name">auth_token</span>
+                        <span class="cookie-tag-pin">PINNED</span>
+                      </td>
+                      <td><span class="cookie-val">eyJhbGciOiJIUzI1NiIsIn...</span></td>
+                      <td>
+                        <span style="color:var(--accent-blue);font-size:11px;cursor:pointer" data-i18n="actEdit">编辑</span>&nbsp;
+                        <span style="color:var(--text-sub);font-size:11px;cursor:pointer" data-i18n="actDel">删除</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="cookie-name">session_id</span></td>
+                      <td><span class="cookie-val">sess_9a8f2bc018e</span></td>
+                      <td>
+                        <span style="color:var(--accent-blue);font-size:11px;cursor:pointer" data-i18n="actEdit">编辑</span>&nbsp;
+                        <span style="color:var(--text-sub);font-size:11px;cursor:pointer" data-i18n="actDel">删除</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="cookie-name">user_env</span>
+                        <span class="cookie-tag-pin">PINNED</span>
+                      </td>
+                      <td><span class="cookie-val">staging-cluster-04</span></td>
+                      <td>
+                        <span style="color:var(--accent-blue);font-size:11px;cursor:pointer" data-i18n="actEdit">编辑</span>&nbsp;
+                        <span style="color:var(--text-sub);font-size:11px;cursor:pointer" data-i18n="actDel">删除</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 特性板块 (Feature Grid) -->
+  <!-- 核心特性介绍区 (Features Section) -->
   <section class="features-section" id="features">
     <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title" data-i18n="featuresTitle">专为高效与愉悦而生的 6 大核心杀手锏</h2>
-        <p class="section-subtitle" data-i18n="featuresSubtitle">告别开发者工具繁冗复杂的 Application 抽屉，一键在轻量面板中掌控全栈 Cookie 状态。</p>
+      <div class="section-title-group">
+        <h2 class="section-title" data-i18n="featuresTitle">为研发提效与专注而生的 6 大核心利器</h2>
+        <p class="section-subtitle" data-i18n="featuresSubtitle">告别控制台臃肿晦涩的 Application 抽屉，在赏心悦目的浮窗中掌控全站 Cookie 的方方面面。</p>
       </div>
 
-      <div class="feature-grid">
-        <!-- 卡片 1 -->
+      <div class="features-grid">
+        <!-- 特性 1 -->
         <div class="feature-card">
-          <div class="card-icon gradient-blue">📌</div>
-          <h3 class="card-title" data-i18n="feat1Title">智能 Cookie 固定与跨页同步</h3>
-          <p class="card-desc" data-i18n="feat1Desc">一键将关键登录鉴权 Token 固定（Pin）。在多环境切换、标签页跳转或刷新页面时，自动保持 Cookie 激活状态，彻底告别重复登录与测试掉线。</p>
+          <div class="feature-icon-wrapper">📌</div>
+          <h3 class="feature-title" data-i18n="feat1Title">智能固定 (Pin) 与多环境同步</h3>
+          <p class="feature-desc" data-i18n="feat1Desc">一键将重要凭证或测试 Token 固定至本地存储。切换标签页或刷新页面时自动应用至匹配域名，多环境联调免反复登录。</p>
         </div>
 
-        <!-- 卡片 2 -->
+        <!-- 特性 2 -->
         <div class="feature-card">
-          <div class="card-icon gradient-purple">⚙️</div>
-          <h3 class="card-title" data-i18n="feat2Title">精细化属性与高级安全配置</h3>
-          <p class="card-desc" data-i18n="feat2Desc">深度支持 SameSite (Lax / Strict / None)、Secure、HttpOnly、Host-Only 等完整安全特性。过期时间支持按分钟、小时、天、月、年或会话精准设置。</p>
+          <div class="feature-icon-wrapper">⚙️</div>
+          <h3 class="feature-title" data-i18n="feat2Title">精细化安全属性与到期规则</h3>
+          <p class="feature-desc" data-i18n="feat2Desc">全面支持 SameSite (Lax, Strict, None)、Secure、HttpOnly、Host-Only 安全标记，按分、时、天、月、年或会话期灵活自定义过期时间。</p>
         </div>
 
-        <!-- 卡片 3 -->
+        <!-- 特性 3 -->
         <div class="feature-card">
-          <div class="card-icon gradient-pink">💻</div>
-          <h3 class="card-title" data-i18n="feat3Title">多格式导出与 cURL 终端命令行</h3>
-          <p class="card-desc" data-i18n="feat3Desc">除标准 JSON 与简易纯文本外，创新支持一键导出为标准 cURL 调试指令。直接粘贴到终端复现接口调用，前后端联调测试提效 10 倍。</p>
+          <div class="feature-icon-wrapper">💻</div>
+          <h3 class="feature-title" data-i18n="feat3Title">终端 cURL 一键导出与智能导入</h3>
+          <p class="feature-desc" data-i18n="feat3Desc">除标准 JSON 与纯文本外，新增一键导出为标准 cURL 命令行，终端排错与接口复现快人一步；导入兼容数组与键值对象双语法。</p>
         </div>
 
-        <!-- 卡片 4 -->
+        <!-- 特性 4 -->
         <div class="feature-card">
-          <div class="card-icon gradient-amber">🌦️</div>
-          <h3 class="card-title" data-i18n="feat4Title">高精度实时天气与定位胶囊</h3>
-          <p class="card-desc" data-i18n="feat4Desc">集成 GPS 逆地理编码与高精度气象服务，实时动态展示您所在城市的气温与天气图标。微米级自适应胶囊防溢出排版，轻触即可强制更新。</p>
+          <div class="feature-icon-wrapper">🌦️</div>
+          <h3 class="feature-title" data-i18n="feat4Title">实时高精度天气与逆地理感知</h3>
+          <p class="feature-desc" data-i18n="feat4Desc">基于 GPS 与高精度 IP 逆地理编码，直观呈现您所在城市的当前气温与动态天气图标，支持一键轻触刷新，温润伴行。</p>
         </div>
 
-        <!-- 卡片 5 -->
+        <!-- 特性 5 -->
         <div class="feature-card">
-          <div class="card-icon gradient-indigo">💡</div>
-          <h3 class="card-title" data-i18n="feat5Title">每日中英双语励志哲思语录</h3>
-          <p class="card-desc" data-i18n="feat5Desc">每日精选海内外诗词与哲理金句，在严谨理性的代码构建与 Bug 排查日常中，为每一位开发者送上一份温暖的心灵力量与工作动力。</p>
+          <div class="feature-icon-wrapper">💡</div>
+          <h3 class="feature-title" data-i18n="feat5Title">每日中英双语哲思与励志语录</h3>
+          <p class="feature-desc" data-i18n="feat5Desc">每日更新精选海内外文学经典与哲理金句，中英双语对照呈现，在严谨枯燥的代码世界中注入人文温度与灵感源泉。</p>
         </div>
 
-        <!-- 卡片 6 -->
+        <!-- 特性 6 -->
         <div class="feature-card">
-          <div class="card-icon gradient-green">🛡️</div>
-          <h3 class="card-title" data-i18n="feat6Title">100% 离线运行与无痕隐私感知</h3>
-          <p class="card-desc" data-i18n="feat6Desc">所有 Cookie 操作全链路在本地浏览器沙箱中执行，零数据回传、零跟踪脚本。智能识别普通窗口与隐身模式，普通模式绝不弹窗打扰，安全敬畏隐私。</p>
+          <div class="feature-icon-wrapper">🛡️</div>
+          <h3 class="feature-title" data-i18n="feat6Title">100% 本地沙箱与智能无痕隔离</h3>
+          <p class="feature-desc" data-i18n="feat6Desc">所有操作完全在浏览器本地沙箱中闭环运行，绝不上报任何凭证；智能感知普通窗口与隐身模式，严密守护隐私安全。</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 离线安装教学指南 -->
-  <section class="offline-section" id="offline">
+  <!-- 离线安装指南步骤 (Install Section) -->
+  <section class="install-section" id="install">
     <div class="section-container">
-      <div class="section-header">
-        <h2 class="section-title" data-i18n="installTitle">极速安装与部署指引</h2>
-        <p class="section-subtitle" data-i18n="installSubtitle">推荐直接在 Chrome 商店一键安装；国内网络或开发者亦可使用离线包快速加载。</p>
+      <div class="section-title-group">
+        <h2 class="section-title" data-i18n="installTitle">极速离线安装指南 (开发者模式)</h2>
+        <p class="section-subtitle" data-i18n="installSubtitle">若您无法访问 Chrome 应用商店，可下载 ZIP 压缩包在本地 3 步完成离线部署。</p>
       </div>
 
-      <div class="install-steps">
+      <div class="steps-grid">
         <div class="step-card">
-          <div class="step-number">1</div>
+          <div class="step-num">01</div>
+          <div class="step-icon">📦</div>
           <h3 class="step-title" data-i18n="step1Title">下载并解压扩展包</h3>
-          <p class="step-desc" data-i18n="step1Desc">点击本页右上角或下方的【下载离线 ZIP】按钮，下载最新的 <code>cookie-manager-v1.2.5.zip</code> 并将其解压到任意本地目录。</p>
+          <p class="step-desc" data-i18n="step1Desc">点击本页的“下载离线 ZIP 安装包”按钮获取最新安装包，将其解压到本地任意固定目录（解压后请勿随意移动）。</p>
         </div>
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3 class="step-title" data-i18n="step2Title">打开 Chrome 扩展管理</h3>
-          <p class="step-desc" data-i18n="step2Desc">在 Chrome 地址栏直接访问 <code>chrome://extensions/</code>，并打开页面右上角的 <strong>“开发者模式” (Developer mode)</strong> 开关。</p>
-        </div>
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3 class="step-title" data-i18n="step3Title">加载已解压的扩展程序</h3>
-          <p class="step-desc" data-i18n="step3Desc">点击左上角的 <strong>“加载已解压的扩展程序”</strong>，选择刚才解压出来的目录即可。无需重启浏览器，即装即用！</p>
-        </div>
-      </div>
 
-      <div class="install-cta-box">
-        <div class="cta-info">
-          <h3 data-i18n="ctaTitle">准备好提升您的 Web 调试体验了吗？</h3>
-          <p data-i18n="ctaDesc">支持 Chromium 全系浏览器：Google Chrome, Microsoft Edge, Brave, Arc, Opera 等。</p>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">🔧</div>
+          <h3 class="step-title" data-i18n="step2Title">打开 Chrome 扩展程序页</h3>
+          <p class="step-desc" data-i18n="step2Desc">在 Chrome 浏览器地址栏中输入 <code>chrome://extensions/</code> 并回车，在页面右上角开启“开发者模式 (Developer mode)”。</p>
         </div>
-        <div class="cta-actions">
-          <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn btn-primary" data-i18n="btnStore">🛍️ Chrome 商店安装</a>
-          <a href="cookie-manager-latest.zip" class="btn btn-secondary" download data-i18n="btnDownload">📥 下载离线包 (v1.2.5)</a>
+
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">🚀</div>
+          <h3 class="step-title" data-i18n="step3Title">加载已解压的扩展程序</h3>
+          <p class="step-desc" data-i18n="step3Desc">点击页面左上角的“加载已解压的扩展程序”按钮，选择第 1 步解压出来的目录即可瞬间完成安装并置入扩展栏！</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 页脚 -->
+  <!-- 底部 CTA 区域 -->
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2 class="cta-title" data-i18n="ctaTitle">准备好让你的 Cookie 调试效率倍增了吗？</h2>
+      <p class="cta-desc" data-i18n="ctaDesc">支持所有主流 Chromium 浏览器：Google Chrome, Microsoft Edge, Brave, Arc, Opera 等。</p>
+      <div class="hero-buttons" style="margin-bottom:0">
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" class="btn btn-primary-store">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0zm0 1.5c5.808 0 10.5 4.692 10.5 10.5 0 2.215-.688 4.272-1.865 5.972l-5.69-9.855c.34-.787.555-1.656.555-2.617 0-3.59-2.91-6.5-6.5-6.5-.477 0-.938.058-1.385.158l3.197 5.538c.517-.128 1.056-.201 1.613-.201 3.59 0 6.5 2.91 6.5 6.5 0 .557-.073 1.096-.201 1.613l-5.538-3.197c-.1-.447-.158-.908-.158-1.385 0-3.59 2.91-6.5 6.5-6.5.961 0 1.83.215 2.617.555L6.028 1.865C7.728.688 9.785 0 12 0z"/>
+          </svg>
+          <span data-i18n="btnStore">Chrome 网上应用店一键安装</span>
+        </a>
+        <a href="cookie-manager-latest.zip" class="btn btn-secondary" download>
+          <span data-i18n="btnDownload">下载离线 ZIP 安装包</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 (Footer) -->
   <footer class="footer">
     <div class="footer-container">
-      <div class="footer-left">
-        <div class="footer-brand">
-          <img src="icon48.png" alt="Logo" width="24" height="24">
-          <span>Cookie Manager with Daily Quotes</span>
-        </div>
-        <p class="footer-copy">© 2026 七九在线科技有限公司 (79team). All rights reserved.</p>
+      <div class="footer-brand">
+        <strong>Cookie Manager with Daily Quotes</strong> · 由 <strong>79team</strong> 倾情打造
       </div>
-
       <div class="footer-links">
-        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" data-i18n="ftStore">Chrome 应用店</a>
+        <a href="https://chromewebstore.google.com/detail/jbddngoogmpocbdmoengcehnobapodpf" target="_blank" rel="noreferrer" data-i18n="ftStore">Chrome 商店</a>
+        <a href="PRIVACY_POLICY.md" target="_blank" data-i18n="ftPrivacy">隐私权政策</a>
         <a href="https://github.com/rowkin1991/cookie-manager" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="PRIVACY_POLICY.md" target="_blank" data-i18n="ftPrivacy">隐私政策</a>
       </div>
     </div>
   </footer>
 
-  <!-- 极光背景微粒动画与多语言交互逻辑 -->
+  <!-- 全功能客户端脚本 (双语切换 + 深浅主题切换 + 极光画布) -->
   <script>
-    // 1. 多语言国际化字典
+    // 1. 中英双语词典
     const I18N = {
       zh: {
         pageTitle: "Cookie Manager with Daily Quotes - 优雅、强大的一站式 Cookie 管理扩展",
         navFeatures: "核心特性",
+        navWhyRemote: "推荐安装",
         navPreview: "产品预览",
         navInstall: "安装指南",
+        navBtnInstall: "🛍️ 立即安装",
         heroBadge: "🚀 Chrome 扩展 Manifest V3 · v1.2.5 全新发布",
         heroTitle1: "告别枯燥调试，让 Cookie 管理",
         heroTitle2: "优雅、高效且充满灵感",
-        heroDesc: "Cookie Manager with Daily Quotes 将专业的 Cookie 增删改查、跨域固定同步、精细属性配置与多格式 cURL 导出，巧妙融合于迷人的极光流光美学与每日哲思语录之中。无论是接口联调还是日常浏览，尽享从容。",
-        btnStore: "前往 Chrome 商店安装",
+        heroDesc: "Cookie Manager with Daily Quotes 将专业的 Cookie 增删改查、跨域固定同步、精细安全属性配置与一键 cURL 导出，巧妙融合于迷人的极光流光美学与每日双语哲思语录之中。无论是接口联调还是日常浏览，尽享从容。",
+        btnStore: "Chrome 网上应用店一键安装",
+        tagRec: "官方推荐",
         btnDownload: "下载离线 ZIP 安装包",
-        demoQuoteZh: "天涯地角有穷时，只有相思无尽处。— 玉楼春·春恨",
-        demoQuoteEn: "When the ends of the earth are endless, there is only endless love.",
-        demoLang: "中 / EN",
-        demoHeaderTitle: "Cookie 管理器与每日语录",
-        demoSearchPlaceholder: "搜索 cookies (如 token, session, auth)...",
-        btnGetCookies: "获取 Cookies",
-        btnAddCookie: "添加 Cookie",
-        btnImportCookies: "导入 Cookies",
-        btnExportCookies: "导出 Cookies",
-        btnDeleteAll: "删除所有 Cookies",
-        btnPinAll: "全部固定",
-        btnUnpinAll: "取消固定",
-        btnRefresh: "刷新页面",
-        demoCurrentPageCookies: "当前页面 Cookies (12)",
-        btnDeleteCurrent: "删除当前页 Cookies",
-        colName: "名称",
-        colValue: "数值",
-        colActions: "操作",
-        actEdit: "编辑",
-        actDel: "删除",
-        actPin: "固定",
-        featuresTitle: "专为高效与愉悦而生的 6 大核心杀手锏",
-        featuresSubtitle: "告别开发者工具繁冗复杂的 Application 抽屉，一键在轻量面板中掌控全栈 Cookie 状态。",
-        feat1Title: "智能 Cookie 固定与跨页同步",
-        feat1Desc: "一键将关键登录鉴权 Token 固定（Pin）。在多环境切换、标签页跳转或刷新页面时，自动保持 Cookie 激活状态，彻底告别重复登录与测试掉线。",
-        feat2Title: "精细化属性与高级安全配置",
-        feat2Desc: "深度支持 SameSite (Lax / Strict / None)、Secure、HttpOnly、Host-Only 等完整安全特性。过期时间支持按分钟、小时、天、月、年或会话精准设置。",
-        feat3Title: "多格式导出与 cURL 终端命令行",
-        feat3Desc: "除标准 JSON 与简易纯文本外，创新支持一键导出为标准 cURL 调试指令。直接粘贴到终端复现接口调用，前后端联调测试提效 10 倍。",
-        feat4Title: "高精度实时天气与定位胶囊",
-        feat4Desc: "集成 GPS 逆地理编码与高精度气象服务，实时动态展示您所在城市的气温与天气图标。微米级自适应胶囊防溢出排版，轻触即可强制更新。",
-        feat5Title: "每日中英双语励志哲思语录",
-        feat5Desc: "每日精选海内外诗词与哲理金句，在严谨理性的代码构建与 Bug 排查日常中，为每一位开发者送上一份温暖的心灵力量与工作动力。",
-        feat6Title: "100% 离线运行与无痕隐私感知",
-        feat6Desc: "所有 Cookie 操作全链路在本地浏览器沙箱中执行，零数据回传、零跟踪脚本。智能识别普通窗口与隐身模式，普通模式绝不弹窗打扰，安全敬畏隐私。",
-        installTitle: "极速安装与部署指引",
-        installSubtitle: "推荐直接在 Chrome 商店一键安装；国内网络或开发者亦可使用离线包快速加载。",
-        step1Title: "下载并解压扩展包",
-        step1Desc: "点击本页右上角或下方的【下载离线 ZIP】按钮，下载最新的 cookie-manager-v1.2.5.zip 并将其解压到任意本地目录。",
-        step2Title: "打开 Chrome 扩展管理",
-        step2Desc: "在 Chrome 地址栏直接访问 chrome://extensions/，并打开页面右上角的“开发者模式” (Developer mode) 开关。",
-        step3Title: "加载已解压的扩展程序",
-        step3Desc: "点击左上角的“加载已解压的扩展程序”，选择刚才解压出来的目录即可。无需重启浏览器，即装即用！",
-        ctaTitle: "准备好提升您的 Web 调试体验了吗？",
-        ctaDesc: "支持 Chromium 全系浏览器：Google Chrome, Microsoft Edge, Brave, Arc, Opera 等。",
-        ftStore: "Chrome 商店",
-        ftPrivacy: "隐私政策"
-      },
-      en: {
-        pageTitle: "Cookie Manager with Daily Quotes - Elegant & Powerful Cookie Extension",
-        navFeatures: "Features",
-        navPreview: "Preview",
-        navInstall: "Installation",
-        heroBadge: "🚀 Chrome Extension Manifest V3 · v1.2.5 Released",
-        heroTitle1: "Elevate your web development with",
-        heroTitle2: "Inspiring & Effortless Cookie Management",
-        heroDesc: "Cookie Manager with Daily Quotes seamlessly blends full-featured cookie manipulation, cross-domain auto-pinning, advanced attributes, and cURL export with captivating aurora aesthetics and bilingual philosophical wisdom.",
-        btnStore: "Install from Chrome Web Store",
-        btnDownload: "Download Offline ZIP Package",
+        recBannerTitle: "为什么优先推荐从 Chrome 应用店远程安装？",
+        recBadge: "官方认证 · 安全保障",
+        rec1Title: "官方安全合规审核",
+        rec1Desc: "代码通过 Google 官方自动化与人工多重安全扫描，原生数字签名，无恶意篡改风险。",
+        rec2Title: "静默自动热更新",
+        rec2Desc: "新功能与漏洞补丁发布后，浏览器后台静默无感自动更新，无需手动重复下载解压。",
+        rec3Title: "免开启开发者模式",
+        rec3Desc: "一键添加到工具栏，不再受到 Chromium 浏览器定期“请停用开发者模式扩展”的干扰弹窗。",
+        rec4Title: "全 Chromium 内核适配",
+        rec4Desc: "完美支持 Google Chrome、Microsoft Edge、Brave、Arc、Vivaldi 等主流现代浏览器。",
         demoQuoteZh: "天涯地角有穷时，只有相思无尽处。— 玉楼春·春恨",
         demoQuoteEn: "When the ends of the earth are endless, there is only endless love.",
         demoLang: "EN / 中",
-        demoHeaderTitle: "Cookie Manager with Daily Quotes",
-        demoSearchPlaceholder: "Search cookies (token, session, auth)...",
+        demoSearchPlaceholder: "搜索 Cookie 名称/值...",
+        btnGetCookies: "获取当前 Cookies",
+        btnAddCookie: "+ 添加 Cookie",
+        btnExportCookies: "导出 cURL / JSON",
+        btnRefresh: "刷新页面",
+        colName: "Cookie 名称",
+        colValue: "值",
+        colActions: "快捷操作",
+        actEdit: "编辑",
+        actDel: "删除",
+        featuresTitle: "为研发提效与专注而生的 6 大核心利器",
+        featuresSubtitle: "告别控制台臃肿晦涩的 Application 抽屉，在赏心悦目的浮窗中掌控全站 Cookie 的方方面面。",
+        feat1Title: "智能固定 (Pin) 与多环境同步",
+        feat1Desc: "一键将重要凭证或测试 Token 固定至本地存储。切换标签页或刷新页面时自动应用至匹配域名，多环境联调免反复登录。",
+        feat2Title: "精细化安全属性与到期规则",
+        feat2Desc: "全面支持 SameSite (Lax, Strict, None)、Secure、HttpOnly、Host-Only 安全标记，按分、时、天、月、年或会话期灵活自定义过期时间。",
+        feat3Title: "终端 cURL 一键导出与智能导入",
+        feat3Desc: "除标准 JSON 与纯文本外，新增一键导出为标准 cURL 命令行，终端排错与接口复现快人一步；导入兼容数组与键值对象双语法。",
+        feat4Title: "实时高精度天气与逆地理感知",
+        feat4Desc: "基于 GPS 与高精度 IP 逆地理编码，直观呈现您所在城市的当前气温与动态天气图标，支持一键轻触刷新，温润伴行。",
+        feat5Title: "每日中英双语哲思与励志语录",
+        feat5Desc: "每日更新精选海内外文学经典与哲理金句，中英双语对照呈现，在严谨枯燥的代码世界中注入人文温度与灵感源泉。",
+        feat6Title: "100% 本地沙箱与智能无痕隔离",
+        feat6Desc: "所有操作完全在浏览器本地沙箱中闭环运行，绝不上报任何凭证；智能感知普通窗口与隐身模式，严密守护隐私安全。",
+        installTitle: "极速离线安装指南 (开发者模式)",
+        installSubtitle: "若您无法访问 Chrome 应用商店，可下载 ZIP 压缩包在本地 3 步完成离线部署。",
+        step1Title: "下载并解压扩展包",
+        step1Desc: "点击本页的“下载离线 ZIP 安装包”按钮获取最新安装包，将其解压到本地任意固定目录（解压后请勿随意移动）。",
+        step2Title: "打开 Chrome 扩展程序页",
+        step2Desc: "在 Chrome 浏览器地址栏中输入 chrome://extensions/ 并回车，在页面右上角开启“开发者模式 (Developer mode)”。",
+        step3Title: "加载已解压的扩展程序",
+        step3Desc: "点击页面左上角的“加载已解压的扩展程序”按钮，选择第 1 步解压出来的目录即可瞬间完成安装并置入扩展栏！",
+        ctaTitle: "准备好让你的 Cookie 调试效率倍增了吗？",
+        ctaDesc: "支持所有主流 Chromium 浏览器：Google Chrome, Microsoft Edge, Brave, Arc, Opera 等。",
+        ftStore: "Chrome 商店",
+        ftPrivacy: "隐私权政策"
+      },
+      en: {
+        pageTitle: "Cookie Manager with Daily Quotes - Elegant & Powerful All-in-One Cookie Extension",
+        navFeatures: "Features",
+        navWhyRemote: "Why Store",
+        navPreview: "Preview",
+        navInstall: "Installation",
+        navBtnInstall: "🛍️ Install Now",
+        heroBadge: "🚀 Chrome Extension Manifest V3 · v1.2.5 Released",
+        heroTitle1: "Elevate your web development with",
+        heroTitle2: "Inspiring & Effortless Cookie Management",
+        heroDesc: "Cookie Manager with Daily Quotes seamlessly blends full-featured cookie manipulation, cross-domain auto-pinning, advanced security flags, and instant cURL export with captivating aurora aesthetics and bilingual philosophical wisdom.",
+        btnStore: "Install from Chrome Web Store",
+        tagRec: "Recommended",
+        btnDownload: "Download Offline ZIP Package",
+        recBannerTitle: "Why Install from Chrome Web Store is Strongly Recommended?",
+        recBadge: "OFFICIAL VERIFIED",
+        rec1Title: "Google Verified Security",
+        rec1Desc: "Scanned and signed by Google's multi-layered security gates with zero tampering or malware injection risks.",
+        rec2Title: "Silent Automatic Updates",
+        rec2Desc: "Receive new features and critical patches automatically in background without repetitive manual downloads.",
+        rec3Title: "No Developer Mode Warnings",
+        rec3Desc: "Seamless installation with zero annoying 'Disable developer mode extensions' popups from Chromium.",
+        rec4Title: "All Chromium Browsers",
+        rec4Desc: "Flawlessly runs on Google Chrome, Microsoft Edge, Brave, Arc, Vivaldi, and Opera.",
+        demoQuoteZh: "天涯地角有穷时，只有相思无尽处。— 玉楼春·春恨",
+        demoQuoteEn: "When the ends of the earth are endless, there is only endless love.",
+        demoLang: "EN / 中",
+        demoSearchPlaceholder: "Search cookie names or values...",
         btnGetCookies: "Get Cookies",
-        btnAddCookie: "Add Cookie",
-        btnImportCookies: "Import Cookies",
-        btnExportCookies: "Export Cookies",
-        btnDeleteAll: "Delete All Cookies",
-        btnPinAll: "Pin All",
-        btnUnpinAll: "Unpin All",
+        btnAddCookie: "+ Add Cookie",
+        btnExportCookies: "Export cURL / JSON",
         btnRefresh: "Refresh Page",
-        demoCurrentPageCookies: "Current Page Cookies (12)",
-        btnDeleteCurrent: "Delete Current Cookies",
-        colName: "Name",
+        colName: "Cookie Name",
         colValue: "Value",
         colActions: "Actions",
         actEdit: "Edit",
         actDel: "Delete",
-        actPin: "Pin",
         featuresTitle: "6 Superpowers Built for Productivity & Joy",
         featuresSubtitle: "Ditch the convoluted DevTools Application drawer. Inspect and orchestrate full-stack cookies in a refined popup.",
         feat1Title: "Smart Cookie Pinning & Cross-Domain Sync",
         feat1Desc: "Pin vital authentication tokens in one click. Maintain active sessions automatically across tabs, refreshes, and staging environments.",
         feat2Title: "Fine-Grained Security & Expiration Setup",
         feat2Desc: "Full support for SameSite (Lax, Strict, None), Secure, HttpOnly, and Host-Only flags. Configure expirations by minutes, hours, days, months, or session.",
-        feat3Title: "Multi-Format Export with Instant cURL",
+        feat3Title: "Terminal cURL Export & Smart Import",
         feat3Desc: "Export cookies as JSON, Simple Text, or ready-to-run cURL terminal commands for blazing-fast API debugging and team collaboration.",
         feat4Title: "High-Precision Live Weather Capsule",
         feat4Desc: "GPS and IP reverse-geocoding deliver real-time local temperature, location, and dynamic weather icons with anti-overflow micro-capsule layout.",
@@ -417,10 +481,10 @@
         feat5Desc: "Start your workday with handpicked bilingual literary classics and philosophical proverbs, bringing warmth and inspiration to coding routines.",
         feat6Title: "100% Local Execution & Incognito Sensing",
         feat6Desc: "All cookie operations execute strictly in your local browser sandbox with zero remote telemetry. Smart incognito sensing respects your privacy.",
-        installTitle: "Fast Installation Guide",
-        installSubtitle: "Install directly from Chrome Web Store, or load offline unpacked zip in developer mode.",
+        installTitle: "Fast Installation Guide (Developer Mode)",
+        installSubtitle: "If you cannot access Chrome Web Store, download the ZIP package and install locally in 3 quick steps.",
         step1Title: "Download & Extract Package",
-        step1Desc: "Download cookie-manager-v1.2.5.zip using the download button on this page and extract it to any convenient local folder.",
+        step1Desc: "Download the ZIP package using the download button on this page and extract it to any convenient local folder.",
         step2Title: "Open Chrome Extensions Manager",
         step2Desc: "Navigate to chrome://extensions/ in your browser address bar and toggle on 'Developer mode' in the top right corner.",
         step3Title: "Load Unpacked Extension",
@@ -463,7 +527,24 @@
 
     applyLanguage(currentLang);
 
-    // 2. 极光微粒动画背景 (Aurora Balls)
+    // 2. 主题切换逻辑与初始图标设置 (Light / Dark)
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      themeBtn.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+      themeBtn.addEventListener('click', () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('cm-site-theme', next);
+        localStorage.setItem('cm-site-theme-manual', 'true');
+      });
+    }
+
+    // 3. 极光微粒动画背景 (Aurora Balls)
     (function initAurora() {
       const canvas = document.getElementById('auroraCanvas');
       if (!canvas) return;
