@@ -120,14 +120,16 @@ body {
 }
 
 .cookie-manager-wrapper #searchCookie {
-  margin-bottom: 16px;
-  padding: 8px 12px;
+  margin-bottom: 8px; /* 从 16px 减半为 8px，彻底消除与操作面板之间过宽的缝隙 */
+  padding: 6px 10px;
+  height: 30px;
   width: 100%;
+  font-size: 12px;
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 /* 顶部操作按钮面板：独立深色毛玻璃卡片底座，彻底隔离背景渐变 */
@@ -135,14 +137,15 @@ body {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
+  gap: 8px;
+  padding: 8px 10px; /* 从 12px 紧凑收缩至 8px 10px */
   background-color: var(--cm-dark-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  margin: 16px auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  margin: 0 auto 10px; /* 上边距归 0，下边距从 16px 减至 10px，直接消灭多余留白 */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
 
@@ -157,16 +160,16 @@ body {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px; /* 从 6px 微调为 5px */
   justify-content: flex-start;
 }
 
 .cookie-manager-wrapper .cookie-group button {
   width: 100%;
-  height: 32px;
+  height: 27px; /* 从 32px 调整为 27px，三行按钮总高度立省 15px */
   padding: 0 4px;
   margin: 0;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   box-sizing: border-box;
   display: flex;
@@ -181,7 +184,7 @@ body {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   background: var(--cm-light-bg);
   border-radius: 8px;
   overflow: hidden;
@@ -189,7 +192,7 @@ body {
 
 .cookie-manager-wrapper th,
 .cookie-manager-wrapper td {
-  padding: 8px 6px;
+  padding: 6px 6px;
   text-align: left;
   color: #fff;
   vertical-align: middle;
@@ -281,45 +284,46 @@ body {
 }
 
 .cookie-manager-wrapper .quote-section {
-  padding: 10px 14px;
+  padding: 7px 12px;
   background-color: var(--cm-dark-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
-  margin: 0 0 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  line-height: 1.5;
+  border-radius: 8px;
+  margin: 0 0 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  font-size: 11.5px;
+  line-height: 1.35;
 }
 
 .cookie-manager-wrapper .quote-original {
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 3px;
-  font-size: 12px;
+  margin-bottom: 2px;
+  font-size: 11.5px;
 }
 
 .cookie-manager-wrapper .quote-translated {
-  font-size: 11px;
+  font-size: 10.5px;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 .cookie-manager-wrapper .cookie-section,
 .cookie-manager-wrapper .pinned-section {
-  padding: 12px;
+  padding: 8px 10px;
   background-color: var(--cm-dark-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  margin: 16px auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  margin: 0 auto 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .cookie-manager-wrapper .cookie-section h3,
 .cookie-manager-wrapper .pinned-section h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 6px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -359,8 +363,8 @@ body {
 
 .cookie-manager-header {
   position: relative;
-  margin: 12px 0 10px;
-  min-height: 28px;
+  margin: 8px 0 6px;
+  min-height: 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
