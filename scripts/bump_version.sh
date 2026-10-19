@@ -68,10 +68,11 @@ create_release_package() {
         cp -r "$ROOT_DIR/icons" "$release_dir/"
     fi
     
-    # 创建 zip 文件
-    echo "Creating zip archive..."
+    # 创建 zip 文件 (Chrome Web Store 规范：zip 根目录直接包含 manifest.json)
+    echo "Creating zip archive for Chrome Web Store..."
+    cd "$release_dir"
+    zip -r -q "$zip_file" . -x "*.DS_Store" -x "__MACOSX*" -x "*/.DS_Store"
     cd "$dist_dir"
-    zip -r "$zip_file" "cookie-manager-v$version"
     
     echo "Release package created: $zip_file"
     

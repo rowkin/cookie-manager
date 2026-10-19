@@ -78,5 +78,147 @@
   "settings": {
     "message": "Settings",
     "description": "Settings menu item"
-  }
+  },
+  "colName": {
+    "message": "Name",
+    "description": "Table column: Name"
+  },
+  "colValue": {
+    "message": "Value",
+    "description": "Table column: Value"
+  },
+  "colActions": {
+    "message": "Actions",
+    "description": "Table column: Actions"
+  },
+  "actionEdit": {
+    "message": "Edit",
+    "description": "Action button: Edit"
+  },
+  "actionDelete": {
+    "message": "Delete",
+    "description": "Action button: Delete"
+  },
+  "actionPin": {
+    "message": "Pin",
+    "description": "Action button: Pin"
+  },
+  "actionUnpin": {
+    "message": "Unpin",
+    "description": "Action button: Unpin"
+  },
+  "switchLang": {
+    "message": "EN",
+    "description": "Language switch button text"
+  },
+  "dialogEditCookieTitle": {
+    "message": "Edit Cookie",
+    "description": "Edit Cookie dialog title"
+  },
+  "dialogCookieName": {
+    "message": "Cookie Name",
+    "description": "Cookie Name label"
+  },
+  "dialogCookieValue": {
+    "message": "Cookie Value",
+    "description": "Cookie Value label"
+  },
+  "dialogCancel": {
+    "message": "Cancel",
+    "description": "Dialog cancel button"
+  },
+  "dialogSave": {
+    "message": "Save",
+    "description": "Dialog save button"
+  },
+  "dialogSaving": {
+    "message": "Saving...",
+    "description": "Dialog saving state"
+  },
+  "notifyDeleteSuccess": {
+    "message": "Cookie deleted successfully",
+    "description": "Delete success notification"
+  },
+  "notifyDeleteFailed": {
+    "message": "Failed to delete cookie",
+    "description": "Delete failed notification"
+  },
+  "modalGetCookiesTitle": { "message": "Cookies Retrieved" },
+  "modalFoundCookies": { "message": "Found {n} cookies" },
+  "modalBtnCopySimple": { "message": "Copy Simple Format" },
+  "modalBtnCopyDetailed": { "message": "Copy Detailed JSON" },
+  "modalBtnClose": { "message": "Close" },
+  "modalCopiedSimple": { "message": "Simple format copied to clipboard!" },
+  "modalCopiedDetailed": { "message": "Detailed JSON copied to clipboard!" },
+  "modalCopyFailed": { "message": "Failed to copy" },
+  "modalExportTitle": { "message": "Export Cookies" },
+  "modalCurrentPageCookiesCount": { "message": "Current page cookies: " },
+  "modalAllDomainsCookiesCount": { "message": "All domains cookies: " },
+  "modalScopeCurrent": { "message": "Current Page Cookies" },
+  "modalScopeAll": { "message": "All Domains Cookies" },
+  "modalFormatJson": { "message": "JSON Format (with details)" },
+  "modalFormatText": { "message": "Simple Text Format" },
+  "modalFormatCurl": { "message": "cURL Format" },
+  "modalDescriptionPlaceholder": { "message": "Add description (optional)" },
+  "modalBtnCancel": { "message": "Cancel" },
+  "modalBtnExport": { "message": "Export" },
+  "modalExportSuccess": { "message": "Cookies exported successfully!" },
+  "modalImportTitle": { "message": "Import Cookies" },
+  "modalFormatArray": { "message": "Array Format" },
+  "modalFormatObject": { "message": "Object Format" },
+  "modalImportPlaceholder": { "message": "Enter cookies here..." },
+  "modalBtnImport": { "message": "Import" },
+  "modalImportSuccess": { "message": "Import Successful" },
+  "modalImportCompletedErrors": { "message": "Completed with Errors" },
+  "modalImportSuccessCount": { "message": "✓ Successfully imported: " },
+  "modalImportFailCount": { "message": "✕ Failed: " },
+  "modalImportFailedList": { "message": "Failed cookies:" },
+  "modalImportFailedTitle": { "message": "Import Failed" },
+  "modalApplyTitle": { "message": "Cookie Application Status" },
+  "modalApplySuccess": { "message": "Success: {n}" },
+  "modalApplyFail": { "message": "Failed: {n}" },
+  "modalApplyDomain": { "message": "Domain: " },
+  "modalApplyFailDetails": { "message": "Failure Details:" },
+  "modalBtnConfirm": { "message": "Confirm" },
+  "modalBtnRetry": { "message": "Retry" },
+  "modalBtnDebug": { "message": "View Details" },
+  "modalDebugAlert": { "message": "Details logged to console. Press F12 to inspect." },
+  "modalConfirmDeleteCurrentTitle": { "message": "Confirm Deletion" },
+  "modalConfirmDeleteCurrentMsg": { "message": "Are you sure you want to delete all cookies ({n}) from the current page?" },
+  "modalBtnDeleteAll": { "message": "Delete All" },
+  "modalDeleteSuccess": { "message": "Deletion Successful" },
+  "modalDeleteCompletedErrors": { "message": "Completed with Errors" },
+  "modalDeleteSuccessCount": { "message": "✓ Successfully deleted: " },
+  "modalDeleteFailList": { "message": "Failed deletions:" },
+  "modalWarningTitle": { "message": "⚠️ Warning" },
+  "modalWarningAllMsg": { "message": "Are you sure you want to delete ALL cookies ({n}) from ALL domains? This action cannot be undone." },
+  "modalAddTitle": { "message": "Add New Cookie" },
+  "modalAddName": { "message": "Cookie Name *" },
+  "modalAddValue": { "message": "Cookie Value *" },
+  "modalAdvancedSettings": { "message": "Advanced Settings" },
+  "modalDomain": { "message": "Domain" },
+  "modalDomainPlaceholder": { "message": "Leave empty for current domain" },
+  "modalDomainUsingCurrent": { "message": "Using current domain" },
+  "modalPath": { "message": "Path" },
+  "modalExpiration": { "message": "Expiration" },
+  "modalExpSession": { "message": "Session" },
+  "modalExpDate": { "message": "Specific Date" },
+  "modalExpDuration": { "message": "Duration" },
+  "modalUnitMinutes": { "message": "Minutes" },
+  "modalUnitHours": { "message": "Hours" },
+  "modalUnitDays": { "message": "Days" },
+  "modalUnitMonths": { "message": "Months" },
+  "modalUnitYears": { "message": "Years" },
+  "modalBtnAddCookie": { "message": "Add Cookie" },
+  "modalNameRequired": { "message": "Cookie name is required" },
+  "modalAddSuccess": { "message": "Cookie added successfully" },
+  "modalDeletingCookies": { "message": "Deleting cookies..." },
+  "modalDeletingAllCookies": { "message": "Deleting all cookies..." },
+  "modalApplyAutoRefresh": { "message": "Page will reload in 3 seconds..." },
+  "modalErrorTitle": { "message": "Error" },
+  "modalUnknownError": { "message": "Unknown error" },
+  "modalApplyErrorAlert": { "message": "Error applying cookies: {msg}\nPlease check console for details" },
+  "notifyCookiesRefreshed": { "message": "Cookies refreshed successfully" },
+  "notifyCookiesFetchFailed": { "message": "Failed to fetch cookies: " },
+  "notifyIncognitoWarning": { "message": "To use this extension in incognito mode, please enable it in extension settings" }
 }

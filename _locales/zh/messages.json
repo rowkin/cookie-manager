@@ -78,6 +78,147 @@
   "settings": {
     "message": "设置",
     "description": "设置菜单项"
-  }
+  },
+  "colName": {
+    "message": "名称",
+    "description": "表格列名：名称"
+  },
+  "colValue": {
+    "message": "值",
+    "description": "表格列名：值"
+  },
+  "colActions": {
+    "message": "操作",
+    "description": "表格列名：操作"
+  },
+  "actionEdit": {
+    "message": "编辑",
+    "description": "操作按钮：编辑"
+  },
+  "actionDelete": {
+    "message": "删除",
+    "description": "操作按钮：删除"
+  },
+  "actionPin": {
+    "message": "固定",
+    "description": "操作按钮：固定"
+  },
+  "actionUnpin": {
+    "message": "取消",
+    "description": "操作按钮：取消固定"
+  },
+  "switchLang": {
+    "message": "中",
+    "description": "语言切换按钮文本"
+  },
+  "dialogEditCookieTitle": {
+    "message": "编辑 Cookie",
+    "description": "编辑 Cookie 弹窗标题"
+  },
+  "dialogCookieName": {
+    "message": "Cookie 名称",
+    "description": "Cookie 名称标签"
+  },
+  "dialogCookieValue": {
+    "message": "Cookie 值",
+    "description": "Cookie 值标签"
+  },
+  "dialogCancel": {
+    "message": "取消",
+    "description": "弹窗取消按钮"
+  },
+  "dialogSave": {
+    "message": "保存",
+    "description": "弹窗保存按钮"
+  },
+  "dialogSaving": {
+    "message": "保存中...",
+    "description": "弹窗保存中状态"
+  },
+  "notifyDeleteSuccess": {
+    "message": "Cookie 已成功删除",
+    "description": "删除成功通知"
+  },
+  "notifyDeleteFailed": {
+    "message": "删除 Cookie 失败",
+    "description": "删除失败通知"
+  },
+  "modalGetCookiesTitle": { "message": "已获取 Cookies" },
+  "modalFoundCookies": { "message": "共找到 {n} 个 Cookies" },
+  "modalBtnCopySimple": { "message": "复制文本格式" },
+  "modalBtnCopyDetailed": { "message": "复制详细 JSON" },
+  "modalBtnClose": { "message": "关闭" },
+  "modalCopiedSimple": { "message": "文本格式已复制到剪贴板！" },
+  "modalCopiedDetailed": { "message": "详细 JSON 已复制到剪贴板！" },
+  "modalCopyFailed": { "message": "复制失败" },
+  "modalExportTitle": { "message": "导出 Cookies" },
+  "modalCurrentPageCookiesCount": { "message": "当前页 Cookies 数量: " },
+  "modalAllDomainsCookiesCount": { "message": "所有域名 Cookies 数量: " },
+  "modalScopeCurrent": { "message": "当前页面 Cookies" },
+  "modalScopeAll": { "message": "所有域名 Cookies" },
+  "modalFormatJson": { "message": "JSON 格式 (包含详细属性)" },
+  "modalFormatText": { "message": "纯文本格式" },
+  "modalFormatCurl": { "message": "cURL 格式" },
+  "modalDescriptionPlaceholder": { "message": "添加备注说明 (可选)" },
+  "modalBtnCancel": { "message": "取消" },
+  "modalBtnExport": { "message": "导出" },
+  "modalExportSuccess": { "message": "Cookies 导出成功！" },
+  "modalImportTitle": { "message": "导入 Cookies" },
+  "modalFormatArray": { "message": "数组格式 (Array)" },
+  "modalFormatObject": { "message": "对象格式 (Object)" },
+  "modalImportPlaceholder": { "message": "在此粘贴 Cookies 数据..." },
+  "modalBtnImport": { "message": "导入" },
+  "modalImportSuccess": { "message": "导入成功" },
+  "modalImportCompletedErrors": { "message": "导入完成（部分失败）" },
+  "modalImportSuccessCount": { "message": "✓ 成功导入: " },
+  "modalImportFailCount": { "message": "✕ 失败: " },
+  "modalImportFailedList": { "message": "失败项列表:" },
+  "modalImportFailedTitle": { "message": "导入失败" },
+  "modalApplyTitle": { "message": "Cookie 应用状态" },
+  "modalApplySuccess": { "message": "成功: {n} 个" },
+  "modalApplyFail": { "message": "失败: {n} 个" },
+  "modalApplyDomain": { "message": "目标域名: " },
+  "modalApplyFailDetails": { "message": "失败详情：" },
+  "modalBtnConfirm": { "message": "确定" },
+  "modalBtnRetry": { "message": "重试" },
+  "modalBtnDebug": { "message": "查看详情" },
+  "modalDebugAlert": { "message": "详细信息已输出到控制台，请按F12查看" },
+  "modalConfirmDeleteCurrentTitle": { "message": "确认删除" },
+  "modalConfirmDeleteCurrentMsg": { "message": "确定要删除当前页面的全部 {n} 个 Cookies 吗？" },
+  "modalBtnDeleteAll": { "message": "全部删除" },
+  "modalDeleteSuccess": { "message": "删除成功" },
+  "modalDeleteCompletedErrors": { "message": "删除完成（部分失败）" },
+  "modalDeleteSuccessCount": { "message": "✓ 成功删除: " },
+  "modalDeleteFailList": { "message": "删除失败项:" },
+  "modalWarningTitle": { "message": "⚠️ 风险警告" },
+  "modalWarningAllMsg": { "message": "确定要删除所有域名下的全部 {n} 个 Cookies 吗？此操作无法撤销。" },
+  "modalAddTitle": { "message": "添加新 Cookie" },
+  "modalAddName": { "message": "Cookie 名称 *" },
+  "modalAddValue": { "message": "Cookie 值 *" },
+  "modalAdvancedSettings": { "message": "高级设置" },
+  "modalDomain": { "message": "域名 (Domain)" },
+  "modalDomainPlaceholder": { "message": "留空默认为当前域名" },
+  "modalDomainUsingCurrent": { "message": "使用当前域名" },
+  "modalPath": { "message": "路径 (Path)" },
+  "modalExpiration": { "message": "过期时间 (Expiration)" },
+  "modalExpSession": { "message": "会话结束 (Session)" },
+  "modalExpDate": { "message": "指定时间 (Specific Date)" },
+  "modalExpDuration": { "message": "时长 (Duration)" },
+  "modalUnitMinutes": { "message": "分钟" },
+  "modalUnitHours": { "message": "小时" },
+  "modalUnitDays": { "message": "天" },
+  "modalUnitMonths": { "message": "月" },
+  "modalUnitYears": { "message": "年" },
+  "modalBtnAddCookie": { "message": "添加 Cookie" },
+  "modalNameRequired": { "message": "请输入 Cookie 名称" },
+  "modalAddSuccess": { "message": "Cookie 添加成功" },
+  "modalDeletingCookies": { "message": "正在删除 Cookies..." },
+  "modalDeletingAllCookies": { "message": "正在删除所有 Cookies..." },
+  "modalApplyAutoRefresh": { "message": "3秒后将自动刷新页面..." },
+  "modalErrorTitle": { "message": "错误" },
+  "modalUnknownError": { "message": "未知错误" },
+  "modalApplyErrorAlert": { "message": "应用Cookie时发生错误: {msg}\n请查看控制台获取详细信息" },
+  "notifyCookiesRefreshed": { "message": "Cookies 刷新成功" },
+  "notifyCookiesFetchFailed": { "message": "获取 Cookies 失败: " },
+  "notifyIncognitoWarning": { "message": "在无痕模式下使用此扩展，请在扩展管理设置中开启“在无痕模式下启用”" }
 }
- 

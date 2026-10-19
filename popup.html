@@ -15,7 +15,16 @@
     <!-- Canvas element for rendering aurora effect -->
     <canvas id="auroraCanvas"></canvas>
     <div class="cookie-manager-header">
-      <h2>__MSG_extName__</h2>
+      <!-- 标题左侧一键语言切换按钮 -->
+      <button id="langSwitch" class="lang-switch-btn" title="切换语言 / Switch Language">
+        <svg class="lang-icon" viewBox="0 0 24 24" width="13" height="13" stroke="#0ea5e9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span id="langSwitchText" data-i18n="switchLang">__MSG_switchLang__</span>
+      </button>
+      <h2 data-i18n="extName">__MSG_extName__</h2>
       <!-- Add weather widget -->
       <div class="weather-widget weather-loading">
         <i class="weather-icon wi wi-day-sunny"></i>
@@ -25,39 +34,46 @@
         </div>
       </div>
     </div>
-    <input type="text" id="searchCookie" placeholder="__MSG_searchPlaceholder__">
+    <input type="text" id="searchCookie" data-i18n-placeholder="searchPlaceholder" placeholder="__MSG_searchPlaceholder__">
     
     <div class="cookie-actions">
       <div class="cookie-group">
-        <button id="getCookies" class="btn-primary">__MSG_getCookies__</button>
-        <button id="addCookie" class="btn-primary">__MSG_addCookie__</button>
-        <button id="importCookies" class="btn-primary">__MSG_importCookies__</button>
+        <button id="getCookies" class="btn-primary" data-i18n="getCookies">__MSG_getCookies__</button>
+        <button id="addCookie" class="btn-primary" data-i18n="addCookie">__MSG_addCookie__</button>
+        <button id="importCookies" class="btn-primary" data-i18n="importCookies">__MSG_importCookies__</button>
       </div>
       <hr />
       <div class="cookie-group">
-        <button id="exportCookies" class="btn-primary">__MSG_exportCookies__</button>
-        <button id="deleteAllCookies" class="btn-danger">__MSG_deleteAllCookies__</button>
+        <button id="exportCookies" class="btn-primary" data-i18n="exportCookies">__MSG_exportCookies__</button>
+        <button id="deleteAllCookies" class="btn-danger" data-i18n="deleteAllCookies">__MSG_deleteAllCookies__</button>
       </div>
       <hr />
       <div class="cookie-group pin-group">
-        <button id="pinAllCookies" class="btn-success">__MSG_pinAll__</button>
-        <button id="unpinAllCookies" class="btn-danger">__MSG_unpinAll__</button>
-        <button id="refreshPage" class="btn-secondary">__MSG_refreshPage__</button>
+        <button id="pinAllCookies" class="btn-success" data-i18n="pinAll">__MSG_pinAll__</button>
+        <button id="unpinAllCookies" class="btn-danger" data-i18n="unpinAll">__MSG_unpinAll__</button>
+        <button id="refreshPage" class="btn-secondary" data-i18n="refreshPage">__MSG_refreshPage__</button>
       </div>
     </div>
 
     <div class="cookie-section">
       <h3>
-        __MSG_currentCookies__
-        <span class="badge" id="cookieCount">0</span>
-        <button id="deleteCurrentCookies" class="btn-danger">__MSG_deleteCurrentCookies__</button>
+        <span class="section-title">
+          <span data-i18n="currentCookies">__MSG_currentCookies__</span>
+          <span class="badge" id="cookieCount">0</span>
+        </span>
+        <button id="deleteCurrentCookies" class="btn-danger" data-i18n="deleteCurrentCookies">__MSG_deleteCurrentCookies__</button>
       </h3>
       <table id="cookieTable">
+        <colgroup>
+          <col class="col-name" style="width: 25%;">
+          <col class="col-value" style="width: 43%;">
+          <col class="col-actions" style="width: 32%;">
+        </colgroup>
         <thead>
           <tr>
-            <th width="60">Name</th>
-            <th>Value</th>
-            <th width="118">Actions</th>
+            <th class="col-name" data-i18n="colName">__MSG_colName__</th>
+            <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
+            <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -66,16 +82,23 @@
 
     <div class="pinned-section">
       <h3>
-        __MSG_pinnedCookies__
-        <span class="badge" id="pinnedCount">0</span>
-        <button id="applyToCurrent" class="btn-success">__MSG_applyToCurrent__</button>
+        <span class="section-title">
+          <span data-i18n="pinnedCookies">__MSG_pinnedCookies__</span>
+          <span class="badge" id="pinnedCount">0</span>
+        </span>
+        <button id="applyToCurrent" class="btn-success" data-i18n="applyToCurrent">__MSG_applyToCurrent__</button>
       </h3>
       <table id="pinnedTable">
+        <colgroup>
+          <col class="col-name" style="width: 25%;">
+          <col class="col-value" style="width: 43%;">
+          <col class="col-actions" style="width: 32%;">
+        </colgroup>
         <thead>
           <tr>
-            <th width="60">Name</th>
-            <th>Value</th>
-            <th width="118">Actions</th>
+            <th class="col-name" data-i18n="colName">__MSG_colName__</th>
+            <th class="col-value" data-i18n="colValue">__MSG_colValue__</th>
+            <th class="col-actions" data-i18n="colActions">__MSG_colActions__</th>
           </tr>
         </thead>
         <tbody></tbody>

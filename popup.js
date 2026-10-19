@@ -7,6 +7,356 @@ function log(...args) {
   }
 }
 
+// ==================== 国际化 (i18n) 双语字典与语言管理器 ====================
+const I18N_DICT = {
+  zh: {
+    extName: "Cookie 管理器与每日语录",
+    extDescription: "一个强大的浏览器扩展，帮助用户轻松管理和操作网站 Cookie。",
+    loadingQuote: "正在加载名言...",
+    searchPlaceholder: "搜索 cookies...",
+    getCookies: "获取 Cookies",
+    addCookie: "添加 Cookie",
+    editCookie: "编辑 Cookie",
+    deleteCookie: "删除 Cookie",
+    importCookies: "导入 Cookies",
+    exportCookies: "导出 Cookies",
+    deleteAllCookies: "删除所有 Cookies",
+    pinAll: "固定全部",
+    unpinAll: "取消全部固定",
+    refreshPage: "刷新页面",
+    currentCookies: "当前页 Cookies",
+    deleteCurrentCookies: "删除当前 Cookies",
+    pinnedCookies: "已固定 Cookies",
+    applyToCurrent: "应用到当前页面",
+    dailyQuote: "每日语录",
+    settings: "设置",
+    colName: "名称",
+    colValue: "值",
+    colActions: "操作",
+    actionEdit: "编辑",
+    actionDelete: "删除",
+    actionPin: "固定",
+    actionUnpin: "取消",
+    switchLang: "中",
+    dialogEditCookieTitle: "编辑 Cookie",
+    dialogCookieName: "Cookie 名称",
+    dialogCookieValue: "Cookie 值",
+    dialogCancel: "取消",
+    dialogSave: "保存",
+    dialogSaving: "保存中...",
+    notifyDeleteSuccess: "Cookie 已成功删除",
+    notifyDeleteFailed: "删除 Cookie 失败",
+    modalGetCookiesTitle: "已获取 Cookies",
+    modalFoundCookies: "共找到 {n} 个 Cookies",
+    modalBtnCopySimple: "复制文本格式",
+    modalBtnCopyDetailed: "复制详细 JSON",
+    modalBtnClose: "关闭",
+    modalCopiedSimple: "文本格式已复制到剪贴板！",
+    modalCopiedDetailed: "详细 JSON 已复制到剪贴板！",
+    modalCopyFailed: "复制失败",
+    modalExportTitle: "导出 Cookies",
+    modalCurrentPageCookiesCount: "当前页 Cookies 数量: ",
+    modalAllDomainsCookiesCount: "所有域名 Cookies 数量: ",
+    modalScopeCurrent: "当前页面 Cookies",
+    modalScopeAll: "所有域名 Cookies",
+    modalFormatJson: "JSON 格式 (包含详细属性)",
+    modalFormatText: "纯文本格式",
+    modalFormatCurl: "cURL 格式",
+    modalDescriptionPlaceholder: "添加备注说明 (可选)",
+    modalBtnCancel: "取消",
+    modalBtnExport: "导出",
+    modalExportSuccess: "Cookies 导出成功！",
+    modalImportTitle: "导入 Cookies",
+    modalFormatArray: "数组格式 (Array)",
+    modalFormatObject: "对象格式 (Object)",
+    modalImportPlaceholder: "在此粘贴 Cookies 数据...",
+    modalBtnImport: "导入",
+    modalImportSuccess: "导入成功",
+    modalImportCompletedErrors: "导入完成（部分失败）",
+    modalImportSuccessCount: "✓ 成功导入: ",
+    modalImportFailCount: "✕ 失败: ",
+    modalImportFailedList: "失败项列表:",
+    modalImportFailedTitle: "导入失败",
+    modalApplyTitle: "Cookie 应用状态",
+    modalApplySuccess: "成功: {n} 个",
+    modalApplyFail: "失败: {n} 个",
+    modalApplyDomain: "目标域名: ",
+    modalApplyFailDetails: "失败详情：",
+    modalBtnConfirm: "确定",
+    modalBtnRetry: "重试",
+    modalBtnDebug: "查看详情",
+    modalDebugAlert: "详细信息已输出到控制台，请按F12查看",
+    modalConfirmDeleteCurrentTitle: "确认删除",
+    modalConfirmDeleteCurrentMsg: "确定要删除当前页面的全部 {n} 个 Cookies 吗？",
+    modalBtnDeleteAll: "全部删除",
+    modalDeleteSuccess: "删除成功",
+    modalDeleteCompletedErrors: "删除完成（部分失败）",
+    modalDeleteSuccessCount: "✓ 成功删除: ",
+    modalDeleteFailList: "删除失败项:",
+    modalWarningTitle: "⚠️ 风险警告",
+    modalWarningAllMsg: "确定要删除所有域名下的全部 {n} 个 Cookies 吗？此操作无法撤销。",
+    modalAddTitle: "添加新 Cookie",
+    modalAddName: "Cookie 名称 *",
+    modalAddValue: "Cookie 值 *",
+    modalAdvancedSettings: "高级设置",
+    modalDomain: "域名 (Domain)",
+    modalDomainPlaceholder: "留空默认为当前域名",
+    modalDomainUsingCurrent: "使用当前域名",
+    modalPath: "路径 (Path)",
+    modalExpiration: "过期时间 (Expiration)",
+    modalExpSession: "会话结束 (Session)",
+    modalExpDate: "指定时间 (Specific Date)",
+    modalExpDuration: "时长 (Duration)",
+    modalUnitMinutes: "分钟",
+    modalUnitHours: "小时",
+    modalUnitDays: "天",
+    modalUnitMonths: "月",
+    modalUnitYears: "年",
+    modalBtnAddCookie: "添加 Cookie",
+    modalNameRequired: "请输入 Cookie 名称",
+    modalAddSuccess: "Cookie 添加成功",
+    modalDeletingCookies: "正在删除 Cookies...",
+    modalDeletingAllCookies: "正在删除所有 Cookies...",
+    modalApplyAutoRefresh: "3秒后将自动刷新页面...",
+    modalErrorTitle: "错误",
+    modalUnknownError: "未知错误",
+    modalApplyErrorAlert: "应用Cookie时发生错误: {msg}\n请查看控制台获取详细信息",
+    notifyCookiesRefreshed: "Cookies 刷新成功",
+    notifyCookiesFetchFailed: "获取 Cookies 失败: ",
+    notifyIncognitoWarning: "在无痕模式下使用此扩展，请在扩展管理设置中开启“在无痕模式下启用”"
+  },
+  en: {
+    extName: "Cookie Manager with Daily Quotes",
+    extDescription: "A powerful browser extension that helps users easily manage and manipulate website cookies.",
+    loadingQuote: "Loading quote...",
+    searchPlaceholder: "Search cookies...",
+    getCookies: "Get Cookies",
+    addCookie: "Add Cookie",
+    editCookie: "Edit Cookie",
+    deleteCookie: "Delete Cookie",
+    importCookies: "Import Cookies",
+    exportCookies: "Export Cookies",
+    deleteAllCookies: "Delete All Cookies",
+    pinAll: "Pin All",
+    unpinAll: "Unpin All",
+    refreshPage: "Refresh Page",
+    currentCookies: "Current Page Cookies",
+    deleteCurrentCookies: "Delete Current Cookies",
+    pinnedCookies: "Pinned Cookies",
+    applyToCurrent: "Apply to Current Page",
+    dailyQuote: "Daily Quote",
+    settings: "Settings",
+    colName: "Name",
+    colValue: "Value",
+    colActions: "Actions",
+    actionEdit: "Edit",
+    actionDelete: "Delete",
+    actionPin: "Pin",
+    actionUnpin: "Unpin",
+    switchLang: "EN",
+    dialogEditCookieTitle: "Edit Cookie",
+    dialogCookieName: "Cookie Name",
+    dialogCookieValue: "Cookie Value",
+    dialogCancel: "Cancel",
+    dialogSave: "Save",
+    dialogSaving: "Saving...",
+    notifyDeleteSuccess: "Cookie deleted successfully",
+    notifyDeleteFailed: "Failed to delete cookie",
+    modalGetCookiesTitle: "Cookies Retrieved",
+    modalFoundCookies: "Found {n} cookies",
+    modalBtnCopySimple: "Copy Simple Format",
+    modalBtnCopyDetailed: "Copy Detailed JSON",
+    modalBtnClose: "Close",
+    modalCopiedSimple: "Simple format copied to clipboard!",
+    modalCopiedDetailed: "Detailed JSON copied to clipboard!",
+    modalCopyFailed: "Failed to copy",
+    modalExportTitle: "Export Cookies",
+    modalCurrentPageCookiesCount: "Current page cookies: ",
+    modalAllDomainsCookiesCount: "All domains cookies: ",
+    modalScopeCurrent: "Current Page Cookies",
+    modalScopeAll: "All Domains Cookies",
+    modalFormatJson: "JSON Format (with details)",
+    modalFormatText: "Simple Text Format",
+    modalFormatCurl: "cURL Format",
+    modalDescriptionPlaceholder: "Add description (optional)",
+    modalBtnCancel: "Cancel",
+    modalBtnExport: "Export",
+    modalExportSuccess: "Cookies exported successfully!",
+    modalImportTitle: "Import Cookies",
+    modalFormatArray: "Array Format",
+    modalFormatObject: "Object Format",
+    modalImportPlaceholder: "Enter cookies here...",
+    modalBtnImport: "Import",
+    modalImportSuccess: "Import Successful",
+    modalImportCompletedErrors: "Completed with Errors",
+    modalImportSuccessCount: "✓ Successfully imported: ",
+    modalImportFailCount: "✕ Failed: ",
+    modalImportFailedList: "Failed cookies:",
+    modalImportFailedTitle: "Import Failed",
+    modalApplyTitle: "Cookie Application Status",
+    modalApplySuccess: "Success: {n}",
+    modalApplyFail: "Failed: {n}",
+    modalApplyDomain: "Domain: ",
+    modalApplyFailDetails: "Failure Details:",
+    modalBtnConfirm: "Confirm",
+    modalBtnRetry: "Retry",
+    modalBtnDebug: "View Details",
+    modalDebugAlert: "Details logged to console. Press F12 to inspect.",
+    modalConfirmDeleteCurrentTitle: "Confirm Deletion",
+    modalConfirmDeleteCurrentMsg: "Are you sure you want to delete all cookies ({n}) from the current page?",
+    modalBtnDeleteAll: "Delete All",
+    modalDeleteSuccess: "Deletion Successful",
+    modalDeleteCompletedErrors: "Completed with Errors",
+    modalDeleteSuccessCount: "✓ Successfully deleted: ",
+    modalDeleteFailList: "Failed deletions:",
+    modalWarningTitle: "⚠️ Warning",
+    modalWarningAllMsg: "Are you sure you want to delete ALL cookies ({n}) from ALL domains? This action cannot be undone.",
+    modalAddTitle: "Add New Cookie",
+    modalAddName: "Cookie Name *",
+    modalAddValue: "Cookie Value *" ,
+    modalAdvancedSettings: "Advanced Settings",
+    modalDomain: "Domain",
+    modalDomainPlaceholder: "Leave empty for current domain",
+    modalDomainUsingCurrent: "Using current domain",
+    modalPath: "Path",
+    modalExpiration: "Expiration",
+    modalExpSession: "Session",
+    modalExpDate: "Specific Date",
+    modalExpDuration: "Duration",
+    modalUnitMinutes: "Minutes",
+    modalUnitHours: "Hours",
+    modalUnitDays: "Days",
+    modalUnitMonths: "Months",
+    modalUnitYears: "Years",
+    modalBtnAddCookie: "Add Cookie",
+    modalNameRequired: "Cookie name is required",
+    modalAddSuccess: "Cookie added successfully",
+    modalDeletingCookies: "Deleting cookies...",
+    modalDeletingAllCookies: "Deleting all cookies...",
+    modalApplyAutoRefresh: "Page will reload in 3 seconds...",
+    modalErrorTitle: "Error",
+    modalUnknownError: "Unknown error",
+    modalApplyErrorAlert: "Error applying cookies: {msg}\nPlease check console for details",
+    notifyCookiesRefreshed: "Cookies refreshed successfully",
+    notifyCookiesFetchFailed: "Failed to fetch cookies: ",
+    notifyIncognitoWarning: "To use this extension in incognito mode, please enable it in extension settings"
+  }
+};
+
+function detectDefaultLanguage() {
+  const uiLang = (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getUILanguage) 
+    ? chrome.i18n.getUILanguage() 
+    : (navigator.language || 'zh');
+  return uiLang.toLowerCase().startsWith('zh') ? 'zh' : 'en';
+}
+
+let currentLang = detectDefaultLanguage();
+
+function t(key, defaultVal = '') {
+  const dict = I18N_DICT[currentLang] || I18N_DICT.en;
+  if (dict && dict[key] !== undefined) {
+    return dict[key];
+  }
+  if (typeof chrome !== 'undefined' && chrome.i18n && chrome.i18n.getMessage) {
+    const msg = chrome.i18n.getMessage(key);
+    if (msg) return msg;
+  }
+  return defaultVal || key;
+}
+
+function applyLanguage(lang, refreshTables = true) {
+  currentLang = (lang === 'zh' || lang === 'en') ? lang : 'zh';
+  document.documentElement.lang = currentLang;
+
+  // 1. 替换网页标题
+  document.title = t('extName');
+
+  // 2. 遍历所有带 data-i18n 属性的元素进行更新
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key) {
+      el.textContent = t(key);
+    }
+  });
+
+  // 3. 遍历所有带 data-i18n-placeholder 属性的元素
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (key) {
+      el.placeholder = t(key);
+    }
+  });
+
+  // 4. 兼容老式的 __MSG_ 文本节点扫描
+  if (typeof replaceTextNodes === 'function') {
+    replaceTextNodes(document.body);
+  }
+
+  // 5. 单独处理搜索输入框
+  const searchInput = document.getElementById('searchCookie');
+  if (searchInput) {
+    searchInput.placeholder = t('searchPlaceholder');
+  }
+
+  // 6. 更新切换按钮文字与 title
+  const langSwitchBtn = document.getElementById('langSwitch');
+  const langSwitchText = document.getElementById('langSwitchText');
+  if (langSwitchText) {
+    langSwitchText.textContent = t('switchLang');
+  }
+  if (langSwitchBtn) {
+    langSwitchBtn.title = currentLang === 'zh' 
+      ? '当前语言：中文（点击切换为 English）' 
+      : 'Current: English (Click to switch to 中文)';
+  }
+
+  // 7. 动态刷新表格行内按钮文本
+  if (refreshTables) {
+    if (typeof updateCurrentTable === 'function') {
+      updateCurrentTable().catch(err => console.error(err));
+    }
+    if (typeof updatePinnedTable === 'function') {
+      updatePinnedTable();
+    }
+  }
+}
+
+async function toggleLanguage() {
+  const nextLang = currentLang === 'zh' ? 'en' : 'zh';
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      await chrome.storage.local.set({ user_preferred_lang: nextLang });
+    }
+  } catch (e) {
+    console.warn('Failed to save preferred language:', e);
+  }
+  applyLanguage(nextLang, true);
+}
+
+async function initLanguage() {
+  let savedLang = null;
+  try {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      const res = await chrome.storage.local.get(['user_preferred_lang']);
+      if (res && res.user_preferred_lang) {
+        savedLang = res.user_preferred_lang;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to get user_preferred_lang:', e);
+  }
+
+  const finalLang = savedLang || detectDefaultLanguage();
+  applyLanguage(finalLang, false);
+
+  const langSwitchBtn = document.getElementById('langSwitch');
+  if (langSwitchBtn && !langSwitchBtn.dataset.bound) {
+    langSwitchBtn.dataset.bound = 'true';
+    langSwitchBtn.addEventListener('click', toggleLanguage);
+  }
+}
+// ===========================================================================
+
 // 定义多个翻译API源
 const translationAPIs = [
   {
@@ -430,60 +780,31 @@ function addCookieToTable(cookie) {
 
   // Cookie Name
   const nameCell = document.createElement("td");
+  nameCell.className = "cell-name";
   nameCell.textContent = cookie.name;
+  nameCell.title = cookie.name;
   row.appendChild(nameCell);
 
   // Cookie Value
   const valueCell = document.createElement("td");
+  valueCell.className = "cell-value";
   valueCell.textContent = cookie.value;
+  valueCell.title = cookie.value;
   row.appendChild(valueCell);
 
   // Actions
   const actionCell = document.createElement("td");
+  actionCell.className = "cell-actions";
+  const actionGroup = document.createElement("div");
+  actionGroup.className = "action-btn-group";
+
   const editButton = document.createElement("button");
-  editButton.textContent = "Edit";
+  editButton.textContent = t("actionEdit");
   editButton.className = "btn-primary";
   editButton.addEventListener("click", () => editCookie(cookie));
-  /* editButton.addEventListener("click", async () => {
-    const newValue = prompt("Enter new value for cookie:", cookie.value);
-    if (newValue !== null) {
-      try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab) return;
-
-        const url = new URL(tab.url);
-        const cookieUrl = `${url.protocol}//${cookie.domain || url.hostname}${cookie.path || '/'}`;
-
-        await chrome.cookies.set({
-          url: cookieUrl,
-          name: cookie.name,
-          value: newValue,
-          domain: cookie.domain,
-          path: cookie.path || "/",
-          secure: cookie.secure,
-          httpOnly: cookie.httpOnly,
-          sameSite: cookie.sameSite,
-          storeId: cookie.storeId
-        });
-
-        valueCell.textContent = newValue;
-        
-        // 如果是固定的cookie，也更新固定列表
-        if (pinnedCookies.has(cookie.name)) {
-          const pinnedCookie = pinnedCookies.get(cookie.name);
-          pinnedCookie.value = newValue;
-          await savePinnedCookies();
-          updatePinnedTable();
-        }
-      } catch (error) {
-        console.error(`Failed to update cookie ${cookie.name}:`, error);
-        alert(`Failed to update cookie: ${error.message}`);
-      }
-    }
-  }); */
 
   const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
+  deleteButton.textContent = t("actionDelete");
   deleteButton.className = "btn-danger";
   deleteButton.addEventListener("click", () => {
     chrome.cookies.remove({
@@ -497,29 +818,29 @@ function addCookieToTable(cookie) {
     });
   });
 
-  actionCell.appendChild(editButton);
-  actionCell.appendChild(deleteButton);
-  row.appendChild(actionCell);
-
-  tableBody.appendChild(row);
-
   // 在操作单元格中添加固定按钮
   const pinButton = document.createElement("button");
-  pinButton.textContent = pinnedCookies.has(cookie.name) ? "Unpin" : "Pin";
+  pinButton.textContent = pinnedCookies.has(cookie.name) ? t("actionUnpin") : t("actionPin");
   pinButton.className = pinnedCookies.has(cookie.name) ? "unpin-button" : "pin-button";
   pinButton.addEventListener("click", () => {
     if (pinnedCookies.has(cookie.name)) {
       unpinCookie(cookie.name);
-      pinButton.textContent = "Pin";
+      pinButton.textContent = t("actionPin");
       pinButton.className = "pin-button";
     } else {
       pinCookie(cookie);
-      pinButton.textContent = "Unpin";
+      pinButton.textContent = t("actionUnpin");
       pinButton.className = "unpin-button";
     }
   });
-  
-  actionCell.appendChild(pinButton);
+
+  actionGroup.appendChild(editButton);
+  actionGroup.appendChild(deleteButton);
+  actionGroup.appendChild(pinButton);
+  actionCell.appendChild(actionGroup);
+  row.appendChild(actionCell);
+
+  tableBody.appendChild(row);
 }
 
 // Add a new cookie [暂时不开放此功能，因为需要用户手动输入域名和路径等详细信息，容易出错]
@@ -633,41 +954,41 @@ async function showExportPanel() {
   // 创建面板内容
   panel.innerHTML = `
     <div style="text-align: center;">
-      <h3 style="margin-bottom: 15px; color: #333;">Export Cookies</h3>
+      <h3 style="margin-bottom: 15px; color: #333;">${t('modalExportTitle')}</h3>
       
       <div style="margin-bottom: 20px;">
-        <p style="margin: 5px 0; color: #666;">Current page cookies: ${currentCookies.length}</p>
-        <p style="margin: 5px 0; color: #666;">All domains cookies: ${allCookies.length}</p>
+        <p style="margin: 5px 0; color: #666;">${t('modalCurrentPageCookiesCount')}${currentCookies.length}</p>
+        <p style="margin: 5px 0; color: #666;">${t('modalAllDomainsCookiesCount')}${allCookies.length}</p>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
         <label style="display: flex; align-items: center; gap: 10px;">
           <input type="radio" name="cookieScope" value="current" checked>
-          <span>Current Page Cookies</span>
+          <span>${t('modalScopeCurrent')}</span>
         </label>
         <label style="display: flex; align-items: center; gap: 10px;">
           <input type="radio" name="cookieScope" value="all">
-          <span>All Domains Cookies</span>
+          <span>${t('modalScopeAll')}</span>
         </label>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
         <label style="display: flex; align-items: center; gap: 10px;">
           <input type="radio" name="exportFormat" value="json" checked>
-          <span>JSON Format (with details)</span>
+          <span>${t('modalFormatJson')}</span>
         </label>
         <label style="display: flex; align-items: center; gap: 10px;">
           <input type="radio" name="exportFormat" value="text">
-          <span>Simple Text Format</span>
+          <span>${t('modalFormatText')}</span>
         </label>
         <label style="display: flex; align-items: center; gap: 10px;">
           <input type="radio" name="exportFormat" value="curl">
-          <span>cURL Format</span>
+          <span>${t('modalFormatCurl')}</span>
         </label>
       </div>
 
       <div style="margin-bottom: 20px;">
-        <input type="text" placeholder="Add description (optional)" 
+        <input type="text" placeholder="${t('modalDescriptionPlaceholder')}" 
                style="width: calc(100% - 18px); padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
       </div>
 
@@ -678,16 +999,24 @@ async function showExportPanel() {
           border-radius: 4px;
           background: #f5f5f5;
           color: #666;
+          font-size: 13px;
+          font-weight: 500;
+          white-space: nowrap;
           cursor: pointer;
-        ">Cancel</button>
+          transition: all 0.2s ease;
+        ">${t('modalBtnCancel')}</button>
         <button class="export-button" style="
           padding: 8px 20px;
           border: none;
           border-radius: 4px;
           background: #007BFF;
           color: white;
+          font-size: 13px;
+          font-weight: 500;
+          white-space: nowrap;
           cursor: pointer;
-        ">Export</button>
+          transition: all 0.2s ease;
+        ">${t('modalBtnExport')}</button>
       </div>
     </div>
   `;
@@ -721,7 +1050,7 @@ async function showExportPanel() {
     // 显示成功通知
     const notification = document.createElement('div');
     notification.className = 'notification success';
-    notification.textContent = 'Cookies exported successfully!';
+    notification.textContent = t('modalExportSuccess');
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 2000);
 
@@ -896,17 +1225,17 @@ function showImportResults(results) {
   dialog.innerHTML = `
     <div style="text-align: center;">
       <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
-        Import ${failCount === 0 ? 'Completed' : 'Completed with Errors'}
+        ${failCount === 0 ? t('modalImportSuccess') : t('modalImportCompletedErrors')}
       </h3>
       <div style="margin: 15px 0;">
-        <p style="color: #28a745; margin: 5px 0;">✓ Successfully imported: ${successCount}</p>
-        ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">✕ Failed: ${failCount}</p>` : ''}
+        <p style="color: #28a745; margin: 5px 0;">${t('modalImportSuccessCount')}${successCount}</p>
+        ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
       </div>
       ${failCount > 0 ? `
         <div style="text-align: left; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; max-height: 200px; overflow-y: auto;">
-          <p style="margin: 0 0 10px 0; font-weight: bold;">Failed cookies:</p>
+          <p style="margin: 0 0 10px 0; font-weight: bold;">${t('modalImportFailedList')}</p>
           ${results.filter(r => !r.success)
-            .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error || 'Unknown error'}</p>`)
+            .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error || t('modalUnknownError')}</p>`)
             .join('')}
         </div>
       ` : ''}
@@ -918,7 +1247,7 @@ function showImportResults(results) {
           background: #28a745;
           color: white;
           cursor: pointer;
-        ">Close</button>
+        ">${t('modalBtnClose')}</button>
         ${failCount > 0 ? `
           <button onclick="retryFailedImports(${JSON.stringify(results)})" style="
             padding: 8px 20px;
@@ -927,7 +1256,7 @@ function showImportResults(results) {
             background: #dc3545;
             color: white;
             cursor: pointer;
-          ">Retry Failed</button>
+          ">${t('modalBtnRetry')}</button>
         ` : ''}
       </div>
     </div>
@@ -1142,7 +1471,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
   // 对话框内容
   dialog.innerHTML = `
     <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="margin: 0;">Import Cookies</h3>
+      <h3 style="margin: 0;">${t('modalImportTitle')}</h3>
       <button class="close-button" style="
         background: none;
         border: none;
@@ -1162,7 +1491,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
           background: #007BFF;
           color: #fff;
           cursor: pointer;
-        ">Array Format</button>
+        ">${t('modalFormatArray')}</button>
         <button class="format-object" style="
           padding: 5px 10px;
           border: none;
@@ -1170,7 +1499,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
           background: #007BFF;
           color: #fff;
           cursor: pointer;
-        ">Object Format</button>
+        ">${t('modalFormatObject')}</button>
       </div>
       
       <textarea id="cookieInput" style="
@@ -1182,27 +1511,35 @@ document.getElementById("importCookies").addEventListener("click", () => {
         border-radius: 4px;
         resize: none;
         font-family: monospace;
-      " placeholder="Enter cookies here..."></textarea>
+      " placeholder="${t('modalImportPlaceholder')}"></textarea>
     </div>
 
     <div style="text-align: right;">
       <button class="cancel-button" style="
-        padding: 8px 15px;
+        padding: 8px 18px;
         border: none;
         border-radius: 4px;
         background: #f5f5f5;
         color: #666;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
         cursor: pointer;
         margin-right: 10px;
-      ">Cancel</button>
+        transition: all 0.2s ease;
+      ">${t('modalBtnCancel')}</button>
       <button class="import-button" style="
-        padding: 8px 15px;
+        padding: 8px 18px;
         border: none;
         border-radius: 4px;
         background: #007BFF;
         color: white;
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
         cursor: pointer;
-      ">Import</button>
+        transition: all 0.2s ease;
+      ">${t('modalBtnImport')}</button>
     </div>
   `;
 
@@ -1477,10 +1814,10 @@ document.getElementById("importCookies").addEventListener("click", () => {
       dialog.innerHTML = `
         <div style="text-align: center; padding: 20px;">
           <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
-            Import ${failCount === 0 ? 'Successful' : 'Completed with Errors'}
+            ${failCount === 0 ? t('modalImportSuccess') : t('modalImportCompletedErrors')}
           </h3>
-          <p style="color: #28a745; margin: 5px 0;">✓ Successfully imported: ${successCount}</p>
-          ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">✕ Failed: ${failCount}</p>` : ''}
+          <p style="color: #28a745; margin: 5px 0;">${t('modalImportSuccessCount')}${successCount}</p>
+          ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
           <button onclick="this.parentElement.parentElement.remove()" style="
             padding: 8px 20px;
             border: none;
@@ -1489,7 +1826,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
             color: white;
             cursor: pointer;
             margin-top: 15px;
-          ">Close</button>
+          ">${t('modalBtnClose')}</button>
         </div>
       `;
 
@@ -1506,7 +1843,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
       // 显示错误消息
       dialog.innerHTML = `
         <div style="text-align: center; padding: 20px;">
-          <h3 style="margin-bottom: 15px; color: #dc3545;">Import Failed</h3>
+          <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalImportFailedTitle')}</h3>
           <p style="margin-bottom: 15px;">${error.message}</p>
           <button onclick="this.parentElement.parentElement.remove()" style="
             padding: 8px 20px;
@@ -1515,7 +1852,7 @@ document.getElementById("importCookies").addEventListener("click", () => {
             background: #6c757d;
             color: white;
             cursor: pointer;
-          ">Close</button>
+          ">${t('modalBtnClose')}</button>
         </div>
       `;
     }
@@ -1708,27 +2045,33 @@ async function updateCurrentTable() {
     
     // Name cell
     const nameCell = document.createElement("td");
+    nameCell.className = "cell-name";
     nameCell.textContent = cookie.name;
+    nameCell.title = cookie.name;
     row.appendChild(nameCell);
     
     // Value cell
     const valueCell = document.createElement("td");
+    valueCell.className = "cell-value";
     valueCell.textContent = cookie.value;
+    valueCell.title = cookie.value;
     row.appendChild(valueCell);
     
     // Actions cell
     const actionCell = document.createElement("td");
-    // actionCell.className = 'cookie-actions';
+    actionCell.className = "cell-actions";
+    const actionGroup = document.createElement("div");
+    actionGroup.className = "action-btn-group";
     
     // Edit button
     const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
+    editButton.textContent = t("actionEdit");
     editButton.className = "btn-primary";
     editButton.addEventListener("click", () => editCookie(cookie));
     
     // Delete button
     const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
+    deleteButton.textContent = t("actionDelete");
     deleteButton.className = "btn-danger";
     deleteButton.addEventListener("click", async () => {
       try {
@@ -1737,17 +2080,17 @@ async function updateCurrentTable() {
           name: cookie.name
         });
         await updateCurrentTable();
-        showNotification(`Cookie "${cookie.name}" deleted successfully`, 'success');
+        showNotification(`${t('notifyDeleteSuccess')}: "${cookie.name}"`, 'success');
       } catch (error) {
         console.error('Failed to delete cookie:', error);
-        showNotification(`Failed to delete cookie: ${error.message}`, 'error');
+        showNotification(`${t('notifyDeleteFailed')}: ${error.message}`, 'error');
       }
     });
     
     // Pin/Unpin button
     const pinButton = document.createElement("button");
     const isPinned = pinnedCookies.has(cookie.name);
-    pinButton.textContent = isPinned ? "Unpin" : "Pin";
+    pinButton.textContent = isPinned ? t("actionUnpin") : t("actionPin");
     pinButton.className = isPinned ? "btn-danger" : "btn-success";
     
     pinButton.addEventListener("click", async () => {
@@ -1758,10 +2101,11 @@ async function updateCurrentTable() {
       }
     });
     
-    // 添加所有按钮到操作单元格
-    actionCell.appendChild(editButton);
-    actionCell.appendChild(deleteButton); // 添加删除按钮
-    actionCell.appendChild(pinButton);
+    // 添加所有按钮到操作组
+    actionGroup.appendChild(editButton);
+    actionGroup.appendChild(deleteButton);
+    actionGroup.appendChild(pinButton);
+    actionCell.appendChild(actionGroup);
     row.appendChild(actionCell);
     
     tableBody.appendChild(row);
@@ -1798,7 +2142,7 @@ async function editCookie(cookie, isPinned = false) {
         color: #333;
         font-size: 18px;
         font-weight: 600;
-      ">Edit Cookie</h3>
+      ">${t('dialogEditCookieTitle')}</h3>
       
       <div style="margin-bottom: 16px;">
         <label style="
@@ -1807,7 +2151,7 @@ async function editCookie(cookie, isPinned = false) {
           color: #666;
           font-size: 14px;
           font-weight: 500;
-        ">Cookie Name</label>
+        ">${t('dialogCookieName')}</label>
         <div style="
           padding: 8px 12px;
           background: #f5f5f5;
@@ -1824,7 +2168,7 @@ async function editCookie(cookie, isPinned = false) {
           color: #666;
           font-size: 14px;
           font-weight: 500;
-        ">Cookie Value</label>
+        ">${t('dialogCookieValue')}</label>
         <input type="text" 
           id="editValue" 
           value="${cookie.value}" 
@@ -1856,7 +2200,7 @@ async function editCookie(cookie, isPinned = false) {
           font-weight: 500;
           cursor: pointer;
           transition: all 0.2s ease;
-        ">Cancel</button>
+        ">${t('dialogCancel')}</button>
         
         <button class="save-edit" style="
           padding: 8px 20px;
@@ -1868,7 +2212,7 @@ async function editCookie(cookie, isPinned = false) {
           font-weight: 500;
           cursor: pointer;
           transition: all 0.2s ease;
-        ">Save</button>
+        ">${t('dialogSave')}</button>
       </div>
     `;
 
@@ -1946,7 +2290,7 @@ async function editCookie(cookie, isPinned = false) {
       cancelButton.disabled = true;
       input.disabled = true;
       saveButton.style.background = '#ccc';
-      saveButton.textContent = 'Saving...';
+      saveButton.textContent = t('dialogSaving');
 
       const newValue = input.value;
       
@@ -2033,41 +2377,39 @@ async function updatePinnedTable() {
     
     // Name cell
     const nameCell = document.createElement("td");
+    nameCell.className = "cell-name";
     nameCell.textContent = name;
+    nameCell.title = name;
     row.appendChild(nameCell);
     
     // Value cell
     const valueCell = document.createElement("td");
+    valueCell.className = "cell-value";
     valueCell.textContent = cookie.value;
+    valueCell.title = cookie.value;
     row.appendChild(valueCell);
     
     // Actions cell
     const actionCell = document.createElement("td");
-    // actionCell.className = 'cookie-actions';
+    actionCell.className = "cell-actions";
+    const actionGroup = document.createElement("div");
+    actionGroup.className = "action-btn-group";
     
     // Edit button
     const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
+    editButton.textContent = t("actionEdit");
     editButton.className = "btn-primary";
     editButton.addEventListener("click", () => editCookie(cookie));
-    /* editButton.addEventListener("click", async () => {
-      const newValue = prompt("Enter new value for cookie:", cookie.value);
-      if (newValue !== null) {
-        cookie.value = newValue;
-        await savePinnedCookies();
-        await updatePinnedTable();
-        await applyCookie(cookie);
-      }
-    }); */
     
     // Unpin button
     const unpinButton = document.createElement("button");
-    unpinButton.textContent = "Unpin";
+    unpinButton.textContent = t("actionUnpin");
     unpinButton.className = "btn-danger";
     unpinButton.addEventListener("click", () => unpinCookie(name));
     
-    actionCell.appendChild(editButton);
-    actionCell.appendChild(unpinButton);
+    actionGroup.appendChild(editButton);
+    actionGroup.appendChild(unpinButton);
+    actionCell.appendChild(actionGroup);
     row.appendChild(actionCell);
     
     pinnedTableBody.appendChild(row);
@@ -2337,17 +2679,17 @@ async function forceApplyToCurrent() {
     // 构建通知内容
     let notificationContent = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #333;">Cookie 应用状态</h3>
-        <p style="color: #28a745;">成功: ${successCount} 个</p>
-        ${failCount > 0 ? `<p style="color: #dc3545;">失败: ${failCount} 个</p>` : ''}
-        <p style="color: #666;">域名: ${url.hostname}</p>
+        <h3 style="margin-bottom: 15px; color: #333;">${t('modalApplyTitle')}</h3>
+        <p style="color: #28a745;">${t('modalApplySuccess').replace('{n}', successCount)}</p>
+        ${failCount > 0 ? `<p style="color: #dc3545;">${t('modalApplyFail').replace('{n}', failCount)}</p>` : ''}
+        <p style="color: #666;">${t('modalApplyDomain')}${url.hostname}</p>
     `;
 
     // 如果有失败的cookie，显示详细信息
     if (failCount > 0) {
       notificationContent += `
         <div style="text-align: left; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-          <p style="margin: 0; font-weight: bold; color: #333;">失败详情：</p>
+          <p style="margin: 0; font-weight: bold; color: #333;">${t('modalApplyFailDetails')}</p>
           ${results.filter(r => !r.success)
             .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error}</p>`)
             .join('')}
@@ -2364,7 +2706,7 @@ async function forceApplyToCurrent() {
             cursor: pointer;
             background: #007bff;
             color: white;
-          ">确定</button>
+          ">${t('modalBtnConfirm')}</button>
           ${failCount > 0 ? `
             <button class="notification-retry" style="
               padding: 8px 20px;
@@ -2373,7 +2715,7 @@ async function forceApplyToCurrent() {
               cursor: pointer;
               background: #dc3545;
               color: white;
-            ">重试</button>
+            ">${t('modalBtnRetry')}</button>
           ` : ''}
           <button class="notification-debug" style="
             padding: 8px 20px;
@@ -2382,11 +2724,11 @@ async function forceApplyToCurrent() {
             cursor: pointer;
             background: #f5f5f5;
             color: #666;
-          ">详情</button>
+          ">${t('modalBtnDebug')}</button>
         </div>
         ${successCount > 0 ? `
           <p style="margin-top: 15px; color: #666;">
-            3秒后将自动刷新页面...
+            ${t('modalApplyAutoRefresh', '3秒后将自动刷新页面...')}
           </p>
         ` : ''}
       </div>
@@ -2529,14 +2871,14 @@ async function forceApplyToCurrent_break() {
     notification.className = 'cookie-notification';
     notification.innerHTML = `
       <div class="notification-content">
-        <h3>Cookie 应用状态</h3>
-        <p>成功: ${successCount} 个</p>
-        ${failCount > 0 ? `<p>失败: ${failCount} 个</p>` : ''}
-        <p>域名: ${url.hostname}</p>
+        <h3>${t('modalApplyTitle')}</h3>
+        <p>${t('modalApplySuccess').replace('{n}', successCount)}</p>
+        ${failCount > 0 ? `<p>${t('modalApplyFail').replace('{n}', failCount)}</p>` : ''}
+        <p>${t('modalApplyDomain')}${url.hostname}</p>
         <div class="notification-buttons">
-          <button class="notification-close">确定</button>
-          ${failCount > 0 ? `<button class="notification-retry">重试</button>` : ''}
-          <button class="notification-debug">查看详情</button>
+          <button class="notification-close">${t('modalBtnConfirm')}</button>
+          ${failCount > 0 ? `<button class="notification-retry">${t('modalBtnRetry')}</button>` : ''}
+          <button class="notification-debug">${t('modalBtnDebug')}</button>
         </div>
       </div>
     `;
@@ -2560,7 +2902,7 @@ async function forceApplyToCurrent_break() {
     const debugButton = notification.querySelector('.notification-debug');
     debugButton.addEventListener('click', () => {
       console.log('Cookie设置详细信息:', results);
-      alert('详细信息已输出到控制台，请按F12查看');
+      alert(t('modalDebugAlert'));
     });
 
     // 5秒后自动关闭通知
@@ -2572,7 +2914,7 @@ async function forceApplyToCurrent_break() {
 
   } catch (error) {
     console.error('执行过程中出错:', error);
-    alert(`应用Cookie时发生错误: ${error.message}\n请查看控制台获取详细信息`);
+    alert(t('modalApplyErrorAlert').replace('{msg}', error.message));
   }
 }
 
@@ -2811,71 +3153,103 @@ document.getElementById("getCookies").addEventListener("click", async () => {
     // 创建详细的格式化版本
     const detailedVersion = JSON.stringify(cookieData, null, 2);
 
-    // 创建通知元素
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.className = 'cookie-modal-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+    `;
+
+    // 创建通知/对话框元素
     const notification = document.createElement('div');
-    notification.className = 'cookie-notification';
+    notification.className = 'cookie-notification cookie-modal-dialog';
     notification.style.cssText = `
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: white;
-      padding: 20px;
+      padding: 24px 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-      min-width: 300px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      z-index: 1001;
+      min-width: 380px;
+      max-width: 90%;
+      box-sizing: border-box;
       color: #333;
     `;
 
     notification.innerHTML = `
-      <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #333;">Cookies Retrieved</h3>
-        <p style="color: #666;">Found ${cookies.length} cookies</p>
-        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+      <div style="position: relative; text-align: center;">
+        <button class="close-notify" style="
+          position: absolute;
+          top: -12px;
+          right: -8px;
+          background: none;
+          border: none;
+          font-size: 20px;
+          line-height: 1;
+          color: #999;
+          cursor: pointer;
+          padding: 4px 8px;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+        " title="${t('modalBtnClose') || 'Close'}">×</button>
+        <h3 style="margin: 0 0 10px 0; font-size: 17px; font-weight: 600; color: #333;">${t('modalGetCookiesTitle')}</h3>
+        <p style="margin: 0 0 18px 0; color: #666; font-size: 14px;">${t('modalFoundCookies').replace('{n}', cookies.length)}</p>
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: nowrap;">
           <button class="copy-simple" style="
-            padding: 8px 20px;
+            padding: 9px 18px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            background: #007bff;
+            background: #007BFF;
             color: white;
-          ">Copy Simple Format</button>
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+          ">${t('modalBtnCopySimple')}</button>
           <button class="copy-detailed" style="
-            padding: 8px 20px;
+            padding: 9px 18px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             background: #28a745;
             color: white;
-          ">Copy Detailed JSON</button>
-          <button class="close-notify" style="
-            padding: 8px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background: #6c757d;
-            color: white;
-          ">Close</button>
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+          ">${t('modalBtnCopyDetailed')}</button>
         </div>
         <div class="copy-status" style="
-          margin-top: 10px;
+          margin-top: 12px;
           color: #28a745;
-          font-size: 14px;
-          height: 20px;
+          font-size: 13px;
+          height: 18px;
+          line-height: 18px;
         "></div>
       </div>
     `;
 
+    document.body.appendChild(overlay);
     document.body.appendChild(notification);
 
     // 复制简单格式
     notification.querySelector('.copy-simple').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(textVersion);
-        showCopyStatus('Simple format copied to clipboard!');
+        showCopyStatus(t('modalCopiedSimple'));
       } catch (err) {
-        showCopyStatus('Failed to copy: ' + err.message, true);
+        showCopyStatus(t('modalCopyFailed') + ': ' + err.message, true);
       }
     });
 
@@ -2883,16 +3257,37 @@ document.getElementById("getCookies").addEventListener("click", async () => {
     notification.querySelector('.copy-detailed').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(detailedVersion);
-        showCopyStatus('Detailed JSON copied to clipboard!');
+        showCopyStatus(t('modalCopiedDetailed'));
       } catch (err) {
-        showCopyStatus('Failed to copy: ' + err.message, true);
+        showCopyStatus(t('modalCopyFailed') + ': ' + err.message, true);
       }
     });
 
-    // 关闭按钮
-    notification.querySelector('.close-notify').addEventListener('click', () => {
+    // 关闭/取消函数与事件
+    const closeModal = () => {
       notification.remove();
+      overlay.remove();
+      document.removeEventListener('keydown', handleEsc);
+    };
+
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    };
+
+    const closeBtn = notification.querySelector('.close-notify');
+    closeBtn.addEventListener('mouseenter', () => {
+      closeBtn.style.color = '#333';
+      closeBtn.style.background = '#f0f0f0';
     });
+    closeBtn.addEventListener('mouseleave', () => {
+      closeBtn.style.color = '#999';
+      closeBtn.style.background = 'none';
+    });
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    document.addEventListener('keydown', handleEsc);
 
     // 显示复制状态的函数
     function showCopyStatus(message, isError = false) {
@@ -2902,7 +3297,9 @@ document.getElementById("getCookies").addEventListener("click", async () => {
       
       // 2秒后清除消息
       setTimeout(() => {
-        statusDiv.textContent = '';
+        if (statusDiv) {
+          statusDiv.textContent = '';
+        }
       }, 2000);
     }
 
@@ -2924,7 +3321,7 @@ document.getElementById("getCookies").addEventListener("click", async () => {
     successNotification.innerHTML = `
       <div style="display: flex; align-items: center; gap: 10px;">
         <span>✓</span>
-        <span>Cookies refreshed successfully</span>
+        <span>${t('notifyCookiesRefreshed')}</span>
       </div>
     `;
     document.body.appendChild(successNotification);
@@ -2937,7 +3334,7 @@ document.getElementById("getCookies").addEventListener("click", async () => {
 
   } catch (error) {
     console.error('Failed to fetch cookies:', error);
-    alert('Failed to fetch cookies: ' + error.message);
+    alert(t('notifyCookiesFetchFailed') + error.message);
   }
 });
 
@@ -3065,28 +3462,35 @@ async function deleteCurrentCookies() {
 
     dialog.innerHTML = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #dc3545;">Confirm Deletion</h3>
+        <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalConfirmDeleteCurrentTitle')}</h3>
         <p style="margin-bottom: 20px;">
-          Are you sure you want to delete all cookies (${cookies.length}) 
-          from the current page?
+          ${t('modalConfirmDeleteCurrentMsg').replace('{n}', cookies.length)}
         </p>
         <div style="display: flex; justify-content: center; gap: 10px;">
           <button class="cancel-delete" style="
             padding: 8px 20px;
             border: none;
             border-radius: 4px;
-            background: #6c757d;
-            color: white;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             cursor: pointer;
-          ">Cancel</button>
+            transition: all 0.2s ease;
+          ">${t('modalBtnCancel')}</button>
           <button class="confirm-delete" style="
             padding: 8px 20px;
             border: none;
             border-radius: 4px;
             background: #dc3545;
             color: white;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             cursor: pointer;
-          ">Delete All</button>
+            transition: all 0.2s ease;
+          ">${t('modalBtnDeleteAll')}</button>
         </div>
       </div>
     `;
@@ -3127,7 +3531,7 @@ async function deleteCurrentCookies() {
             animation: spin 1s linear infinite;
             margin: 20px auto;
           "></div>
-          <p>Deleting cookies...</p>
+          <p>${t('modalDeletingCookies')}</p>
         </div>
       `;
 
@@ -3165,15 +3569,15 @@ async function deleteCurrentCookies() {
         dialog.innerHTML = `
           <div style="text-align: center;">
             <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
-              Deletion ${failCount === 0 ? 'Successful' : 'Completed with Errors'}
+              ${failCount === 0 ? t('modalDeleteSuccess') : t('modalDeleteCompletedErrors')}
             </h3>
-            <p style="color: #28a745; margin: 5px 0;">✓ Successfully deleted: ${successCount}</p>
-            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">✕ Failed: ${failCount}</p>` : ''}
+            <p style="color: #28a745; margin: 5px 0;">${t('modalDeleteSuccessCount')}${successCount}</p>
+            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
             ${failCount > 0 ? `
               <div style="text-align: left; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-                <p style="margin: 0 0 10px 0; font-weight: bold;">Failed deletions:</p>
+                <p style="margin: 0 0 10px 0; font-weight: bold;">${t('modalDeleteFailList')}</p>
                 ${results.filter(r => !r.success)
-                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error || 'Unknown error'}</p>`)
+                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name}: ${r.error || t('modalUnknownError')}</p>`)
                   .join('')}
               </div>
             ` : ''}
@@ -3185,7 +3589,7 @@ async function deleteCurrentCookies() {
               color: white;
               cursor: pointer;
               margin-top: 15px;
-            ">Close</button>
+            ">${t('modalBtnClose')}</button>
           </div>
         `;
 
@@ -3206,7 +3610,7 @@ async function deleteCurrentCookies() {
       } catch (error) {
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: #dc3545;">Error</h3>
+            <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalErrorTitle')}</h3>
             <p style="margin-bottom: 20px;">${error.message}</p>
             <button class="close-dialog" style="
               padding: 8px 20px;
@@ -3215,7 +3619,7 @@ async function deleteCurrentCookies() {
               background: #6c757d;
               color: white;
               cursor: pointer;
-            ">Close</button>
+            ">${t('modalBtnClose')}</button>
           </div>
         `;
 
@@ -3279,28 +3683,35 @@ async function deleteAllCookies() {
 
     dialog.innerHTML = `
       <div style="text-align: center;">
-        <h3 style="margin-bottom: 15px; color: #dc3545;">⚠️ Warning</h3>
+        <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalWarningTitle')}</h3>
         <p style="margin-bottom: 20px;">
-          Are you sure you want to delete ALL cookies (${allCookies.length}) 
-          from ALL domains? This action cannot be undone.
+          ${t('modalWarningAllMsg').replace('{n}', allCookies.length)}
         </p>
         <div style="display: flex; justify-content: center; gap: 10px;">
           <button class="cancel-delete" style="
             padding: 8px 20px;
             border: none;
             border-radius: 4px;
-            background: #6c757d;
-            color: white;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             cursor: pointer;
-          ">Cancel</button>
+            transition: all 0.2s ease;
+          ">${t('modalBtnCancel')}</button>
           <button class="confirm-delete" style="
             padding: 8px 20px;
             border: none;
             border-radius: 4px;
             background: #dc3545;
             color: white;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             cursor: pointer;
-          ">Delete All</button>
+            transition: all 0.2s ease;
+          ">${t('modalBtnDeleteAll')}</button>
         </div>
       </div>
     `;
@@ -3341,7 +3752,7 @@ async function deleteAllCookies() {
             animation: spin 1s linear infinite;
             margin: 20px auto;
           "></div>
-          <p>Deleting all cookies...</p>
+          <p>${t('modalDeletingAllCookies')}</p>
         </div>
       `;
 
@@ -3382,15 +3793,15 @@ async function deleteAllCookies() {
         dialog.innerHTML = `
           <div style="text-align: center;">
             <h3 style="margin-bottom: 15px; color: ${failCount === 0 ? '#28a745' : '#dc3545'}">
-              Deletion ${failCount === 0 ? 'Successful' : 'Completed with Errors'}
+              ${failCount === 0 ? t('modalDeleteSuccess') : t('modalDeleteCompletedErrors')}
             </h3>
-            <p style="color: #28a745; margin: 5px 0;">✓ Successfully deleted: ${successCount}</p>
-            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">✕ Failed: ${failCount}</p>` : ''}
+            <p style="color: #28a745; margin: 5px 0;">${t('modalDeleteSuccessCount')}${successCount}</p>
+            ${failCount > 0 ? `<p style="color: #dc3545; margin: 5px 0;">${t('modalImportFailCount')}${failCount}</p>` : ''}
             ${failCount > 0 ? `
               <div style="text-align: left; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-                <p style="margin: 0 0 10px 0; font-weight: bold;">Failed deletions:</p>
+                <p style="margin: 0 0 10px 0; font-weight: bold;">${t('modalDeleteFailList')}</p>
                 ${results.filter(r => !r.success)
-                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name} (${r.domain}): ${r.error || 'Unknown error'}</p>`)
+                  .map(r => `<p style="margin: 5px 0; color: #dc3545;">· ${r.name} (${r.domain}): ${r.error || t('modalUnknownError')}</p>`)
                   .join('')}
               </div>
             ` : ''}
@@ -3402,7 +3813,7 @@ async function deleteAllCookies() {
               color: white;
               cursor: pointer;
               margin-top: 15px;
-            ">Close</button>
+            ">${t('modalBtnClose')}</button>
           </div>
         `;
 
@@ -3423,7 +3834,7 @@ async function deleteAllCookies() {
       } catch (error) {
         dialog.innerHTML = `
           <div style="text-align: center;">
-            <h3 style="margin-bottom: 15px; color: #dc3545;">Error</h3>
+            <h3 style="margin-bottom: 15px; color: #dc3545;">${t('modalErrorTitle')}</h3>
             <p style="margin-bottom: 20px;">${error.message}</p>
             <button class="close-dialog" style="
               padding: 8px 20px;
@@ -3432,7 +3843,7 @@ async function deleteAllCookies() {
               background: #6c757d;
               color: white;
               cursor: pointer;
-            ">Close</button>
+            ">${t('modalBtnClose')}</button>
           </div>
         `;
 
@@ -3699,28 +4110,28 @@ function initializeEventListeners() {
               }
             </style>
             <div class="cookie-form">
-              <label for="cookieName">Cookie Name *</label>
+              <label for="cookieName">${t('modalAddName')}</label>
               <input type="text" id="cookieName" required>
               
-              <label for="cookieValue">Cookie Value *</label>
+              <label for="cookieValue">${t('modalAddValue')}</label>
               <input type="text" id="cookieValue" required>
               
               <div class="advanced-toggle">
-                ▶ Advanced Settings
+                ▶ ${t('modalAdvancedSettings')}
               </div>
               
               <div class="advanced-section">
-                <label for="cookieDomain">Domain</label>
-                <input type="text" id="cookieDomain" placeholder="Leave empty for current domain">
+                <label for="cookieDomain">${t('modalDomain')}</label>
+                <input type="text" id="cookieDomain" placeholder="${t('modalDomainPlaceholder')}">
                 
-                <label for="cookiePath">Path</label>
+                <label for="cookiePath">${t('modalPath')}</label>
                 <input type="text" id="cookiePath" value="/" placeholder="/">
                 
-                <label for="cookieExpiration">Expiration</label>
+                <label for="cookieExpiration">${t('modalExpiration')}</label>
                 <select id="cookieExpirationType">
-                  <option value="session">Session</option>
-                  <option value="date">Specific Date</option>
-                  <option value="duration" selected>Duration</option>
+                  <option value="session">${t('modalExpSession')}</option>
+                  <option value="date">${t('modalExpDate')}</option>
+                  <option value="duration" selected>${t('modalExpDuration')}</option>
                 </select>
                 
                 <div id="expirationDateContainer" style="display: none;">
@@ -3730,11 +4141,11 @@ function initializeEventListeners() {
                 <div id="expirationDurationContainer">
                   <input type="number" id="cookieExpirationDuration" value="365" min="1">
                   <select id="cookieExpirationUnit">
-                    <option value="minutes">Minutes</option>
-                    <option value="hours">Hours</option>
-                    <option value="days" selected>Days</option>
-                    <option value="months">Months</option>
-                    <option value="years">Years</option>
+                    <option value="minutes">${t('modalUnitMinutes')}</option>
+                    <option value="hours">${t('modalUnitHours')}</option>
+                    <option value="days" selected>${t('modalUnitDays')}</option>
+                    <option value="months">${t('modalUnitMonths')}</option>
+                    <option value="years">${t('modalUnitYears')}</option>
                   </select>
                 </div>
                 
@@ -3785,26 +4196,34 @@ function initializeEventListeners() {
         `;
         
         dialog.innerHTML = `
-          <h3 style="margin-top: 0; margin-bottom: 15px;">Add New Cookie</h3>
+          <h3 style="margin-top: 0; margin-bottom: 15px;">${t('modalAddTitle')}</h3>
           ${formHtml}
           <div style="text-align: right; margin-top: 15px;">
             <button id="cancelAdd" style="
-              padding: 8px 15px;
+              padding: 8px 18px;
               margin-right: 10px;
               border: none;
               border-radius: 4px;
               background: #f5f5f5;
               color: #666;
+              font-size: 13px;
+              font-weight: 500;
+              white-space: nowrap;
               cursor: pointer;
-            ">Cancel</button>
+              transition: all 0.2s ease;
+            ">${t('modalBtnCancel')}</button>
             <button id="confirmAdd" style="
-              padding: 8px 15px;
+              padding: 8px 18px;
               border: none;
               border-radius: 4px;
               background: #007BFF;
               color: white;
+              font-size: 13px;
+              font-weight: 500;
+              white-space: nowrap;
               cursor: pointer;
-            ">Add Cookie</button>
+              transition: all 0.2s ease;
+            ">${t('modalBtnAddCookie')}</button>
           </div>
         `;
     
@@ -3831,7 +4250,7 @@ function initializeEventListeners() {
         advancedToggle.addEventListener('click', () => {
           advancedSection.classList.toggle('show');
           advancedToggle.textContent = advancedSection.classList.contains('show') ? 
-            '▼ Advanced Settings' : '▶ Advanced Settings';
+            `▼ ${t('modalAdvancedSettings')}` : `▶ ${t('modalAdvancedSettings')}`;
         });
     
         // 过期时间类型切换
@@ -3852,9 +4271,9 @@ function initializeEventListeners() {
           domainInput.disabled = hostOnlyCheckbox.checked;
           if (hostOnlyCheckbox.checked) {
             domainInput.value = '';
-            domainInput.placeholder = 'Using current domain';
+            domainInput.placeholder = t('modalDomainUsingCurrent');
           } else {
-            domainInput.placeholder = 'Leave empty for current domain';
+            domainInput.placeholder = t('modalDomainPlaceholder');
           }
         });
     
@@ -3870,7 +4289,7 @@ function initializeEventListeners() {
           const value = document.getElementById('cookieValue').value;
           
           if (!name) {
-            alert('Cookie name is required');
+            alert(t('modalNameRequired'));
             return;
           }
     
@@ -3961,7 +4380,7 @@ function initializeEventListeners() {
             notification.innerHTML = `
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span>✓</span>
-                <span>Cookie added successfully</span>
+                <span>${t('modalAddSuccess')}</span>
               </div>
             `;
             document.body.appendChild(notification);
@@ -4024,7 +4443,7 @@ function replaceTextNodes(node) {
       const matches = node.textContent.match(/__MSG_(\w+)__/);
       if (matches && matches[1]) {
         const messageName = matches[1];
-        const translation = chrome.i18n.getMessage(messageName);
+        const translation = t(messageName);
         if (translation) {
           node.textContent = node.textContent.replace(
             /__MSG_\w+__/,
@@ -4040,7 +4459,7 @@ function replaceTextNodes(node) {
         const matches = attr.value.match(/__MSG_(\w+)__/);
         if (matches && matches[1]) {
           const messageName = matches[1];
-          const translation = chrome.i18n.getMessage(messageName);
+          const translation = t(messageName);
           if (translation) {
             attr.value = attr.value.replace(/__MSG_\w+__/, translation);
           }
@@ -4054,7 +4473,7 @@ function replaceTextNodes(node) {
       if (placeholderValue.includes('__MSG_')) {
         const matches = placeholderValue.match(/__MSG_(\w+)__/);
         if (matches && matches[1]) {
-          const translation = chrome.i18n.getMessage(matches[1]);
+          const translation = t(matches[1]);
           if (translation) {
             node.setAttribute('placeholder', translation);
           }
@@ -4070,24 +4489,8 @@ function replaceTextNodes(node) {
 }
 
 function replaceI18nMessages() {
-  // 添加调试日志
-  console.log('Starting i18n replacement');
-  
-  // 替换标题
-  document.title = chrome.i18n.getMessage('extName');
-  console.log('Title replaced:', document.title);
-
-  // 从文档根节点开始替换
-  replaceTextNodes(document.body);
-
-  // 单独处理搜索输入框
-  const searchInput = document.getElementById('searchCookie');
-  if (searchInput) {
-    const placeholder = chrome.i18n.getMessage('searchPlaceholder');
-    if (placeholder) {
-      searchInput.placeholder = placeholder;
-    }
-  }
+  // 使用当前统一语言管理器更新
+  applyLanguage(currentLang, false);
 }
 
 // 添加 MutationObserver 来处理动态添加的内容
@@ -4121,8 +4524,8 @@ const InitializationManager = {
   // 核心功能初始化
   async initializeCore() {
     try {
-      // 1. 替换国际化文本(立即执行，不等待)
-      replaceI18nMessages();
+      // 1. 初始化国际化文本与用户语言偏好(立即执行)
+      await initLanguage();
       
       // 2. 初始化事件监听(立即执行，不等待)
       initializeEventListeners();
@@ -4211,15 +4614,21 @@ const InitializationManager = {
     }
   },
 
-  // 检查无痕模式权限(非核心功能)
+  // 检查无痕模式权限(非核心功能)：仅当用户在隐身/无痕窗口中打开插件，且未获得无痕权限时才提示；普通窗口下完全静默
   async checkIncognitoPermission() {
     try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      // 如果当前窗口并非无痕/隐身模式，直接返回，绝不弹出无意义的黄色警告
+      if (!tab || !tab.incognito) {
+        return;
+      }
+
       const hasIncognitoPermission = await chrome.extension.isAllowedIncognitoAccess();
       if (!hasIncognitoPermission) {
         showNotification(
-          'To use this extension in incognito mode, please enable it in extension settings',
+          t('notifyIncognitoWarning'),
           'warning',
-          10000
+          6000
         );
       }
     } catch (error) {
@@ -4315,9 +4724,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 添加滚动监听
   window.addEventListener('scroll', handleScroll, { passive: true });
-  
-  // 初始检查是否需要显示快速导航
-  handleScroll();
   
   // 监听内容变化
   const observer = new MutationObserver(handleScroll);
