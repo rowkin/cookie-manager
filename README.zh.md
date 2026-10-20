@@ -1,6 +1,6 @@
 # Cookie Manager with Daily Quote
 
-Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助用户轻松管理和操作网站 Cookie。它不仅提供了直观的用户界面，还集成了每日一句励志名言，为用户提供激励和动力。无论你是需要管理 Cookie 还是寻找每日的灵感，这个扩展都能满足你的需求。
+Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助用户轻松管理和操作网站 Cookie。它提供了直观的用户界面与每日语录小部件。
 
 ## 安装说明 
 1.  在 Chrome 浏览器中，访问 `chrome://extensions/`。
@@ -10,7 +10,7 @@ Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助
 
 ## 发布信息
 
-- 版本: 1.2.0
+- 版本: 1.2.5
 - 最低支持的 Chrome 版本: 88+
 - 权限要求: 
   - cookies
@@ -38,7 +38,7 @@ Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助
   - 显示固定 Cookie 数量
   - 一键应用固定 Cookie 到当前页面
 - 💾 导入/导出 Cookie
-  - 支持 JSON 格式导出
+  - 支持 JSON、纯文本及 cURL 格式导出
   - 批量导入 Cookie
   - 导入时自动验证格式
 - 📋 Cookie 操作
@@ -52,10 +52,7 @@ Cookie Manager with Daily Quote 是一个强大的浏览器扩展，旨在帮助
 
 ### 界面特性
 - 🎨 优雅的渐变背景设计
-- 💡 每日双语激励语录
-  - 支持多语言切换（中文、英文、日文）
-  - 实时加载每日名言
-  - 加载状态优雅展示
+- 💡 每日语录小部件
 - 📱 响应式设计
   - 自适应弹窗大小
   - 优化的移动端体验

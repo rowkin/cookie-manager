@@ -1,6 +1,6 @@
 # Cookie Manager with Daily Quote
 
-Cookie Manager with Daily Quote is a powerful browser extension designed to help users easily manage and manipulate website cookies. It features an intuitive user interface and integrates daily inspirational quotes to provide motivation and encouragement. Whether you need to manage cookies or seek daily inspiration, this extension meets your needs.
+Cookie Manager with Daily Quote is a powerful browser extension designed to help users easily manage and manipulate website cookies. It features an intuitive user interface with an inspirational quote widget.
 
 ## Installation Guide
 1. Visit `chrome://extensions/` in Chrome browser
@@ -10,7 +10,7 @@ Cookie Manager with Daily Quote is a powerful browser extension designed to help
 
 ## Release Information
 
-- Version: 1.2.0
+- Version: 1.2.5
 - Minimum Chrome Version Required: 88+
 - Required Permissions:
   - cookies
@@ -38,7 +38,7 @@ Cookie Manager with Daily Quote is a powerful browser extension designed to help
   - Display pinned cookies count
   - One-click apply pinned cookies to current page
 - 💾 Import/Export Cookies
-  - Support JSON format export
+  - Support JSON, Text and cURL format export
   - Batch cookie import
   - Automatic format validation on import
 - 📋 Cookie Operations
@@ -51,11 +51,9 @@ Cookie Manager with Daily Quote is a powerful browser extension designed to help
   - Support manual sync trigger
 
 ### Interface Features
-- 🎨 Elegant gradient background design
-- 💡 Daily Bilingual Quotes
-  - Multi-language support (Chinese, English, Japanese)
-  - Real-time quote loading
-  - Elegant loading state display
+- 🎨 Elegant gradient design
+- 💡 Daily Quotes Widget
+  - Clean daily quotes display
 - 📱 Responsive Design
   - Adaptive popup size
   - Optimized mobile experience
