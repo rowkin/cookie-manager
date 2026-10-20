@@ -223,6 +223,8 @@ try {
 // 9. 使用 gh 工具在统一的开源公开仓库上自动创建/更新 GitHub Release 并关联 ZIP 资产
 try {
   console.log('\n🔮 正在检测本地 gh (GitHub CLI) 认证状态...');
+  // 清理可能劫持钥匙串认证的失效 GITHUB_TOKEN 环境变量，优先使用系统的 gh keyring 登录态
+  delete process.env.GITHUB_TOKEN;
   execSync('gh auth status', { stdio: 'ignore' });
   
   const releaseTag = `cookie-manager-v${version}`;
