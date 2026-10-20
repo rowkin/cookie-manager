@@ -7,12 +7,9 @@
   --cm-light-bg: rgba(255, 255, 255, 0.08);
 }
 
-html, body {
+body {
   margin: 0;
   padding: 0;
-  width: 480px;
-  height: 560px;
-  max-height: 580px;
   overflow: hidden;
 }
 

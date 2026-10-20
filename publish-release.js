@@ -23,13 +23,13 @@ if (!fs.existsSync(manifestPath)) {
   console.error('❌ 未找到 manifest.json，请确认是否在插件目录下运行！');
   process.exit(1);
 }
-let version = '1.2.5';
+let version = '1.2.6';
 try {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  version = manifest.version || '1.2.5';
+  version = manifest.version || '1.2.6';
   console.log(`📌 当前插件版本号: v${version}`);
 } catch (e) {
-  console.error('⚠️ 读取 manifest.json 失败，将使用默认版本 v1.2.5:', e.message);
+  console.error('⚠️ 读取 manifest.json 失败，将使用默认版本 v1.2.6:', e.message);
 }
 
 // 3. 始终执行本地轻量打包生成最新 Zip 安装包，确保最新代码改动生效
